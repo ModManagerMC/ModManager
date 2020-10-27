@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "charon",
+  "version": "${version}",
+  "name": "Charon",
+  "description": "Install mods through a simple gui",
+  "authors": [
+	"DeathsGun"
+  ],
+  "contact": {
+	"homepage": "https://github.com/DeathsGun/Charon",
+	"sources": "https://github.com/DeathsGun/Charon",
+	"issues": "https://github.com/DeathsGun/Charon/issues"
+  },
+  "license": "LGPL-3.0",
+  "environment": "client",
+  "entrypoints": {
+	"client": [
+	  "xyz.deathsgun.charon.CharonClient"
+	],
+	"modmenu": [
+	  "xyz.deathsgun.charon.CharonClient"
+	]
+  },
+  "mixins": [
+	"charon.mixins.json"
+  ],
+  "depends": {
+	"fabricloader": "*",
+	"fabric": "*",
+	"minecraft": ">=1.16",
+	"modmenu": ">=1.14.6+build.31"
+  }
+}
