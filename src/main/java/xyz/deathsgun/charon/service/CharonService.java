@@ -31,32 +31,35 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import xyz.deathsgun.charon.model.Artifact;
 import xyz.deathsgun.charon.model.Mod;
+import xyz.deathsgun.charon.service.db.IDatabase;
+import xyz.deathsgun.charon.service.db.ILocalStorage;
+import xyz.deathsgun.charon.service.db.LocalStorage;
+import xyz.deathsgun.charon.service.db.SQLiteDatabase;
+import xyz.deathsgun.charon.service.workers.InstallThread;
+import xyz.deathsgun.charon.service.workers.RemoveThread;
+import xyz.deathsgun.charon.service.workers.SyncThread;
+import xyz.deathsgun.charon.service.workers.UpdateThread;
 
-import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class CharonService {
 
-    private final File charonDir;
-    private final RepoType repo = RepoType.TESTING;
     private final HashMap<String, ProcessingType> processes = new HashMap<>();
     private final HashMap<String, Exception> errors = new HashMap<>();
     private final Logger logger = LogManager.getLogger();
-    private Database database;
+    private final IDatabase database;
+    private final ILocalStorage storage;
 
     public CharonService() {
-        this.charonDir = FabricLoader.getInstance().getGameDir().resolve("mods").resolve("Charon").toFile();
-        //noinspection ResultOfMethodCallIgnored
-        this.charonDir.mkdirs();
-        File db = new File(charonDir, "charon.sqlite3");
         try {
-            this.database = new Database(db.getAbsolutePath());
+            this.database = new SQLiteDatabase();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+        this.storage = new LocalStorage();
     }
 
     public void update() {
@@ -64,7 +67,7 @@ public class CharonService {
         new SyncThread(this);
     }
 
-    public ArrayList<Mod> queryMods(String name) {
+    public List<Mod> queryMods(String name) {
         return this.database.queryMods(name);
     }
 
@@ -98,7 +101,7 @@ public class CharonService {
             e.printStackTrace();
             return null;
         }
-        ArrayList<Artifact> artifacts = this.database.getArtifacts(mod);
+        List<Artifact> artifacts = mod.artifacts;
         Semver latest = null;
         Artifact latestArtifact = null;
         for (Artifact artifact : artifacts) {
@@ -134,7 +137,7 @@ public class CharonService {
     }
 
     public boolean isModInstalled(Mod mod) {
-        return database.isModInstalled(mod.id);
+        return storage.isModInstalled(mod.id);
     }
 
     public void updateMod(CharonActionCallback callback, Mod mod) {
@@ -147,18 +150,6 @@ public class CharonService {
         logger.info("Removing {}", mod.id);
         this.processes.put(mod.id, ProcessingType.REMOVE);
         new RemoveThread(this, callback, mod);
-    }
-
-    public RepoType getRepo() {
-        return repo;
-    }
-
-    public File getCharonDir() {
-        return charonDir;
-    }
-
-    public Database getDatabase() {
-        return database;
     }
 
     public void removeProcess(Mod mod) {
@@ -174,17 +165,15 @@ public class CharonService {
         return this.errors.get(mod.id);
     }
 
-    public void markModInstalled(Mod mod, Artifact artifact) throws SQLException {
-        this.database.addInstalledMod(mod, artifact);
+    public ILocalStorage getLocalStorage() {
+        return storage;
     }
 
-    public enum RepoType {
-        TESTING, UNSTABLE;
-
-        @Override
-        public String toString() {
-            return this.name().toLowerCase();
-        }
+    public List<Mod> getCompatibleMods() {
+        return database.getMods();
     }
 
+    public IDatabase getDatabase() {
+        return database;
+    }
 }

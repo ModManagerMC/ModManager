@@ -16,13 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package xyz.deathsgun.charon.service;
+package xyz.deathsgun.charon.service.workers;
 
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.deathsgun.charon.model.Artifact;
 import xyz.deathsgun.charon.model.Mod;
+import xyz.deathsgun.charon.service.CharonActionCallback;
+import xyz.deathsgun.charon.service.CharonService;
+import xyz.deathsgun.charon.service.ProcessingType;
 
 import java.net.URL;
 import java.nio.file.Files;
@@ -55,7 +58,7 @@ public class InstallThread extends Thread {
             Path file = FabricLoader.getInstance().getGameDir()
                     .resolve("mods").resolve(mod.id + "-" + artifact.version + ".jar");
             Files.copy(url.openStream(), file, StandardCopyOption.REPLACE_EXISTING);
-            service.markModInstalled(mod, artifact);
+            service.getLocalStorage().addInstalledMod(mod, artifact);
             service.removeProcess(mod);
         } catch (Exception e) {
             logger.error(e);

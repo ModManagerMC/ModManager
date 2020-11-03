@@ -123,7 +123,7 @@ public class ModListWidget extends AlwaysSelectedEntryListWidget<ModListEntry> i
     public void filter(String searchTerm) {
         this.clearEntries();
         this.addedMods.clear();
-        ArrayList<Mod> mods = this.parent.getService().queryMods(searchTerm);
+        List<Mod> mods = this.parent.getService().queryMods(searchTerm);
         mods.forEach(mod -> this.addEntry(new ModListEntry(mod, this)));
     }
 
@@ -246,7 +246,7 @@ public class ModListWidget extends AlwaysSelectedEntryListWidget<ModListEntry> i
     }
 
     public void initMods() {
-        for (Mod mod : parent.getService().getDatabase().getCompatibleMods()) {
+        for (Mod mod : parent.getService().getCompatibleMods()) {
             this.addEntry(new ModListEntry(mod, this));
         }
     }

@@ -16,31 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package xyz.deathsgun.charon.service;
+package xyz.deathsgun.charon.service.db;
 
 import xyz.deathsgun.charon.model.Mod;
-import xyz.deathsgun.charon.utils.ModUtils;
 
-public class UpdateThread extends Thread {
+import java.util.List;
 
-    private final CharonService service;
-    private final Mod mod;
-    private final CharonActionCallback callback;
+public interface IDatabase {
 
-    public UpdateThread(CharonService service, CharonActionCallback callback, Mod mod) {
-        this.service = service;
-        this.callback = callback;
-        this.mod = mod;
-        this.setName("Updating " + mod.name);
-        start();
-    }
+    Mod getModById(String id);
 
-    @Override
-    public void run() {
-        ModUtils.deleteMod(mod); // TODO Error handling
-        // TODO Install new mod
-        service.removeProcess(mod);
-        callback.onFinished(mod, ProcessingType.REMOVE);
-        // TODO Give user notice to restart minecraft
-    }
+    List<Mod> queryMods(String query);
+
+    List<Mod> getMods();
+
+    <T> void addMods(Class<T> table, List<T> content);
 }

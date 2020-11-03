@@ -56,7 +56,6 @@ public class Database {
                     "description text NOT NULL," +
                     "readme text," +
                     "tags varchar(255)," +
-                    "thumbnail blob," +
                     "icon varchar(255) NOT NULL," +
                     "contributors varchar(255)," +
                     "version varchar(255) NOT NULL )");

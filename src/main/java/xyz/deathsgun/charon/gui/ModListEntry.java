@@ -50,7 +50,6 @@ import xyz.deathsgun.charon.service.CharonActionCallback;
 import xyz.deathsgun.charon.service.ProcessingType;
 import xyz.deathsgun.charon.utils.BadgeUtil;
 
-import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Objects;
@@ -118,7 +117,7 @@ public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEnt
             if (cached != null) {
                 return cached;
             }
-            try (InputStream inputStream = Files.newInputStream(new File("mods/Charon/", this.mod.icon).toPath())) {
+            try (InputStream inputStream = Files.newInputStream(CharonClient.getService().getLocalStorage().getIcon(mod))) {
                 NativeImage image = NativeImage.read(Objects.requireNonNull(inputStream));
                 Validate.validState(image.getHeight() == image.getWidth(), "Must be square icon");
                 NativeImageBackedTexture tex = new NativeImageBackedTexture(image);

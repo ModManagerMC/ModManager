@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package xyz.deathsgun.charon.service;
+package xyz.deathsgun.charon.service.workers;
 
 import xyz.deathsgun.charon.model.Mod;
+import xyz.deathsgun.charon.service.CharonActionCallback;
+import xyz.deathsgun.charon.service.CharonService;
+import xyz.deathsgun.charon.service.ProcessingType;
 import xyz.deathsgun.charon.utils.ModUtils;
 
 public class RemoveThread extends Thread {
@@ -42,7 +45,7 @@ public class RemoveThread extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        service.getDatabase().removeMod(mod);
+        service.getLocalStorage().markModUninstalled(mod.id);
         service.removeProcess(mod);
         callback.onFinished(mod, ProcessingType.REMOVE);
     }

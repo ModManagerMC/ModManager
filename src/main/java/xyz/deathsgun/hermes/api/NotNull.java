@@ -16,30 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package xyz.deathsgun.charon.model;
+package xyz.deathsgun.hermes.api;
 
-import xyz.deathsgun.hermes.api.NotNull;
-import xyz.deathsgun.hermes.api.Table;
-import xyz.deathsgun.hermes.api.Type;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.HashMap;
-
-@Table("artifacts")
-public class Artifact {
-    @NotNull
-    @Type("varchar(128)")
-    public String releaseDate;
-    @NotNull
-    @Type("varchar(128)")
-    public String version;
-    @NotNull
-    @Type("varchar(512)")
-    public String url;
-    @NotNull
-    @Type("varchar(128)")
-    public String compatibility;
-    @NotNull
-    @Type("varchar(128)")
-    public String origin;
-    public HashMap<String, String> dependencies;
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface NotNull {
 }

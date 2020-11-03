@@ -18,21 +18,44 @@
 
 package xyz.deathsgun.charon.model;
 
+import xyz.deathsgun.hermes.api.NotNull;
+import xyz.deathsgun.hermes.api.PrimaryKey;
+import xyz.deathsgun.hermes.api.Table;
+import xyz.deathsgun.hermes.api.Type;
+
 import java.util.List;
 
+@Table("mods")
 public class Mod {
 
+    @PrimaryKey
+    @Type("varchar(128)")
+    public String id;
+    @NotNull
+    @Type("varchar(128)")
     public String name;
+    @NotNull
+    @Type("varchar(128)")
+    public String version;
+    @NotNull
+    @Type("varchar(255)")
     public String[] authors = new String[]{};
+    @Type("varchar(128)")
     public String category;
+    @NotNull
+    @Type("text")
     public String description;
+    @Type("varchar(512)")
     public String readme;
+    @Type("varchar(255)")
     public String[] tags = new String[]{};
+    @Type("varchar(255)")
     public String thumbnail;
+    @NotNull
+    @Type("varchar(255)")
     public String icon;
     public List<Artifact> artifacts;
+    @Type("varchar(255)")
     public String[] contributors = new String[]{};
-    public String version;
-    public String id;
 
 }

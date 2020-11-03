@@ -16,30 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package xyz.deathsgun.charon.model;
+package xyz.deathsgun.charon.service.db;
 
-import xyz.deathsgun.hermes.api.NotNull;
-import xyz.deathsgun.hermes.api.Table;
-import xyz.deathsgun.hermes.api.Type;
+import net.fabricmc.loader.api.ModContainer;
+import xyz.deathsgun.charon.model.Artifact;
+import xyz.deathsgun.charon.model.Mod;
 
-import java.util.HashMap;
+import java.nio.file.Path;
 
-@Table("artifacts")
-public class Artifact {
-    @NotNull
-    @Type("varchar(128)")
-    public String releaseDate;
-    @NotNull
-    @Type("varchar(128)")
-    public String version;
-    @NotNull
-    @Type("varchar(512)")
-    public String url;
-    @NotNull
-    @Type("varchar(128)")
-    public String compatibility;
-    @NotNull
-    @Type("varchar(128)")
-    public String origin;
-    public HashMap<String, String> dependencies;
+public interface ILocalStorage {
+
+    boolean isModInstalled(String id);
+
+    void markModUninstalled(String id);
+
+    void addInstalledMod(Mod mod, Artifact artifact);
+
+    Path getIcon(Mod mod);
+
+    void addInstalledMod(ModContainer container);
 }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package xyz.deathsgun.charon.service;
+package xyz.deathsgun.charon.service.workers;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -24,7 +24,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import org.apache.logging.log4j.LogManager;
 import xyz.deathsgun.charon.model.Mod;
-import xyz.deathsgun.charon.utils.ArchiveUtils;
+import xyz.deathsgun.charon.service.CharonService;
 
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -47,21 +47,15 @@ public class SyncThread extends Thread {
         try {
             updateIndex();
             for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-                service.getDatabase().addInstalledMod(container);
+                service.getLocalStorage().addInstalledMod(container);
             }
-            updateImages();
         } catch (Exception e) {
             LogManager.getLogger().error(e);
         }
     }
 
-    private void updateImages() throws Exception {
-        URL url = new URL(String.format("https://github.com/DeathsGun/Styx-Index/raw/%s/dist/%s", service.getRepo().toString(), "assets.tar.gz"));
-        ArchiveUtils.extractTarGz(url.openStream(), this.service.getCharonDir());
-    }
-
     private void updateIndex() throws Exception {
-        URL url = new URL(String.format("https://github.com/DeathsGun/Styx-Index/raw/%s/dist/%s", service.getRepo().toString(), "index.gz"));
+        URL url = new URL("https://github.com/DeathsGun/Styx-Index/raw/testing/dist/index.gz");
         GZIPInputStream gz = new GZIPInputStream(url.openStream());
         List<Mod> mods = new Gson().fromJson(new InputStreamReader(gz), new TypeToken<ArrayList<Mod>>() {
         }.getType());
@@ -70,7 +64,7 @@ public class SyncThread extends Thread {
                 mod.contributors = new String[]{};
             }
         }
-        service.getDatabase().addMods(mods);
+        service.getDatabase().addMods(Mod.class, mods);
     }
 
 }
