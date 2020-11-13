@@ -52,10 +52,12 @@ import xyz.deathsgun.charon.utils.BadgeUtil;
 
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 
 public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEntry> implements CharonActionCallback {
-    public static final Identifier UNKNOWN_ICON = new Identifier("textures/misc/unknown_pack.png");
+
+    private static final Identifier LOADING_ICON = new Identifier("charon", "textures/gui/loading.png");
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected final MinecraftClient client;
@@ -113,11 +115,11 @@ public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEnt
             if (cached != null) {
                 return cached;
             }
-            cached = this.list.getCachedModIcon(this.mod.icon);
-            if (cached != null) {
-                return cached;
+            Path file = CharonClient.getService().getLocalStorage().getIcon(mod);
+            if (!Files.exists(file)) {
+                return null;
             }
-            try (InputStream inputStream = Files.newInputStream(CharonClient.getService().getLocalStorage().getIcon(mod))) {
+            try (InputStream inputStream = Files.newInputStream(file)) {
                 NativeImage image = NativeImage.read(Objects.requireNonNull(inputStream));
                 Validate.validState(image.getHeight() == image.getWidth(), "Must be square icon");
                 NativeImageBackedTexture tex = new NativeImageBackedTexture(image);
@@ -144,7 +146,7 @@ public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEnt
             if (icon != null) {
                 this.client.getTextureManager().registerTexture(this.iconLocation, icon);
             } else {
-                this.iconLocation = UNKNOWN_ICON;
+                this.iconLocation = LOADING_ICON;
             }
         }
         this.client.getTextureManager().bindTexture(this.iconLocation);

@@ -18,13 +18,13 @@
 
 package xyz.deathsgun.charon.utils;
 
+import com.google.gson.Gson;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.metadata.LoaderModMetadata;
-import net.fabricmc.loader.metadata.ModMetadataParser;
 import xyz.deathsgun.charon.model.Mod;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -38,9 +38,9 @@ public class ModUtils {
             try {
                 JarFile jar = new JarFile(modFile);
                 ZipEntry fabricMeta = jar.getEntry("fabric.mod.json");
-                LoaderModMetadata[] modInfo = ModMetadataParser.getMods((net.fabricmc.loader.FabricLoader) FabricLoader.getInstance(), jar.getInputStream(fabricMeta));
+                ModMeta modInfo = new Gson().fromJson(new InputStreamReader(jar.getInputStream(fabricMeta)), ModMeta.class);
                 jar.close();
-                if (modInfo[0].getId().equals(mod.id)) {
+                if (modInfo.id.equals(mod.id)) {
                     Files.delete(modFile.toPath());
                 }
             } catch (IOException e) {
@@ -48,6 +48,10 @@ public class ModUtils {
             }
 
         }
+    }
+
+    private static class ModMeta {
+        public String id;
     }
 
 }

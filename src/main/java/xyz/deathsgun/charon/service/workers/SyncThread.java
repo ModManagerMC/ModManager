@@ -63,8 +63,8 @@ public class SyncThread extends Thread {
             if (mod.contributors == null) {
                 mod.contributors = new String[]{};
             }
+            service.getDatabase().addMod(mod);
         }
-        service.getDatabase().addMods(Mod.class, mods);
     }
 
 }

@@ -30,5 +30,5 @@ public interface IDatabase {
 
     List<Mod> getMods();
 
-    <T> void addMods(Class<T> table, List<T> content);
+    void addMod(Mod mod);
 }

@@ -23,8 +23,11 @@ import io.github.prospector.modmenu.api.ModMenuApi;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import xyz.deathsgun.charon.gui.CharonConfigScreen;
 import xyz.deathsgun.charon.service.CharonService;
+
+import java.nio.file.Path;
 
 @Environment(EnvType.CLIENT)
 public class CharonClient implements ClientModInitializer, ModMenuApi {
@@ -33,6 +36,12 @@ public class CharonClient implements ClientModInitializer, ModMenuApi {
 
     public static CharonService getService() {
         return service;
+    }
+
+    public static Path getCharonDir() {
+        Path p = FabricLoader.getInstance().getGameDir().resolve("mods").resolve("Charon");
+        p.toFile().mkdirs();
+        return p;
     }
 
     @Override

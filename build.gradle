@@ -30,7 +30,7 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "io.github.prospector:modmenu:1.14.6+build.31"
+    modImplementation "io.github.prospector:modmenu:2.0.0-beta.1+build.2"
 }
 
 processResources {

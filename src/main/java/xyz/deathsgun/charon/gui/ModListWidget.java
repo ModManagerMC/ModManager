@@ -30,6 +30,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.NarratorManager;
@@ -37,14 +38,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import xyz.deathsgun.charon.model.Mod;
 
 import java.util.*;
 
 public class ModListWidget extends AlwaysSelectedEntryListWidget<ModListEntry> implements AutoCloseable {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Map<String, NativeImageBackedTexture> modIconsCache = new HashMap<>();
     private final ModListScreen parent;
@@ -149,14 +147,14 @@ public class ModListWidget extends AlwaysSelectedEntryListWidget<ModListEntry> i
                     float float_2 = this.isFocused() ? 1.0F : 0.5F;
                     RenderSystem.color4f(float_2, float_2, float_2, 1.0F);
                     Matrix4f matrix = matrices.peek().getModel();
-                    buffer.begin(7, VertexFormats.POSITION);
+                    buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
                     buffer.vertex(matrix, entryLeft, entryTop + entryHeight + 2, 0.0F).next();
                     buffer.vertex(matrix, selectionRight, entryTop + entryHeight + 2, 0.0F).next();
                     buffer.vertex(matrix, selectionRight, entryTop - 2, 0.0F).next();
                     buffer.vertex(matrix, entryLeft, entryTop - 2, 0.0F).next();
                     tessellator.draw();
                     RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
-                    buffer.begin(7, VertexFormats.POSITION);
+                    buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
                     buffer.vertex(matrix, entryLeft + 1, entryTop + entryHeight + 1, 0.0F).next();
                     buffer.vertex(matrix, selectionRight - 1, entryTop + entryHeight + 1, 0.0F).next();
                     buffer.vertex(matrix, selectionRight - 1, entryTop - 1, 0.0F).next();
@@ -217,7 +215,7 @@ public class ModListWidget extends AlwaysSelectedEntryListWidget<ModListEntry> i
     }
 
     @Override
-    protected int getRowLeft() {
+    public int getRowLeft() {
         return left + 6;
     }
 

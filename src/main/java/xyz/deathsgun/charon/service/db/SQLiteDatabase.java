@@ -18,10 +18,11 @@
 
 package xyz.deathsgun.charon.service.db;
 
-import net.fabricmc.loader.api.FabricLoader;
+import xyz.deathsgun.charon.CharonClient;
 import xyz.deathsgun.charon.model.Artifact;
 import xyz.deathsgun.charon.model.Mod;
-import xyz.deathsgun.xyz.deathsgun.hermes.sql.SQLite;
+import xyz.deathsgun.hermes.exceptions.ValidationException;
+import xyz.deathsgun.hermes.sql.SQLite;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -33,7 +34,7 @@ public class SQLiteDatabase implements IDatabase {
     private final Connection connection;
 
     public SQLiteDatabase() throws SQLException {
-        String database = FabricLoader.getInstance().getGameDir().resolve("mods").resolve("Charon")
+        String database = CharonClient.getCharonDir()
                 .resolve("charon.sqlite").toFile().getAbsolutePath();
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + database);
         SQLite.createTable(connection, Mod.class);
@@ -64,7 +65,19 @@ public class SQLiteDatabase implements IDatabase {
     }
 
     @Override
-    public <T> void addMods(Class<T> table, List<T> content) {
-
+    public void addMod(Mod mod) {
+        if (!SQLite.exits(connection, Mod.class, mod)) {
+            try {
+                SQLite.insert(connection, Mod.class, mod);
+            } catch (ValidationException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        try {
+            SQLite.update(connection, Mod.class, mod);
+        } catch (ValidationException e) {
+            e.printStackTrace();
+        }
     }
 }
