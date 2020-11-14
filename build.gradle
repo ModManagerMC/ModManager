@@ -10,6 +10,9 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+version = version + "+" + (System.getenv("GITHUB_RUN_NUMBER") ?
+        ("build." + System.getenv("GITHUB_RUN_NUMBER")) : "custom")
+
 repositories {
     maven {
         name = "Fabric"
@@ -79,9 +82,14 @@ publishing {
         }
     }
 
-    // select the repositories you want to publish to
     repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/DeathsGun/ModManager")
+            credentials {
+                username = System.getenv("USERNAME")
+                password = System.getenv("GH_TOKEN")
+            }
+        }
     }
 }
