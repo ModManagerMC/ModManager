@@ -3,7 +3,7 @@
   "modmanager.gui.install.title": "Install mods",
   "modmanager.installing": "Installing...",
   "modmanager.button.modmenu": "Installed mods",
-  "modmanager.modmenu.warning": "Needed by Mod Manager",
+  "modmanager.modmenu.warning": "Required",
   "modmanager.moreInfo": "More info",
   "modmanager.search": "Search",
   "modmanager.update": "Update",
