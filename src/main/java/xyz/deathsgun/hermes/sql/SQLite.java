@@ -161,11 +161,14 @@ public class SQLite {
         if (primary == null) {
             throw new ValidationException(String.format("Table %s does not contain a primary key", tableName));
         }
+        statement.append(" WHERE ").append(primary.getLeft());
+        statement.append(" = ?");
         try {
             PreparedStatement stmt = connection.prepareStatement(statement.toString());
             for (int i = 0; i < values.size(); i++) {
                 stmt.setObject(i + 1, values.get(i));
             }
+            stmt.setObject(values.size() + 1, primary.getRight());
             stmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -14,6 +14,7 @@
   "charon.errored": "Installation failed!",
   "charon.error": "Error",
   "charon.retry": "Retry",
+  "charon.openCharon": "Manage mods",
   "charon.badge.outdated": "Outdated",
   "charon.badge.installed": "Installed",
   "charon.badge.notLoaded": "Not loaded"

@@ -22,6 +22,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import xyz.deathsgun.charon.model.Artifact;
 import xyz.deathsgun.charon.model.Mod;
+import xyz.deathsgun.charon.utils.UpdateCallback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,7 +51,7 @@ public class LocalStorage implements ILocalStorage {
     }
 
     @Override
-    public Path getIcon(Mod mod) {
+    public Path getIcon(Mod mod, UpdateCallback callback) {
         Path iconFile = FabricLoader.getInstance().getGameDir()
                 .resolve("mods").resolve("Charon").resolve("icons");
         try {
@@ -60,11 +61,15 @@ public class LocalStorage implements ILocalStorage {
         }
         iconFile = iconFile.resolve(String.format("%s.png", mod.id));
         if (Files.notExists(iconFile)) {
-            try {
-                Files.copy(new URL(mod.icon).openStream(), iconFile, StandardCopyOption.REPLACE_EXISTING);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Path finalIconFile = iconFile;
+            new Thread(() -> {
+                try {
+                    Files.copy(new URL(mod.icon).openStream(), finalIconFile, StandardCopyOption.REPLACE_EXISTING);
+                    callback.onIconLoaded();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, "Icon downloader").start();
         }
         return iconFile;
     }

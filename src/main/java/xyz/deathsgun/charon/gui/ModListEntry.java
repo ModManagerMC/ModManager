@@ -49,13 +49,14 @@ import xyz.deathsgun.charon.model.Mod;
 import xyz.deathsgun.charon.service.CharonActionCallback;
 import xyz.deathsgun.charon.service.ProcessingType;
 import xyz.deathsgun.charon.utils.BadgeUtil;
+import xyz.deathsgun.charon.utils.UpdateCallback;
 
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEntry> implements CharonActionCallback {
+public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEntry> implements CharonActionCallback, UpdateCallback {
 
     private static final Identifier LOADING_ICON = new Identifier("charon", "textures/gui/loading.png");
     private static final Logger LOGGER = LogManager.getLogger();
@@ -82,7 +83,7 @@ public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEnt
         x += getXOffset();
         rowWidth -= getXOffset();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.bindIconTexture();
+        this.bindIconTexture(false);
         RenderSystem.enableBlend();
         DrawableHelper.drawTexture(matrices, x, y, 0.0F, 0.0F, 32, 32, 32, 32);
         RenderSystem.disableBlend();
@@ -115,7 +116,7 @@ public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEnt
             if (cached != null) {
                 return cached;
             }
-            Path file = CharonClient.getService().getLocalStorage().getIcon(mod);
+            Path file = CharonClient.getService().getLocalStorage().getIcon(mod, this);
             if (!Files.exists(file)) {
                 return null;
             }
@@ -139,8 +140,8 @@ public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEnt
         return true;
     }
 
-    public void bindIconTexture() {
-        if (this.iconLocation == null) {
+    public void bindIconTexture(boolean reload) {
+        if (this.iconLocation == null || reload) {
             this.iconLocation = new Identifier("modmenu", mod.id + "_icon");
             NativeImageBackedTexture icon = this.createIcon();
             if (icon != null) {
@@ -161,5 +162,10 @@ public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEnt
         this.outdated = CharonClient.getService().isModOutdated(mod);
         this.installed = CharonClient.getService().isModInstalled(mod);
         this.loaded = this.installed && !FabricLoader.getInstance().isModLoaded(mod.id);
+    }
+
+    @Override
+    public void onIconLoaded() {
+        this.bindIconTexture(true);
     }
 }

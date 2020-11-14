@@ -162,7 +162,7 @@ public class DetailWidget extends DrawableHelper implements CharonActionCallback
         }
         description.render(matrices, mouseX, mouseY, delta);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.selectedEntry.bindIconTexture();
+        this.selectedEntry.bindIconTexture(false);
         RenderSystem.enableBlend();
         drawTexture(matrices, rightPaneX, this.paneY, 0.0F, 0.0F, 32, 32, 32, 32);
         RenderSystem.disableBlend();

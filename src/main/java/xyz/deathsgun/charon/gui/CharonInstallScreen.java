@@ -54,9 +54,7 @@ public class CharonInstallScreen extends Screen implements ModListScreen {
         client.keyboard.setRepeatEvents(true);
         int paneY = 48;
         int paneWidth = this.width / 2 - 8;
-        int searchBoxWidth = paneWidth - 32 - 22;
-        int searchBoxX = paneWidth / 2 - searchBoxWidth / 2 - 11;
-        this.searchBox = new TextFieldWidget(this.textRenderer, searchBoxX, 22, searchBoxWidth,
+        this.searchBox = new TextFieldWidget(this.textRenderer, 11, 22, paneWidth - 22,
                 20, null, new TranslatableText("charon.search"));
         this.searchBox.setChangedListener(text -> this.modList.filter(text));
         this.modList = new ModListWidget(this.client, paneWidth, this.height, paneY + 19, this.height - 36, 36, this);
@@ -66,7 +64,7 @@ public class CharonInstallScreen extends Screen implements ModListScreen {
         this.details = new DetailWidget(client, paneWidth, this.height, paneY + 60, this.height - 36, 9 + 1, this);
         this.details.setPos(this.width - paneWidth, paneY);
         this.details.init();
-        this.addButton(new ButtonWidget(this.width / 2 - 154, this.height - 28, 150, 20, new TranslatableText("charon.gui.update"), (button) -> {
+        this.addButton(new ButtonWidget(this.width / 2 - 154, this.height - 28, 150, 20, new TranslatableText("charon.sync"), (button) -> {
             this.getService().update();
         }));
         this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 28, 150, 20, ScreenTexts.DONE, (button) -> {

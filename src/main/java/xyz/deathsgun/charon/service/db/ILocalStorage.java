@@ -21,6 +21,7 @@ package xyz.deathsgun.charon.service.db;
 import net.fabricmc.loader.api.ModContainer;
 import xyz.deathsgun.charon.model.Artifact;
 import xyz.deathsgun.charon.model.Mod;
+import xyz.deathsgun.charon.utils.UpdateCallback;
 
 import java.nio.file.Path;
 
@@ -32,7 +33,7 @@ public interface ILocalStorage {
 
     void addInstalledMod(Mod mod, Artifact artifact);
 
-    Path getIcon(Mod mod);
+    Path getIcon(Mod mod, UpdateCallback callback);
 
     void addInstalledMod(ModContainer container);
 }
