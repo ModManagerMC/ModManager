@@ -1,0 +1,21 @@
+{
+  "modmanager.install": "Install",
+  "modmanager.gui.install.title": "Install mods",
+  "modmanager.installing": "Installing...",
+  "modmanager.button.modmenu": "Installed mods",
+  "modmanager.modmenu.warning": "Needed by Mod Manager",
+  "modmanager.moreInfo": "More info",
+  "modmanager.search": "Search",
+  "modmanager.update": "Update",
+  "modmanager.updating": "Updating...",
+  "modmanager.sync": "Sync Repo",
+  "modmanager.remove": "Uninstall",
+  "modmanager.removing": "Uninstalling...",
+  "modmanager.errored": "Installation failed!",
+  "modmanager.error": "Error",
+  "modmanager.retry": "Retry",
+  "modmanager.open": "Manage mods",
+  "modmanager.badge.outdated": "Outdated",
+  "modmanager.badge.installed": "Installed",
+  "modmanager.badge.notLoaded": "Not loaded"
+}

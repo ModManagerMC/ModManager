@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "charon",
+  "id": "modmanager",
   "version": "${version}",
-  "name": "Charon",
+  "name": "Mod Manager",
   "description": "Install mods through a simple gui",
   "authors": [
 	"DeathsGun"
   ],
   "contact": {
-	"homepage": "https://github.com/DeathsGun/Charon",
-	"sources": "https://github.com/DeathsGun/Charon",
-	"issues": "https://github.com/DeathsGun/Charon/issues"
+	"homepage": "https://github.com/DeathsGun/ModManager",
+	"sources": "https://github.com/DeathsGun/ModManager",
+	"issues": "https://github.com/DeathsGun/ModManager/issues"
   },
   "license": "LGPL-3.0",
   "environment": "client",
   "entrypoints": {
 	"client": [
-	  "xyz.deathsgun.charon.CharonClient"
+	  "xyz.deathsgun.modmanager.ModManagerClient"
 	],
 	"modmenu": [
-	  "xyz.deathsgun.charon.CharonClient"
+	  "xyz.deathsgun.modmanager.ModManagerClient"
 	]
   },
   "mixins": [
-	"charon.mixins.json"
+	"modmanager.mixins.json"
   ],
   "depends": {
 	"fabricloader": "*",
