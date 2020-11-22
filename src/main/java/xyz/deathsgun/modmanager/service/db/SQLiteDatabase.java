@@ -66,16 +66,8 @@ public class SQLiteDatabase implements IDatabase {
 
     @Override
     public void addMod(Mod mod) {
-        if (!SQLite.exits(connection, Mod.class, mod)) {
-            try {
-                SQLite.insert(connection, Mod.class, mod);
-            } catch (ValidationException e) {
-                e.printStackTrace();
-            }
-            return;
-        }
         try {
-            SQLite.update(connection, Mod.class, mod);
+            SQLite.updateOrInsert(connection, Mod.class, mod);
         } catch (ValidationException e) {
             e.printStackTrace();
         }

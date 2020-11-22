@@ -55,7 +55,7 @@ public class SyncThread extends Thread {
     }
 
     private void updateIndex() throws Exception {
-        URL url = new URL("https://github.com/DeathsGun/Styx-Index/raw/testing/dist/index.gz");
+        URL url = new URL("https://github.com/DeathsGun/ModIndex/raw/testing/dist/index.gz");
         GZIPInputStream gz = new GZIPInputStream(url.openStream());
         List<Mod> mods = new Gson().fromJson(new InputStreamReader(gz), new TypeToken<ArrayList<Mod>>() {
         }.getType());

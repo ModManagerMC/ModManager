@@ -18,28 +18,41 @@
 
 package xyz.deathsgun.modmanager.model;
 
-import xyz.deathsgun.hermes.api.NotNull;
-import xyz.deathsgun.hermes.api.Table;
-import xyz.deathsgun.hermes.api.Type;
+import xyz.deathsgun.hermes.api.*;
 
 import java.util.HashMap;
 
 @Table("artifacts")
 public class Artifact {
+    @PrimaryKey
+    @NotNull
+    @Type("varchar(128)")
+    public String id;
+
+    @NotNull
+    @Type("varchar(128)")
+    @LinkOwner
+    public String mod;
+
     @NotNull
     @Type("varchar(128)")
     public String releaseDate;
+
     @NotNull
     @Type("varchar(128)")
     public String version;
+
     @NotNull
     @Type("varchar(512)")
     public String url;
+
     @NotNull
     @Type("varchar(128)")
-    public String compatibility;
+    public Object compatibility;
+
     @NotNull
     @Type("varchar(128)")
     public String origin;
-    public HashMap<String, String> dependencies;
+
+    public HashMap<String, Object> dependencies;
 }

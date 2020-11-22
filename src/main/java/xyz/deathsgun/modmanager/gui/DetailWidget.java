@@ -218,4 +218,8 @@ public class DetailWidget extends DrawableHelper implements ModManagerActionCall
         selectedEntry.onFinished(mod, type);
         updateEntry();
     }
+
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        return this.description.isMouseOver(mouseX, mouseY) && this.description.mouseScrolled(mouseX, mouseY, amount);
+    }
 }

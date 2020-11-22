@@ -105,10 +105,10 @@ public class ModManagerService {
         Semver latest = null;
         Artifact latestArtifact = null;
         for (Artifact artifact : artifacts) {
-            if (artifact.compatibility == null || artifact.compatibility.isEmpty())
+            if (artifact.compatibility == null)
                 continue;
             try {
-                Predicate<SemanticVersionImpl> compatibility = SemanticVersionPredicateParser.create(artifact.compatibility);
+                Predicate<SemanticVersionImpl> compatibility = SemanticVersionPredicateParser.create((String) artifact.compatibility);
                 if (compatibility.test(minecraft)) {
                     Semver ver = new Semver(artifact.version.replaceAll("\\+build", ""), Semver.SemverType.LOOSE);
                     if (latest == null && ver.isGreaterThan(version)) {

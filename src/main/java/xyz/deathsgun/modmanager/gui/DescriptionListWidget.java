@@ -35,6 +35,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
+import net.minecraft.util.math.MathHelper;
 
 public class DescriptionListWidget extends EntryListWidget<DescriptionListWidget.DescriptionEntry> {
     private final TextRenderer textRenderer;
@@ -63,10 +64,9 @@ public class DescriptionListWidget extends EntryListWidget<DescriptionListWidget
 
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.clearEntries();
-        this.setScrollAmount(-Double.MAX_VALUE);
         if (description != null && !description.isEmpty()) {
             for (OrderedText line : this.textRenderer.wrapLines(new LiteralText(description.replaceAll("\n", "\n\n")), this.getRowWidth())) {
-                this.children().add(new DescriptionEntry(line));
+                this.children().add(new DescriptionEntry(line, this));
             }
         }
 
@@ -103,21 +103,60 @@ public class DescriptionListWidget extends EntryListWidget<DescriptionListWidget
         int l = this.top + 4 - (int) this.getScrollAmount();
         this.renderList(matrices, k, l, mouseX, mouseY, delta);
 
+        renderScrollBar(bufferBuilder, tessellator);
+
         RenderSystem.enableTexture();
         RenderSystem.shadeModel(7424);
         RenderSystem.enableAlphaTest();
         RenderSystem.disableBlend();
     }
 
-    public static class DescriptionEntry extends EntryListWidget.Entry<DescriptionEntry> {
-        protected OrderedText text;
 
-        public DescriptionEntry(OrderedText text) {
+    public void renderScrollBar(BufferBuilder bufferBuilder, Tessellator tessellator) {
+        int scrollbarPosX = this.getScrollbarPositionX();
+        int j = scrollbarPosX + 4;
+        int o = this.getMaxScroll();
+        if (o > 0) {
+            RenderSystem.disableTexture();
+            int p = (int) ((float) ((this.bottom - this.top) * (this.bottom - this.top)) / (float) this.getMaxPosition());
+            p = MathHelper.clamp(p, 32, this.bottom - this.top - 8);
+            int q = (int) this.getScrollAmount() * (this.bottom - this.top - p) / o + this.top;
+            if (q < this.top) {
+                q = this.top;
+            }
+
+            bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+            bufferBuilder.vertex(scrollbarPosX, this.bottom, 0.0D).texture(0.0F, 1.0F).color(0, 0, 0, 255).next();
+            bufferBuilder.vertex(j, this.bottom, 0.0D).texture(1.0F, 1.0F).color(0, 0, 0, 255).next();
+            bufferBuilder.vertex(j, this.top, 0.0D).texture(1.0F, 0.0F).color(0, 0, 0, 255).next();
+            bufferBuilder.vertex(scrollbarPosX, this.top, 0.0D).texture(0.0F, 0.0F).color(0, 0, 0, 255).next();
+            bufferBuilder.vertex(scrollbarPosX, q + p, 0.0D).texture(0.0F, 1.0F).color(128, 128, 128, 255).next();
+            bufferBuilder.vertex(j, q + p, 0.0D).texture(1.0F, 1.0F).color(128, 128, 128, 255).next();
+            bufferBuilder.vertex(j, q, 0.0D).texture(1.0F, 0.0F).color(128, 128, 128, 255).next();
+            bufferBuilder.vertex(scrollbarPosX, q, 0.0D).texture(0.0F, 0.0F).color(128, 128, 128, 255).next();
+            bufferBuilder.vertex(scrollbarPosX, q + p - 1, 0.0D).texture(0.0F, 1.0F).color(192, 192, 192, 255).next();
+            bufferBuilder.vertex(j - 1, q + p - 1, 0.0D).texture(1.0F, 1.0F).color(192, 192, 192, 255).next();
+            bufferBuilder.vertex(j - 1, q, 0.0D).texture(1.0F, 0.0F).color(192, 192, 192, 255).next();
+            bufferBuilder.vertex(scrollbarPosX, q, 0.0D).texture(0.0F, 0.0F).color(192, 192, 192, 255).next();
+            tessellator.draw();
+        }
+    }
+
+    public static class DescriptionEntry extends EntryListWidget.Entry<DescriptionEntry> {
+        protected final OrderedText text;
+        private final DescriptionListWidget widget;
+
+        public DescriptionEntry(OrderedText text, DescriptionListWidget widget) {
             this.text = text;
+            this.widget = widget;
         }
 
         public void render(MatrixStack matrices, int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
-            MinecraftClient.getInstance().textRenderer.drawWithShadow(matrices, this.text, (float) x, (float) y, 0xAAAAAA);
+            TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+            if (widget.top > y || widget.bottom - textRenderer.fontHeight < y) {
+                return;
+            }
+            textRenderer.drawWithShadow(matrices, this.text, (float) x, (float) y, 0xAAAAAA);
         }
     }
 }

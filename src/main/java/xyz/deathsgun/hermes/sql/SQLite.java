@@ -19,10 +19,7 @@
 package xyz.deathsgun.hermes.sql;
 
 import net.minecraft.util.Pair;
-import xyz.deathsgun.hermes.api.NotNull;
-import xyz.deathsgun.hermes.api.PrimaryKey;
-import xyz.deathsgun.hermes.api.Table;
-import xyz.deathsgun.hermes.api.Type;
+import xyz.deathsgun.hermes.api.*;
 import xyz.deathsgun.hermes.exceptions.ValidationException;
 
 import java.lang.reflect.Field;
@@ -52,7 +49,7 @@ public class SQLite {
             }
             NotNull notNull = field.getDeclaredAnnotation(NotNull.class);
             if (notNull != null) {
-                query.append("NOT NULL");
+                query.append(" NOT NULL");
             }
             query.append(", ");
         }
@@ -68,25 +65,37 @@ public class SQLite {
         int parameters = Math.toIntExact(condition.chars().filter(ch -> ch == '?').count());
         try {
             PreparedStatement stmt = connection.prepareStatement(String.format("SELECT * FROM `%s` %s", tableName, condition));
-            for (int i = 1; i < parameters; i++) {
+            for (int i = 1; i <= parameters; i++) {
                 stmt.setString(i, parameter);
             }
             ResultSet rs = stmt.executeQuery();
-            return convert(rs, clazz);
+            return convert(connection, rs, clazz);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    public static <T> List<T> convert(ResultSet rs, Class<T> clazz) {
+    public static <T> List<T> convert(Connection connection, ResultSet rs, Class<?> clazz) {
         ArrayList<T> result = new ArrayList<>();
         try {
             while (rs.next()) {
-                T obj = clazz.newInstance();
+                T obj = (T) clazz.getConstructors()[0].newInstance();
                 for (Field field : clazz.getFields()) {
                     Type type = field.getDeclaredAnnotation(Type.class);
                     if (type == null) {
+                        LinkedTable linkedTable = field.getDeclaredAnnotation(LinkedTable.class);
+                        if (linkedTable == null)
+                            continue;
+                        Class<?> fieldType = linkedTable.value();
+                        for (Field typeField : fieldType.getFields()) {
+                            LinkOwner primaryKey = typeField.getDeclaredAnnotation(LinkOwner.class);
+                            if (primaryKey == null)
+                                continue;
+                            List<?> list = SQLite.select(connection, fieldType, String.format("WHERE %s = ?", typeField.getName()), getPrimaryKey(obj));
+                            field.set(obj, list);
+                            break;
+                        }
                         continue;
                     }
                     if (type.value().contains("varchar") && field.getType().isArray()) {
@@ -103,7 +112,22 @@ public class SQLite {
         return result;
     }
 
-    public static <T> boolean exits(Connection connection, Class<T> clazz, T content) {
+    private static String getPrimaryKey(Object obj) {
+        Class<?> clazz = obj.getClass();
+        for (Field field : clazz.getFields()) {
+            if (field.getDeclaredAnnotation(PrimaryKey.class) != null) {
+                try {
+                    field.setAccessible(true);
+                    return (String) field.get(obj);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static <T> boolean exits(Connection connection, Class<?> clazz, T content) {
         String tableName = clazz.getDeclaredAnnotation(Table.class).value();
         String primaryKey = getPrimaryKey(clazz);
         if (primaryKey == null) {
@@ -123,7 +147,8 @@ public class SQLite {
         return false;
     }
 
-    public static <T> void update(Connection connection, Class<T> clazz, T content) throws ValidationException {
+    @SuppressWarnings("DuplicatedCode")
+    public static <T> void update(Connection connection, Class<?> clazz, T content) throws ValidationException {
         String tableName = clazz.getDeclaredAnnotation(Table.class).value();
         StringBuilder statement = new StringBuilder(String.format("UPDATE `%s` set ", tableName));
         Pair<String, Object> primary = null;
@@ -133,8 +158,26 @@ public class SQLite {
             field.setAccessible(true);
             try {
                 Type type = field.getAnnotation(Type.class);
-                if (type == null)
+                if (type == null) {
+                    LinkedTable linkedTable = field.getDeclaredAnnotation(LinkedTable.class);
+                    if (linkedTable == null)
+                        continue;
+                    for (Field typeField : linkedTable.value().getFields()) {
+                        LinkOwner primaryKey = typeField.getDeclaredAnnotation(LinkOwner.class);
+                        if (primaryKey == null)
+                            continue;
+                        List<?> list = (List<?>) field.get(content);
+                        for (Object o : list) {
+                            try {
+                                SQLite.updateOrInsert(connection, linkedTable.value(), o);
+                            } catch (ValidationException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
+                    }
                     continue;
+                }
                 if (field.getAnnotation(NotNull.class) != null && field.get(content) == null) {
                     throw new ValidationException(String.format("Field %s is null", field.getName()));
                 }
@@ -175,7 +218,16 @@ public class SQLite {
         }
     }
 
-    public static <T> void insert(Connection connection, Class<T> clazz, T content) throws ValidationException {
+    public static <T> void updateOrInsert(Connection connection, Class<?> clazz, T content) throws ValidationException {
+        if (SQLite.exits(connection, clazz, content)) {
+            SQLite.update(connection, clazz, content);
+            return;
+        }
+        SQLite.insert(connection, clazz, content);
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    public static <T> void insert(Connection connection, Class<?> clazz, T content) throws ValidationException {
         String tableName = clazz.getDeclaredAnnotation(Table.class).value();
         StringBuilder statement = new StringBuilder(String.format("INSERT INTO `%s` (", tableName));
         StringBuilder secondPart = new StringBuilder("VALUES (");
@@ -185,8 +237,27 @@ public class SQLite {
             field.setAccessible(true);
             try {
                 Type type = field.getAnnotation(Type.class);
-                if (type == null)
+                if (type == null) {
+                    LinkedTable linkedTable = field.getDeclaredAnnotation(LinkedTable.class);
+                    if (linkedTable == null) {
+                        continue;
+                    }
+                    Class<?> fieldType = field.getType();
+                    for (Field typeField : fieldType.getFields()) {
+                        LinkOwner primaryKey = typeField.getDeclaredAnnotation(LinkOwner.class);
+                        if (primaryKey == null)
+                            continue;
+                        List<?> list = (List<?>) field.get(content);
+                        for (Object o : list) {
+                            try {
+                                SQLite.updateOrInsert(connection, field.getDeclaringClass(), o);
+                            } catch (ValidationException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                     continue;
+                }
                 if (field.getAnnotation(NotNull.class) != null && field.get(content) == null) {
                     throw new ValidationException(String.format("Field %s is null", field.getName()));
                 }

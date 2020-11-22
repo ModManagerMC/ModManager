@@ -39,7 +39,7 @@ public class ModManagerClient implements ClientModInitializer, ModMenuApi {
     }
 
     public static Path getCharonDir() {
-        Path p = FabricLoader.getInstance().getGameDir().resolve("mods").resolve("Charon");
+        Path p = FabricLoader.getInstance().getGameDir().resolve("mods").resolve("ModManager");
         p.toFile().mkdirs();
         return p;
     }

@@ -111,7 +111,7 @@ public class ModManagerInstallScreen extends Screen implements ModListScreen {
         if (this.modList.isMouseOver(mouseX, mouseY)) {
             return this.modList.mouseScrolled(mouseX, mouseY, amount);
         }
-        return false;
+        return this.details.mouseScrolled(mouseX, mouseY, amount);
     }
 
     @Override

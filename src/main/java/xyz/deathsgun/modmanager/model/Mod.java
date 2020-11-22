@@ -18,10 +18,7 @@
 
 package xyz.deathsgun.modmanager.model;
 
-import xyz.deathsgun.hermes.api.NotNull;
-import xyz.deathsgun.hermes.api.PrimaryKey;
-import xyz.deathsgun.hermes.api.Table;
-import xyz.deathsgun.hermes.api.Type;
+import xyz.deathsgun.hermes.api.*;
 
 import java.util.List;
 
@@ -54,6 +51,7 @@ public class Mod {
     @NotNull
     @Type("varchar(255)")
     public String icon;
+    @LinkedTable(Artifact.class)
     public List<Artifact> artifacts;
     @Type("varchar(255)")
     public String[] contributors = new String[]{};
