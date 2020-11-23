@@ -34,7 +34,7 @@ public class SQLiteDatabase implements IDatabase {
     private final Connection connection;
 
     public SQLiteDatabase() throws SQLException {
-        String database = ModManagerClient.getCharonDir()
+        String database = ModManagerClient.getModMenuDir()
                 .resolve("modmanager.sqlite").toFile().getAbsolutePath();
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + database);
         SQLite.createTable(connection, Mod.class);

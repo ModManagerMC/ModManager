@@ -53,7 +53,7 @@ public class LocalStorage implements ILocalStorage {
     @Override
     public Path getIcon(Mod mod, UpdateCallback callback) {
         Path iconFile = FabricLoader.getInstance().getGameDir()
-                .resolve("mods").resolve("Charon").resolve("icons");
+                .resolve("mods").resolve("ModManager").resolve("icons");
         try {
             Files.createDirectories(iconFile);
         } catch (IOException e) {
