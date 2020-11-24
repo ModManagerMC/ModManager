@@ -29,6 +29,8 @@ public interface ILocalStorage {
 
     boolean isModInstalled(String id);
 
+    String getModVersion(String id);
+
     void markModUninstalled(String id);
 
     void addInstalledMod(Mod mod, Artifact artifact);
@@ -36,4 +38,6 @@ public interface ILocalStorage {
     Path getIcon(Mod mod, UpdateCallback callback);
 
     void addInstalledMod(ModContainer container);
+
+    boolean isNewerVersionInstalled(String id, String version);
 }

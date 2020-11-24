@@ -25,6 +25,7 @@
 package xyz.deathsgun.modmanager.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.vdurmont.semver4j.Semver;
 import io.github.prospector.modmenu.util.BadgeType;
 import io.github.prospector.modmenu.util.RenderUtils;
 import net.fabricmc.loader.api.FabricLoader;
@@ -68,14 +69,17 @@ public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEnt
     private boolean outdated;
     private boolean installed;
     private boolean loaded;
+    boolean updated;
 
     public ModListEntry(Mod mod, ModListWidget list) {
         this.mod = mod;
         this.list = list;
         this.client = MinecraftClient.getInstance();
-        this.outdated = ModManagerClient.getService().isModOutdated(mod);
         this.installed = ModManagerClient.getService().isModInstalled(mod);
         this.loaded = this.installed && !FabricLoader.getInstance().isModLoaded(mod.id);
+        this.updated = this.loaded && ModManagerClient.getService().getLocalStorage()
+                .isNewerVersionInstalled(mod.id, mod.version);
+        this.outdated = !this.updated && ModManagerClient.getService().isModOutdated(mod);
     }
 
     @Override
@@ -103,6 +107,9 @@ public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEnt
                     x + 32 + 3 + font.getWidth(name) + 2, y, x + rowWidth, matrices, mouseX, mouseY);
         } else if (loaded) {
             BadgeUtil.drawBadge(BadgeType.MINECRAFT, new TranslatableText("modmanager.badge.notLoaded"),
+                    x + 32 + 3 + font.getWidth(name) + 2, y, x + rowWidth, matrices, mouseX, mouseY);
+        } else if (updated) {
+            BadgeUtil.drawBadge(BadgeType.MINECRAFT, new TranslatableText("modmanager.badge.updated"),
                     x + 32 + 3 + font.getWidth(name) + 2, y, x + rowWidth, matrices, mouseX, mouseY);
         } else if (installed) {
             BadgeUtil.drawBadge(BadgeType.CLIENTSIDE, new TranslatableText("modmanager.badge.installed"),
@@ -159,9 +166,11 @@ public class ModListEntry extends AlwaysSelectedEntryListWidget.Entry<ModListEnt
 
     @Override
     public void onFinished(Mod mod, ProcessingType type) {
-        this.outdated = ModManagerClient.getService().isModOutdated(mod);
         this.installed = ModManagerClient.getService().isModInstalled(mod);
         this.loaded = this.installed && !FabricLoader.getInstance().isModLoaded(mod.id);
+        this.updated = this.installed && new Semver(ModManagerClient.getService()
+                .getLocalStorage().getModVersion(mod.id), Semver.SemverType.LOOSE).isGreaterThan(mod.version);
+        this.outdated = !this.updated && ModManagerClient.getService().isModOutdated(mod);
     }
 
     @Override

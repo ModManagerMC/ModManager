@@ -58,7 +58,7 @@ public abstract class ModListEntryMixin extends AlwaysSelectedEntryListWidget.En
                          boolean isSelected, float delta, CallbackInfo ci) {
         if (outdated) {
             TextRenderer font = this.client.textRenderer;
-            BadgeUtil.drawBadge(BadgeType.DEPRECATED, new TranslatableText("modmenu.badge.outdated"),
+            BadgeUtil.drawBadge(BadgeType.DEPRECATED, new TranslatableText("modmanager.badge.outdated"),
                     BadgeUtil.calculateStartPos(getMetadata().getId(), x + 32 + 3 + font.getWidth(getMetadata().getName()) + 2), y,
                     x + rowWidth, matrices, mouseX, mouseY);
         }

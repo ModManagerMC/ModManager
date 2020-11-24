@@ -89,10 +89,13 @@ public class ModManagerService {
         Mod dbMod = this.database.getModById(id);
         if (dbMod == null)
             return false;
-        return getLatestCompatibleVersion(dbMod, version) != null;
+        if (getLocalStorage().isNewerVersionInstalled(id, version)) {
+            return false;
+        }
+        return getLatestCompatibleVersion(dbMod, version, false) != null;
     }
 
-    public Artifact getLatestCompatibleVersion(Mod mod, String version) {
+    public Artifact getLatestCompatibleVersion(Mod mod, String version, boolean loose) {
         version = version.replaceAll("\\+build", "");
         SemanticVersionImpl minecraft;
         try {
@@ -109,27 +112,32 @@ public class ModManagerService {
                 continue;
             try {
                 Predicate<SemanticVersionImpl> compatibility = SemanticVersionPredicateParser.create((String) artifact.compatibility);
-                if (compatibility.test(minecraft)) {
-                    Semver ver = new Semver(artifact.version.replaceAll("\\+build", ""), Semver.SemverType.LOOSE);
-                    if (latest == null && ver.isGreaterThan(version)) {
-                        latest = ver;
-                        latestArtifact = artifact;
-                    } else if (latest != null && ver.isGreaterThan(latest)) {
-                        latest = ver;
-                        latestArtifact = artifact;
-                    }
+                if (!compatibility.test(minecraft) && !loose) {
+                    continue;
                 }
-            } catch (VersionParsingException e) {
+                String artifactVersion = artifact.version.replaceAll("\\+build", "");
+                if (artifactVersion.equalsIgnoreCase("unspecified")) {
+                    continue;
+                }
+                Semver ver = new Semver(artifactVersion, Semver.SemverType.LOOSE);
+                if (latest == null && ver.isGreaterThan(version)) {
+                    latest = ver;
+                    latestArtifact = artifact;
+                } else if (latest != null && ver.isGreaterThan(latest)) {
+                    latest = ver;
+                    latestArtifact = artifact;
+                }
+            } catch (Exception e) {
                 logger.warn(e.getMessage());
             }
         }
         return latestArtifact;
     }
 
-    public void installMod(ModManagerActionCallback callback, @NotNull Mod mod) {
+    public void installMod(ModManagerActionCallback callback, @NotNull Mod mod, boolean force) {
         logger.info("Installing {}", mod.id);
         processes.put(mod.id, ProcessingType.INSTALL);
-        new InstallThread(this, callback, mod);
+        new InstallThread(this, callback, mod, force);
     }
 
     public ProcessingType getProcessTypes(@NotNull Mod mod) {

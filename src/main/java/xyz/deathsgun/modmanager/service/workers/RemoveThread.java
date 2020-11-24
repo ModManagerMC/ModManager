@@ -42,10 +42,11 @@ public class RemoveThread extends Thread {
     public void run() {
         try {
             ModUtils.deleteMod(mod);
+            service.getLocalStorage().markModUninstalled(mod.id);
         } catch (Exception e) {
+            service.setProcessErrored(mod, e);
             e.printStackTrace();
         }
-        service.getLocalStorage().markModUninstalled(mod.id);
         service.removeProcess(mod);
         callback.onFinished(mod, ProcessingType.REMOVE);
     }

@@ -47,9 +47,9 @@ public class ModManagerErrorScreen extends Screen {
         this.description.setLeftPos((int) (this.width * 0.1));
         this.addButton(new ButtonWidget(this.width / 2 - 154, this.height - 28, 150, 20,
                 ScreenTexts.CANCEL, button -> this.onClose()));
-        this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 28, 150, 20, new TranslatableText("modmanager.retry"),
+        this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 28, 150, 20, new TranslatableText("modmanager.force"),
                 button -> {
-                    parent.getService().installMod(this.parent.details, mod);
+                    parent.getService().installMod(this.parent.details, mod, true);
                     this.onClose();
                 }));
     }

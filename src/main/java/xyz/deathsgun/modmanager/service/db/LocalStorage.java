@@ -18,8 +18,10 @@
 
 package xyz.deathsgun.modmanager.service.db;
 
+import com.vdurmont.semver4j.Semver;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import org.apache.logging.log4j.LogManager;
 import xyz.deathsgun.modmanager.model.Artifact;
 import xyz.deathsgun.modmanager.model.Mod;
 import xyz.deathsgun.modmanager.utils.UpdateCallback;
@@ -38,6 +40,11 @@ public class LocalStorage implements ILocalStorage {
     @Override
     public boolean isModInstalled(String id) {
         return mods.containsKey(id);
+    }
+
+    @Override
+    public String getModVersion(String id) {
+        return mods.get(id);
     }
 
     @Override
@@ -77,5 +84,19 @@ public class LocalStorage implements ILocalStorage {
     @Override
     public void addInstalledMod(ModContainer container) {
         mods.put(container.getMetadata().getId(), container.getMetadata().getVersion().getFriendlyString());
+    }
+
+    @Override
+    public boolean isNewerVersionInstalled(String id, String version) {
+        String installedVersion = getModVersion(id);
+        if (installedVersion == null)
+            return false;
+        try {
+            Semver semver = new Semver(installedVersion);
+            return semver.isGreaterThan(version);
+        } catch (Exception e) {
+            LogManager.getLogger().error(e);
+            return false;
+        }
     }
 }

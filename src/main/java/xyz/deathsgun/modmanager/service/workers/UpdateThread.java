@@ -18,11 +18,18 @@
 
 package xyz.deathsgun.modmanager.service.workers;
 
+import net.fabricmc.loader.api.FabricLoader;
+import xyz.deathsgun.modmanager.model.Artifact;
 import xyz.deathsgun.modmanager.model.Mod;
 import xyz.deathsgun.modmanager.service.ModManagerActionCallback;
 import xyz.deathsgun.modmanager.service.ModManagerService;
 import xyz.deathsgun.modmanager.service.ProcessingType;
 import xyz.deathsgun.modmanager.utils.ModUtils;
+
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class UpdateThread extends Thread {
 
@@ -38,12 +45,25 @@ public class UpdateThread extends Thread {
         start();
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public void run() {
-        ModUtils.deleteMod(mod); // TODO Error handling
-        // TODO Install new mod
+        try {
+            ModUtils.deleteMod(mod);
+            Artifact artifact = service.getLatestCompatibleVersion(mod, "0.0.0", false);
+            if (artifact == null) {
+                throw new Exception("Mod is not compatible with this minecraft version");
+            }
+            URL url = new URL(artifact.url);
+            Path file = FabricLoader.getInstance().getGameDir()
+                    .resolve("mods").resolve(mod.id + "-" + artifact.version + ".jar");
+            Files.copy(url.openStream(), file, StandardCopyOption.REPLACE_EXISTING);
+            service.getLocalStorage().addInstalledMod(mod, artifact);
+            service.removeProcess(mod);
+        } catch (Exception e) {
+            service.setProcessErrored(mod, e);
+        }
         service.removeProcess(mod);
-        callback.onFinished(mod, ProcessingType.REMOVE);
-        // TODO Give user notice to restart minecraft
+        callback.onFinished(mod, ProcessingType.UPDATE);
     }
 }

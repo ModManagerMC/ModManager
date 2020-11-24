@@ -31,6 +31,7 @@ import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Language;
+import xyz.deathsgun.modmanager.ModManagerClient;
 import xyz.deathsgun.modmanager.model.Mod;
 import xyz.deathsgun.modmanager.service.ModManagerActionCallback;
 import xyz.deathsgun.modmanager.service.ProcessingType;
@@ -105,7 +106,7 @@ public class DetailWidget extends DrawableHelper implements ModManagerActionCall
     private void install() {
         this.actionButton.active = false;
         this.actionButton.setMessage(new TranslatableText("modmanager.installing"));
-        this.parent.getService().installMod(this, this.selectedEntry.mod);
+        this.parent.getService().installMod(this, this.selectedEntry.mod, false);
     }
 
     public void updateEntry() {
@@ -178,7 +179,11 @@ public class DetailWidget extends DrawableHelper implements ModManagerActionCall
         }
 
         textRenderer.draw(matrices, Language.getInstance().reorder(trimmedName), rightPaneX + imageOffset, this.paneY + 1, 0xFFFFFF);
-        textRenderer.draw(matrices, "v" + selectedEntry.mod.version, rightPaneX + imageOffset, this.paneY + 2 + lineSpacing, 8421504);
+        String version = selectedEntry.mod.version;
+        if (selectedEntry.updated) {
+            version = ModManagerClient.getService().getLocalStorage().getModVersion(selectedEntry.mod.id);
+        }
+        textRenderer.draw(matrices, "v" + version, rightPaneX + imageOffset, this.paneY + 2 + lineSpacing, 8421504);
 
         List<String> names = Arrays.asList(selectedEntry.mod.authors);
         if (!names.isEmpty()) {

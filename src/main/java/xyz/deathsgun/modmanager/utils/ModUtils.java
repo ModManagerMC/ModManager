@@ -31,22 +31,17 @@ import java.util.zip.ZipEntry;
 
 public class ModUtils {
 
-    public static void deleteMod(Mod mod) {
+    public static void deleteMod(Mod mod) throws IOException {
         File[] mods = new File(FabricLoader.getInstance().getGameDir().toFile(),
                 "mods").listFiles((dir, name) -> name.endsWith(".jar"));
         for (File modFile : mods) {
-            try {
-                JarFile jar = new JarFile(modFile);
-                ZipEntry fabricMeta = jar.getEntry("fabric.mod.json");
-                ModMeta modInfo = new Gson().fromJson(new InputStreamReader(jar.getInputStream(fabricMeta)), ModMeta.class);
-                jar.close();
-                if (modInfo.id.equals(mod.id)) {
-                    Files.delete(modFile.toPath());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            JarFile jar = new JarFile(modFile);
+            ZipEntry fabricMeta = jar.getEntry("fabric.mod.json");
+            ModMeta modInfo = new Gson().fromJson(new InputStreamReader(jar.getInputStream(fabricMeta)), ModMeta.class);
+            jar.close();
+            if (modInfo.id.equals(mod.id)) {
+                Files.delete(modFile.toPath());
             }
-
         }
     }
 

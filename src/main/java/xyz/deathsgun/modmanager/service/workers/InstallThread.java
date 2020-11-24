@@ -38,18 +38,20 @@ public class InstallThread extends Thread {
     private final ModManagerService service;
     private final Mod mod;
     private final ModManagerActionCallback callback;
+    private final boolean force;
 
-    public InstallThread(ModManagerService service, ModManagerActionCallback callback, Mod mod) {
+    public InstallThread(ModManagerService service, ModManagerActionCallback callback, Mod mod, boolean force) {
         this.service = service;
         this.callback = callback;
         this.mod = mod;
+        this.force = force;
         this.setName("Installing " + mod.name);
         start();
     }
 
     @Override
     public void run() {
-        Artifact artifact = service.getLatestCompatibleVersion(mod, "0.0.0");
+        Artifact artifact = service.getLatestCompatibleVersion(mod, "0.0.0", force);
         try {
             if (artifact == null) {
                 throw new Exception("Mod is not compatible with this minecraft version");
