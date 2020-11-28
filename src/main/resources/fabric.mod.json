@@ -18,8 +18,8 @@
 	"client": [
 	  "xyz.deathsgun.modmanager.ModManagerClient"
 	],
-	"modmenu": [
-	  "xyz.deathsgun.modmanager.ModManagerClient"
+	"_comment": [
+	  "TODO: Add config screen"
 	]
   },
   "mixins": [

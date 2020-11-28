@@ -26,7 +26,7 @@ public interface ModListScreen {
 
     void updateScrollPercent(double amount);
 
-    Element getFocused();
+    boolean isFocused(Element element);
 
     void updateSelectedEntry(ModListEntry selected);
 

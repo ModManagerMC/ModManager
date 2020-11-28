@@ -68,7 +68,7 @@ public class ModListWidget extends AlwaysSelectedEntryListWidget<ModListEntry> i
 
     @Override
     protected boolean isFocused() {
-        return parent.getFocused() == this;
+        return parent.isFocused(this);
     }
 
     public void select(ModListEntry entry) {

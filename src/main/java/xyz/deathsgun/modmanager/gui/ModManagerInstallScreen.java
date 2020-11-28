@@ -25,6 +25,7 @@
 package xyz.deathsgun.modmanager.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
@@ -75,7 +76,7 @@ public class ModManagerInstallScreen extends Screen implements ModListScreen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        renderBackground(matrices);
+        renderBackgroundTexture(0);
         this.modList.render(matrices, mouseX, mouseY, delta);
         if (selectedEntry != null) {
             this.details.render(matrices, mouseX, mouseY, delta);
@@ -117,6 +118,11 @@ public class ModManagerInstallScreen extends Screen implements ModListScreen {
     @Override
     public void updateScrollPercent(double amount) {
         this.scrollPercent = amount;
+    }
+
+    @Override
+    public boolean isFocused(Element element) {
+        return getFocused() == element;
     }
 
     @Override
