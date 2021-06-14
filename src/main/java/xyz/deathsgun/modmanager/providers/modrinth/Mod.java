@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-pluginManagement {
-    repositories {
-        maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
-        }
-        gradlePluginPortal()
+package xyz.deathsgun.modmanager.providers.modrinth;
+
+import com.google.gson.annotations.SerializedName;
+import xyz.deathsgun.modmanager.api.mod.DetailedMod;
+
+import java.util.List;
+
+public record Mod(
+        String id,
+        String title,
+        String description,
+        String body,
+        @SerializedName("icon_url")
+        String iconUrl,
+        List<String> versions
+) {
+    public DetailedMod toDetailedMod() {
+        return new DetailedMod(title, body);
     }
 }

@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-pluginManagement {
-    repositories {
-        maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
-        }
-        gradlePluginPortal()
-    }
+package xyz.deathsgun.modmanager.providers.modrinth;
+
+import com.google.gson.annotations.SerializedName;
+
+public record Version(
+        @SerializedName("mod_id")
+        String id,
+        @SerializedName("version_number")
+        String version
+) {
 }

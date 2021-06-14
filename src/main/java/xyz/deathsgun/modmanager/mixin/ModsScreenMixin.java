@@ -1,24 +1,22 @@
 /*
- * Copyright (C) 2020 DeathsGun
- * deathsgun@protonmail.com
+ * Copyright 2021 DeathsGun
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package xyz.deathsgun.modmanager.mixin;
 
-import io.github.prospector.modmenu.gui.ModsScreen;
+import com.terraformersmc.modmenu.gui.ModsScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -28,8 +26,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import xyz.deathsgun.modmanager.gui.ModManagerInstallScreen;
-import xyz.deathsgun.modmanager.gui.ModManagerTexturedButtonWidget;
+import xyz.deathsgun.modmanager.gui.ModsOverviewScreen;
+import xyz.deathsgun.modmanager.gui.widget.ModManagerTexturedButtonWidget;
+
+import java.util.Objects;
 
 @Mixin(ModsScreen.class)
 public class ModsScreenMixin extends Screen {
@@ -45,10 +45,10 @@ public class ModsScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     public void onInit(CallbackInfo ci) {
         int searchBoxWidth = this.paneWidth - 32 - 22;
-        this.addButton(new ModManagerTexturedButtonWidget(this.paneWidth / 2 + searchBoxWidth / 2 + 14,
+        this.addDrawableChild(new ModManagerTexturedButtonWidget(this.paneWidth / 2 + searchBoxWidth / 2 + 14,
                 22, 20, 20, 0, 0, MODMANAGER_BUTTON_LOCATION, 32, 64, button -> {
-            this.client.openScreen(new ModManagerInstallScreen(this));
-        }, new TranslatableText("modmanager.open")));
+            Objects.requireNonNull(this.client).openScreen(new ModsOverviewScreen(this));
+        }, new TranslatableText("modmanager.button.open")));
     }
 
 }
