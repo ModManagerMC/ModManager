@@ -21,6 +21,7 @@ import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SearchResponse {
 
@@ -33,7 +34,8 @@ public class SearchResponse {
     public ArrayList<SummarizedMod> toSummarizedMods() {
         ArrayList<SummarizedMod> result = new ArrayList<>();
         for (ModResult modResult : hits) {
-            result.add(new SummarizedMod(modResult.getModId(), modResult.getTitle(), modResult.getVersions(), modResult.getDescription(), modResult.getIconUrl()));
+            String slug = modResult.getSlug().toLowerCase(Locale.ROOT).replaceAll(" ", "");
+            result.add(new SummarizedMod(modResult.getModId(), slug, modResult.getTitle(), modResult.getVersions(), modResult.getDescription(), modResult.getIconUrl()));
         }
         return result;
     }

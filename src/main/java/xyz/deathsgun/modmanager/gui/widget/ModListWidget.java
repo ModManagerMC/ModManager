@@ -47,6 +47,7 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     }
 
     public void setCategory(Category category) {
+        setScrollAmount(0.0 * Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4)));
         if (this.category != null && Objects.equals(this.category.id(), category.id())) {
             return;
         }
@@ -82,12 +83,15 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     @Override
     protected boolean removeEntry(ModListEntry entry) {
         mods.remove(entry.getMod());
+        entry.close();
         return super.removeEntry(entry);
     }
 
     @Override
     protected ModListEntry remove(int index) {
-        mods.remove(getEntry(index).getMod());
+        ModListEntry entry = getEntry(index);
+        mods.remove(entry.getMod());
+        entry.close();
         return super.remove(index);
     }
 }

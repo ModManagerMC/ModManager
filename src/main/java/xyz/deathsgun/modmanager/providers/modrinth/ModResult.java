@@ -23,6 +23,7 @@ import java.util.List;
 public class ModResult {
     @SerializedName("mod_id")
     private String modId;
+    private String slug;
     private String title;
     private String description;
     private List<String> versions;
@@ -47,5 +48,9 @@ public class ModResult {
 
     public String getIconUrl() {
         return iconUrl;
+    }
+
+    public String getSlug() {
+        return slug;
     }
 }

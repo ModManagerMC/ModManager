@@ -114,7 +114,7 @@ public class Modrinth implements IModProvider {
         uriBuilder.addParameter("version", String.format("versions=%s", MinecraftClient.getInstance().getGame().getVersion().getReleaseTarget()));
         uriBuilder.addParameter("offset", String.valueOf(page * limit));
         uriBuilder.addParameter("limit", String.valueOf(limit));
-        logger.info("Using {} for query", uriBuilder.toString());
+        logger.debug("Using {} for query", uriBuilder.toString());
         HttpRequest request = HttpRequest.newBuilder().GET().uri(uriBuilder.build()).build();
         HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {

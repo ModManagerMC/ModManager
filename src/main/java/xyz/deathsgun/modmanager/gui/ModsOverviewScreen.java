@@ -52,7 +52,7 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         rightPaneX = this.paneWidth + 10;
         this.categoryListWidget = this.addSelectableChild(new CategoryListWidget(this.client, paneWidth, this.height, 30, this.height - 10, 14, this));
         this.categoryListWidget.setLeftPos(0);
-        this.modList = this.addSelectableChild(new ModListWidget(this.client, this.width - paneWidth - 20, this.height, 30, this.height - 10, 23, this));
+        this.modList = this.addSelectableChild(new ModListWidget(this.client, this.width - paneWidth - 20, this.height, 30, this.height - 10, 36, this));
         this.modList.setLeftPos(this.rightPaneX);
         this.categoryListWidget.init();
         this.modList.init();

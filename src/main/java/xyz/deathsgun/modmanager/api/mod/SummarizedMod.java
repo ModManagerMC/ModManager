@@ -16,29 +16,37 @@
 
 package xyz.deathsgun.modmanager.api.mod;
 
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A short representation for Mods used to
  */
 public record SummarizedMod(
         String id,
+        String slug,
         String name,
         List<String> latest,
         String description,
         String icon
 ) {
-//    public CompletableFuture<NativeImageBackedTexture> getIcon() {
-//        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(icon)).build();
-//        HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofInputStream()).thenCompose(response -> {
-//            try {
-//                NativeImage image = NativeImage.read(response.body());
-//                NativeImageBackedTexture icon = new NativeImageBackedTexture(image);
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        return null;
-//    }
+    public CompletableFuture<NativeImageBackedTexture> getIcon() {
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(icon)).build();
+        return HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofInputStream()).thenCompose(response -> {
+            try {
+                NativeImage image = NativeImage.read(response.body());
+                NativeImageBackedTexture icon = new NativeImageBackedTexture(image);
+                return CompletableFuture.completedFuture(icon);
+            } catch (Exception e) {
+                return CompletableFuture.failedFuture(e);
+            }
+        });
+    }
 }
