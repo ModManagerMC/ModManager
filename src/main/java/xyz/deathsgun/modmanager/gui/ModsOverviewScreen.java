@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.deathsgun.modmanager.gui.widget.CategoryListEntry;
 import xyz.deathsgun.modmanager.gui.widget.CategoryListWidget;
+import xyz.deathsgun.modmanager.gui.widget.ModListEntry;
 import xyz.deathsgun.modmanager.gui.widget.ModListWidget;
 import xyz.deathsgun.modmanager.gui.widget.better.IListScreen;
 
@@ -34,7 +35,8 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Screen previousScreen;
-    private ModListWidget modList;
+    private ModListWidget modListWidget;
+    private ModListEntry selectedMod;
     private CategoryListWidget categoryListWidget;
     private CategoryListEntry selectedCategory;
     private int paneWidth;
@@ -52,10 +54,10 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         rightPaneX = this.paneWidth + 10;
         this.categoryListWidget = this.addSelectableChild(new CategoryListWidget(this.client, paneWidth, this.height, 30, this.height - 10, 14, this));
         this.categoryListWidget.setLeftPos(0);
-        this.modList = this.addSelectableChild(new ModListWidget(this.client, this.width - paneWidth - 20, this.height, 30, this.height - 10, 36, this));
-        this.modList.setLeftPos(this.rightPaneX);
+        this.modListWidget = this.addSelectableChild(new ModListWidget(this.client, this.width - paneWidth - 20, this.height, 30, this.height - 10, 36, this));
+        this.modListWidget.setLeftPos(this.rightPaneX);
         this.categoryListWidget.init();
-        this.modList.init();
+        this.modListWidget.init();
     }
 
     @Override
@@ -64,7 +66,7 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         TextRenderer font = Objects.requireNonNull(client).textRenderer;
         font.draw(matrices, new TranslatableText("modmanager.categories"), 5, 29 - font.fontHeight, 0xFFFFFF);
         this.categoryListWidget.render(matrices, mouseX, mouseY, delta);
-        this.modList.render(matrices, mouseX, mouseY, delta);
+        this.modListWidget.render(matrices, mouseX, mouseY, delta);
         super.render(matrices, mouseX, mouseY, delta);
     }
 
@@ -84,7 +86,16 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         if (widget == this.categoryListWidget) {
             if (entry != null) {
                 this.selectedCategory = (CategoryListEntry) entry;
-                this.modList.setCategory(selectedCategory.getCategory());
+                this.modListWidget.setCategory(selectedCategory.getCategory());
+            }
+        }
+        if (widget == this.modListWidget) {
+            if (entry != null) {
+                if (this.selectedMod == entry) {
+                    Objects.requireNonNull(this.client).openScreen(new ModDetailScreen(this, ((ModListEntry) entry).getMod()));
+                    return;
+                }
+                this.selectedMod = (ModListEntry) entry;
             }
         }
     }
