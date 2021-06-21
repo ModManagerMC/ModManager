@@ -60,6 +60,7 @@ public class IconDownloader extends Thread {
                     downloadIcon(mod);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    errored.add(mod.id());
                 }
             }
         }
@@ -111,5 +112,14 @@ public class IconDownloader extends Thread {
         this.mods.remove(mod.id());
         Identifier identifier = this.images.remove(mod.id());
         MinecraftClient.getInstance().getTextureManager().destroyTexture(identifier);
+    }
+
+    public void destroyIcons() {
+        if (mods.isEmpty()) {
+            return;
+        }
+        for (SummarizedMod mod : new ArrayList<>(mods.values())) {
+            this.destroyIcon(mod);
+        }
     }
 }

@@ -86,7 +86,6 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     @Override
     protected boolean removeEntry(ModListEntry entry) {
         mods.remove(entry.getMod());
-        iconDownloader.destroyIcon(entry.getMod());
         return super.removeEntry(entry);
     }
 
@@ -94,12 +93,23 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     protected ModListEntry remove(int index) {
         ModListEntry entry = getEntry(index);
         mods.remove(entry.getMod());
-        iconDownloader.destroyIcon(entry.getMod());
         return super.remove(index);
     }
 
     public void showNextPage() {
         this.page++;
         this.setCategory(category, true);
+    }
+
+    public void showPreviousPage() {
+        this.page--;
+        if (this.page < 0) {
+            page = 0;
+        }
+        this.setCategory(category, true);
+    }
+
+    public void close() {
+        this.iconDownloader.destroyIcons();
     }
 }

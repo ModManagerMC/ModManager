@@ -59,9 +59,9 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         this.categoryListWidget.init();
         this.modListWidget.init();
         this.addDrawableChild(new ButtonWidget(rightPaneX, this.height - 30, modListWidth / 2 - 10, 20,
-                new TranslatableText("modmanager.page.next"), button -> {
-            this.modListWidget.showNextPage();
-        }));
+                new TranslatableText("modmanager.page.previous"), button -> this.modListWidget.showPreviousPage()));
+        this.addDrawableChild(new ButtonWidget(rightPaneX + modListWidth / 2, this.height - 30, modListWidth / 2, 20,
+                new TranslatableText("modmanager.page.next"), button -> this.modListWidget.showNextPage()));
     }
 
     @Override
@@ -81,6 +81,7 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
     @Override
     public void onClose() {
         super.onClose();
+        this.modListWidget.close();
         Objects.requireNonNull(this.client).openScreen(this.previousScreen);
     }
 
