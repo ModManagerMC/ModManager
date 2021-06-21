@@ -21,6 +21,7 @@ import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
+import xyz.deathsgun.modmanager.downloader.IconDownloader;
 import xyz.deathsgun.modmanager.gui.ModsOverviewScreen;
 import xyz.deathsgun.modmanager.gui.widget.better.BetterListWidget;
 
@@ -30,15 +31,14 @@ import java.util.Optional;
 
 public class ModListWidget extends BetterListWidget<ModListEntry> {
 
-    private final ModsOverviewScreen parentScreen;
     private final int limit = 20;
+    private final IconDownloader iconDownloader = new IconDownloader();
     private final ArrayList<SummarizedMod> mods = new ArrayList<>();
-    private final int page = 0;
+    private int page = 0;
     private Category category;
 
     public ModListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight, ModsOverviewScreen parentScreen) {
         super(client, width, height, top, bottom, itemHeight, parentScreen);
-        this.parentScreen = parentScreen;
         setScrollAmount(0.0 * Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4)));
     }
 
@@ -46,13 +46,16 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     public void init() {
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(Category category, boolean force) {
         setScrollAmount(0.0 * Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4)));
-        if (this.category != null && Objects.equals(this.category.id(), category.id())) {
+        if (this.category != null && Objects.equals(this.category.id(), category.id()) && !force) {
             return;
         }
         this.category = category;
         this.mods.clear();
+        for (int i = 0; i < this.getEntryCount(); i++) {
+            this.remove(i);
+        }
         this.clearEntries();
         try {
             Optional<IModProvider> provider = ModManager.getModProvider();
@@ -60,7 +63,7 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
                 return;
             }
             IModProvider modProvider = provider.get();
-            modProvider.getMods(category, page, limit).forEach(mod -> this.addEntry(new ModListEntry(this, mod)));
+            modProvider.getMods(category, page, limit).forEach(mod -> this.addEntry(new ModListEntry(this, iconDownloader, mod)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,7 +86,7 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     @Override
     protected boolean removeEntry(ModListEntry entry) {
         mods.remove(entry.getMod());
-        entry.close();
+        iconDownloader.destroyIcon(entry.getMod());
         return super.removeEntry(entry);
     }
 
@@ -91,7 +94,12 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     protected ModListEntry remove(int index) {
         ModListEntry entry = getEntry(index);
         mods.remove(entry.getMod());
-        entry.close();
+        iconDownloader.destroyIcon(entry.getMod());
         return super.remove(index);
+    }
+
+    public void showNextPage() {
+        this.page++;
+        this.setCategory(category, true);
     }
 }

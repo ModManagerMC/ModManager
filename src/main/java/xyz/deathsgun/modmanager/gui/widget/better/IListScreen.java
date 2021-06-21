@@ -19,6 +19,7 @@ package xyz.deathsgun.modmanager.gui.widget.better;
 import net.minecraft.client.gui.Element;
 
 public interface IListScreen {
+
     Element getFocused();
 
     <E> void updateSelectedEntry(Object widget, E entry);

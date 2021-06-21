@@ -1,4 +1,7 @@
 {
+  "modmanager.title": "Mod's overview",
+  "modmanager.page.next": "Next page",
+  "modmanager.page.previous": "Previous page",
   "modmanager.categories": "Categories",
   "modmanager.category.technology": "Technology",
   "modmanager.category.adventure": "Adventure",

@@ -18,6 +18,7 @@ package xyz.deathsgun.modmanager.gui;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import org.apache.logging.log4j.LogManager;
@@ -31,8 +32,6 @@ import xyz.deathsgun.modmanager.gui.widget.better.IListScreen;
 import java.util.Objects;
 
 public class ModsOverviewScreen extends Screen implements IListScreen {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Screen previousScreen;
     private ModListWidget modListWidget;
@@ -54,10 +53,15 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         rightPaneX = this.paneWidth + 10;
         this.categoryListWidget = this.addSelectableChild(new CategoryListWidget(this.client, paneWidth, this.height, 30, this.height - 10, 14, this));
         this.categoryListWidget.setLeftPos(0);
-        this.modListWidget = this.addSelectableChild(new ModListWidget(this.client, this.width - paneWidth - 20, this.height, 30, this.height - 10, 36, this));
-        this.modListWidget.setLeftPos(this.rightPaneX);
+        int modListWidth = this.width - paneWidth - 20;
+        this.modListWidget = this.addSelectableChild(new ModListWidget(this.client, modListWidth, this.height, 30, this.height - 40, 36, this));
+        this.modListWidget.setLeftPos(rightPaneX);
         this.categoryListWidget.init();
         this.modListWidget.init();
+        this.addDrawableChild(new ButtonWidget(rightPaneX, this.height - 30, modListWidth / 2 - 10, 20,
+                new TranslatableText("modmanager.page.next"), button -> {
+            this.modListWidget.showNextPage();
+        }));
     }
 
     @Override
@@ -72,7 +76,6 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
 
     @Override
     public void tick() {
-        //this.searchBox.tick();
     }
 
     @Override
@@ -86,7 +89,7 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         if (widget == this.categoryListWidget) {
             if (entry != null) {
                 this.selectedCategory = (CategoryListEntry) entry;
-                this.modListWidget.setCategory(selectedCategory.getCategory());
+                this.modListWidget.setCategory(selectedCategory.getCategory(), false);
             }
         }
         if (widget == this.modListWidget) {

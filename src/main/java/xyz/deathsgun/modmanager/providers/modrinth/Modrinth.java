@@ -37,12 +37,13 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Modrinth implements IModProvider {
 
     private final Logger logger = LogManager.getLogger("Modrinth");
     private final ArrayList<Category> categories = new ArrayList<>();
-    private final HashMap<String, ArrayList<SummarizedMod>> cachedCategoryRequests = new HashMap<>();
+    private final HashMap<String, List<SummarizedMod>> cachedCategoryRequests = new HashMap<>();
     private final Gson gson = new Gson();
     private final String baseUrl = "https://api.modrinth.com";
     private final HttpClient http;
@@ -95,7 +96,7 @@ public class Modrinth implements IModProvider {
         }
         URIBuilder uriBuilder = new URIBuilder(this.baseUrl + "/api/v1/mod");
         uriBuilder.addParameter("filters", String.format("categories=\"fabric\" AND categories=\"%s\"", category.id()));
-        ArrayList<SummarizedMod> mods = getSummarizedMods(page, limit, uriBuilder);
+        List<SummarizedMod> mods = getSummarizedMods(page, limit, uriBuilder);
         this.cachedCategoryRequests.put(key, mods);
         return mods;
     }

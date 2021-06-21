@@ -21,7 +21,6 @@ import com.terraformersmc.modmenu.util.DrawingUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringVisitable;
@@ -30,22 +29,22 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.NotNull;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
+import xyz.deathsgun.modmanager.downloader.IconDownloader;
 import xyz.deathsgun.modmanager.gui.widget.better.BetterListWidget;
 
-public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry> implements AutoCloseable {
+public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry> {
 
     public static final Identifier UNKNOWN_ICON = new Identifier("textures/misc/unknown_pack.png");
     public static final Identifier LOADING_ICON = new Identifier("modmanager", "textures/gui/loading.png");
 
     private final SummarizedMod mod;
+    private final IconDownloader iconDownloader;
     private final MinecraftClient client = MinecraftClient.getInstance();
-    private NativeImageBackedTexture icon;
-    private boolean errored = false;
-    private Identifier iconLocation;
 
-    public ModListEntry(ModListWidget list, @NotNull SummarizedMod mod) {
+    public ModListEntry(ModListWidget list, IconDownloader iconDownloader, @NotNull SummarizedMod mod) {
         super(list, new LiteralText(mod.name()));
         this.mod = mod;
+        this.iconDownloader = iconDownloader;
     }
 
     @Override
@@ -75,38 +74,23 @@ public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry>
 
 
     private void bindIconTexture() {
-        if (errored) {
+        if (iconDownloader.isErrored(mod.id())) {
             RenderSystem.setShaderTexture(0, UNKNOWN_ICON);
             return;
         }
-        if (this.icon == null) {
-            iconLocation = LOADING_ICON;
-            mod.getIcon().whenComplete((image, throwable) -> {
-                if (image == null) {
-                    this.iconLocation = UNKNOWN_ICON;
-                    errored = true;
-                    return;
-                }
-                this.icon = image;
-            });
-        } else {
-            if (this.iconLocation == LOADING_ICON && icon != null) {
-                this.iconLocation = new Identifier("modmanager", mod.slug() + "_icon");
-                this.client.getTextureManager().registerTexture(this.iconLocation, this.icon);
+        Identifier icon = iconDownloader.getIcon(mod.id());
+        if (icon == null) {
+            if (iconDownloader.isLoading(mod.id())) {
+                icon = LOADING_ICON;
+            } else {
+                this.iconDownloader.addMod(mod);
+                return;
             }
         }
-        RenderSystem.setShaderTexture(0, this.iconLocation);
+        RenderSystem.setShaderTexture(0, icon);
     }
 
     public SummarizedMod getMod() {
         return mod;
-    }
-
-    @Override
-    public void close() {
-        if (this.iconLocation == UNKNOWN_ICON || this.iconLocation == LOADING_ICON) {
-            return;
-        }
-        this.client.getTextureManager().destroyTexture(this.iconLocation);
     }
 }
