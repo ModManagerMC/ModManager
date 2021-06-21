@@ -16,8 +16,18 @@
 
 package xyz.deathsgun.modmanager.api.mod;
 
+import java.util.List;
+
 public record DetailedMod(
         String name,
-        String description
+        String description,
+        String body,
+        String license,
+        int downloads,
+        List<String> categories,
+        String issuesUrl,
+        String sourceUrl,
+        String wikiUrl,
+        List<String> versions
 ) {
 }

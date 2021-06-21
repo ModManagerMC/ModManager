@@ -22,6 +22,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
+import xyz.deathsgun.modmanager.downloader.IconDownloader;
 import xyz.deathsgun.modmanager.providers.modrinth.Modrinth;
 
 import java.nio.file.Path;
@@ -33,6 +34,7 @@ public class ModManager implements ClientModInitializer, ModMenuApi {
 
     private static final String currentProvider = "Modrinth";
     private static final ArrayList<IModProvider> modProviders = new ArrayList<>();
+    private static final IconDownloader iconDownloader = new IconDownloader();
 
     public static Path getModMenuDir() {
         Path p = FabricLoader.getInstance().getGameDir().resolve("mods").resolve("ModManager");
@@ -42,6 +44,10 @@ public class ModManager implements ClientModInitializer, ModMenuApi {
 
     public static Optional<IModProvider> getModProvider() {
         return modProviders.stream().filter(iModProvider -> iModProvider.getName().equals(currentProvider)).findFirst();
+    }
+
+    public static IconDownloader getIconDownloader() {
+        return iconDownloader;
     }
 
     @Override

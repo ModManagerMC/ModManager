@@ -29,6 +29,8 @@ import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
 import xyz.deathsgun.modmanager.api.provider.Sorting;
+import xyz.deathsgun.modmanager.providers.modrinth.model.Mod;
+import xyz.deathsgun.modmanager.providers.modrinth.model.SearchResponse;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -37,7 +39,6 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Modrinth implements IModProvider {
 
@@ -102,7 +103,7 @@ public class Modrinth implements IModProvider {
     }
 
     @Override
-    public List<SummarizedMod> getMods(String query, int page, int limit) throws Exception {
+    public List<SummarizedMod> getMods(@NotNull String query, int page, int limit) throws Exception {
         logger.debug("Searching for '{}' in Modrinth", query);
         URIBuilder uriBuilder = new URIBuilder(this.baseUrl + "/api/v1/mod");
         uriBuilder.addParameter("query", query);
@@ -126,8 +127,9 @@ public class Modrinth implements IModProvider {
     }
 
     @Override
-    public DetailedMod getMod(String id) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(this.baseUrl + "")).build();
+    public DetailedMod getMod(@NotNull String id) throws Exception {
+        id = id.replaceFirst("local-", "");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(this.baseUrl + "/api/v1/mod/" + id)).build();
         HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
             throw new Exception(response.body());

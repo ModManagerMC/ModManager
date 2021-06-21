@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package xyz.deathsgun.modmanager.providers.modrinth;
+package xyz.deathsgun.modmanager.providers.modrinth.model;
 
 import com.google.gson.annotations.SerializedName;
 

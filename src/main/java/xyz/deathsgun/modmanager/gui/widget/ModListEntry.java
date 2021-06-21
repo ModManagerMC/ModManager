@@ -28,8 +28,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.NotNull;
+import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
-import xyz.deathsgun.modmanager.downloader.IconDownloader;
 import xyz.deathsgun.modmanager.gui.widget.better.BetterListWidget;
 
 public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry> {
@@ -38,13 +38,11 @@ public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry>
     public static final Identifier LOADING_ICON = new Identifier("modmanager", "textures/gui/loading.png");
 
     private final SummarizedMod mod;
-    private final IconDownloader iconDownloader;
     private final MinecraftClient client = MinecraftClient.getInstance();
 
-    public ModListEntry(ModListWidget list, IconDownloader iconDownloader, @NotNull SummarizedMod mod) {
+    public ModListEntry(ModListWidget list, @NotNull SummarizedMod mod) {
         super(list, new LiteralText(mod.name()));
         this.mod = mod;
-        this.iconDownloader = iconDownloader;
     }
 
     @Override
@@ -74,16 +72,16 @@ public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry>
 
 
     private void bindIconTexture() {
-        if (iconDownloader.isErrored(mod.id())) {
+        if (ModManager.getIconDownloader().isErrored(mod.id())) {
             RenderSystem.setShaderTexture(0, UNKNOWN_ICON);
             return;
         }
-        Identifier icon = iconDownloader.getIcon(mod.id());
+        Identifier icon = ModManager.getIconDownloader().getIcon(mod.id());
         if (icon == null) {
-            if (iconDownloader.isLoading(mod.id())) {
+            if (ModManager.getIconDownloader().isLoading(mod.id())) {
                 icon = LOADING_ICON;
             } else {
-                this.iconDownloader.addMod(mod);
+                ModManager.getIconDownloader().addMod(mod);
                 return;
             }
         }

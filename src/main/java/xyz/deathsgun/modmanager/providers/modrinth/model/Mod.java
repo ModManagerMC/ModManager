@@ -14,43 +14,32 @@
  * limitations under the License.
  */
 
-package xyz.deathsgun.modmanager.providers.modrinth;
+package xyz.deathsgun.modmanager.providers.modrinth.model;
 
 import com.google.gson.annotations.SerializedName;
+import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 
 import java.util.List;
 
-public class ModResult {
-    @SerializedName("mod_id")
-    private String modId;
+public class Mod {
+
+    private String id;
     private String slug;
     private String title;
     private String description;
+    private String body;
+    private License license;
+    private int downloads;
+    private List<String> categories;
+    @SerializedName("issues_url")
+    private String issuesUrl;
+    @SerializedName("source_url")
+    private String sourceUrl;
+    @SerializedName("wiki_url")
+    private String wikiUrl;
     private List<String> versions;
-    @SerializedName("icon_url")
-    private String iconUrl;
 
-    public String getModId() {
-        return modId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public List<String> getVersions() {
-        return versions;
-    }
-
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
-    public String getSlug() {
-        return slug;
+    public DetailedMod toDetailedMod() {
+        return new DetailedMod(title, description, body, license.name(), downloads, categories, issuesUrl, sourceUrl, wikiUrl, versions);
     }
 }

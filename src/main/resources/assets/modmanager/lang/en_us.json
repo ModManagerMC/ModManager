@@ -14,5 +14,6 @@
   "modmanager.category.storage": "Storage",
   "modmanager.category.food": "Food",
   "modmanager.category.equipment": "Equipment",
-  "modmanager.category.misc": "Miscellaneous"
+  "modmanager.category.misc": "Miscellaneous",
+  "modmanager.details.author": "By %s"
 }

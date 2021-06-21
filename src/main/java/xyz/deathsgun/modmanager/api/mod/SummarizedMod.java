@@ -24,6 +24,7 @@ import java.util.List;
 public record SummarizedMod(
         String id,
         String slug,
+        String author,
         String name,
         List<String> latest,
         String description,

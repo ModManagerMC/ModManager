@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package xyz.deathsgun.modmanager.providers.modrinth;
+package xyz.deathsgun.modmanager.providers.modrinth.model;
 
 import com.google.gson.annotations.SerializedName;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
@@ -35,7 +35,7 @@ public class SearchResponse {
         ArrayList<SummarizedMod> result = new ArrayList<>();
         for (ModResult modResult : hits) {
             String slug = modResult.getSlug().toLowerCase(Locale.ROOT).replaceAll(" ", "");
-            result.add(new SummarizedMod(modResult.getModId(), slug, modResult.getTitle(), modResult.getVersions(), modResult.getDescription(), modResult.getIconUrl()));
+            result.add(new SummarizedMod(modResult.getModId(), slug, modResult.getAuthor(), modResult.getTitle(), modResult.getVersions(), modResult.getDescription(), modResult.getIconUrl()));
         }
         return result;
     }

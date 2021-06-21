@@ -63,7 +63,7 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
                 return;
             }
             IModProvider modProvider = provider.get();
-            modProvider.getMods(category, page, limit).forEach(mod -> this.addEntry(new ModListEntry(this, iconDownloader, mod)));
+            modProvider.getMods(category, page, limit).forEach(mod -> this.addEntry(new ModListEntry(this, mod)));
         } catch (Exception e) {
             e.printStackTrace();
         }
