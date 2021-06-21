@@ -95,7 +95,7 @@ public class Modrinth implements IModProvider {
             return this.cachedCategoryRequests.get(key);
         }
         URIBuilder uriBuilder = new URIBuilder(this.baseUrl + "/api/v1/mod");
-        uriBuilder.addParameter("filters", String.format("categories=\"fabric\" AND categories=\"%s\"", category.id()));
+        uriBuilder.addParameter("filters", String.format("categories=\"fabric\" AND NOT client_side=\"unsupported\" AND categories=\"%s\"", category.id()));
         List<SummarizedMod> mods = getSummarizedMods(page, limit, uriBuilder);
         this.cachedCategoryRequests.put(key, mods);
         return mods;
@@ -106,7 +106,7 @@ public class Modrinth implements IModProvider {
         logger.debug("Searching for '{}' in Modrinth", query);
         URIBuilder uriBuilder = new URIBuilder(this.baseUrl + "/api/v1/mod");
         uriBuilder.addParameter("query", query);
-        uriBuilder.addParameter("filters", "categories=\"fabric\"");
+        uriBuilder.addParameter("filters", "categories=\"fabric\" AND NOT client_side=\"unsupported\"");
         return getSummarizedMods(page, limit, uriBuilder);
     }
 
@@ -127,7 +127,7 @@ public class Modrinth implements IModProvider {
 
     @Override
     public DetailedMod getMod(String id) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("")).build();
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(this.baseUrl + "")).build();
         HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
             throw new Exception(response.body());
