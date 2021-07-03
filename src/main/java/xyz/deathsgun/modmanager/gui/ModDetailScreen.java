@@ -21,10 +21,13 @@ import com.terraformersmc.modmenu.util.DrawingUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ScreenTexts;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import xyz.deathsgun.modmanager.ModManager;
+import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
@@ -37,13 +40,13 @@ import static xyz.deathsgun.modmanager.gui.widget.ModListEntry.UNKNOWN_ICON;
 
 public class ModDetailScreen extends Screen {
 
-    private final Screen parentScreen;
     private final SummarizedMod summarizedMod;
     private DetailedMod detailedMod;
+    private final Screen previousScreen;
 
-    public ModDetailScreen(Screen parentScreen, SummarizedMod mod) {
+    public ModDetailScreen(Screen previousScreen, SummarizedMod mod) {
         super(new LiteralText(mod.name()));
-        this.parentScreen = parentScreen;
+        this.previousScreen = previousScreen;
         this.summarizedMod = mod;
     }
 
@@ -60,9 +63,20 @@ public class ModDetailScreen extends Screen {
             e.printStackTrace();
             Objects.requireNonNull(this.client).openScreen(new ModManagerErrorScreen(this, e));
         }
+        int buttonX = this.width / 8;
+        this.addDrawableChild(new ButtonWidget(buttonX, this.height - 28, 150, 20, ScreenTexts.BACK, button -> Objects.requireNonNull(client).openScreen(previousScreen)));
+
+        this.addDrawableChild(new ButtonWidget(this.width - buttonX - 150, this.height - 28, 150, 20, new TranslatableText("modmanager.button.install"),
+                this::handleActionClick));
+
         //TODO: Add install/update button
         //TODO: If only remove available show only that button
         //TODO: Add description widget
+    }
+
+    private void handleActionClick(ButtonWidget buttonWidget) {
+        buttonWidget.active = false;
+
     }
 
     @Override
@@ -82,17 +96,22 @@ public class ModDetailScreen extends Screen {
         MutableText trimmedTitle = new LiteralText(font.trimToWidth(detailedMod.name(), this.width - 200));
         trimmedTitle = trimmedTitle.setStyle(Style.EMPTY.withBold(true));
 
-        int detailsY = iconSize / 2 - 10;
+        int detailsY = 15;
         int textX = 10 + iconSize + 5;
 
         font.draw(matrices, trimmedTitle, textX, detailsY, 0xFFFFFF);
 
-        font.draw(matrices, new TranslatableText("modmanager.details.author", summarizedMod.author()), textX, detailsY += font.fontHeight, 0xFFFFFF);
+        font.draw(matrices, new TranslatableText("modmanager.details.author", summarizedMod.author()), textX, detailsY += 12, 0xFFFFFF);
 
-        DrawingUtil.drawBadge(matrices, textX, detailsY + 12, font.getWidth(detailedMod.license()) + 6, Text.of(detailedMod.license()).asOrderedText(), 0xff6f6c6a, 0xff31302f, 0xCACACA);
+        DrawingUtil.drawBadge(matrices, textX, detailsY += 16, font.getWidth(detailedMod.license()) + 6, Text.of(detailedMod.license()).asOrderedText(), 0xff6f6c6a, 0xff31302f, 0xCACACA);
+
+        for (Category category : detailedMod.categories()) {
+            int textWidth = font.getWidth(category.text()) + 6;
+            DrawingUtil.drawBadge(matrices, textX, detailsY + 16, textWidth, category.text().asOrderedText(), 0xff6f6c6a, 0xff31302f, 0xCACACA);
+            textX += textWidth + 4;
+        }
 
         //TODO: Render description
-        //TODO: Render categories
         super.render(matrices, mouseX, mouseY, delta);
     }
 
@@ -120,6 +139,6 @@ public class ModDetailScreen extends Screen {
 
     @Override
     public void onClose() {
-        Objects.requireNonNull(this.client).openScreen(parentScreen);
+        Objects.requireNonNull(this.client).openScreen(previousScreen);
     }
 }

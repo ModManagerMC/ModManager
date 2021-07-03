@@ -17,8 +17,11 @@
 package xyz.deathsgun.modmanager.providers.modrinth.model;
 
 import com.google.gson.annotations.SerializedName;
+import net.minecraft.text.TranslatableText;
+import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Mod {
@@ -40,6 +43,10 @@ public class Mod {
     private List<String> versions;
 
     public DetailedMod toDetailedMod() {
-        return new DetailedMod(title, description, body, license.name(), downloads, categories, issuesUrl, sourceUrl, wikiUrl, versions);
+        ArrayList<Category> categoriesList = new ArrayList<>();
+        categories.forEach(s -> {
+            categoriesList.add(new Category(s, new TranslatableText("modmanager.category." + s)));
+        });
+        return new DetailedMod(title, description, body, license.name(), downloads, categoriesList, issuesUrl, sourceUrl, wikiUrl, versions);
     }
 }

@@ -166,14 +166,6 @@ public abstract class BetterListWidget<E extends BetterListWidget.BetterListEntr
         return left + 6;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getTop() {
-        return this.top;
-    }
-
     @Override
     protected int getScrollbarPositionX() {
         return this.left + this.width - 6;

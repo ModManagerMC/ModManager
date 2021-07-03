@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package xyz.deathsgun.modmanager.api.mod;
+package xyz.deathsgun.modmanager.gui.widget;
 
-import java.util.List;
+import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.util.math.MatrixStack;
 
-public record DetailedMod(
-        String name,
-        String description,
-        String body,
-        String license,
-        int downloads,
-        List<Category> categories,
-        String issuesUrl,
-        String sourceUrl,
-        String wikiUrl,
-        List<String> versions
-) {
+public class DescriptionListEntry extends EntryListWidget.Entry<DescriptionListEntry> {
+    @Override
+    public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+
+    }
 }

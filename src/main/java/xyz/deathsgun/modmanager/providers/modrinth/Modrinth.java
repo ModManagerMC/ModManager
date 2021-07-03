@@ -31,6 +31,7 @@ import xyz.deathsgun.modmanager.api.provider.IModProvider;
 import xyz.deathsgun.modmanager.api.provider.Sorting;
 import xyz.deathsgun.modmanager.providers.modrinth.model.Mod;
 import xyz.deathsgun.modmanager.providers.modrinth.model.SearchResponse;
+import xyz.deathsgun.modmanager.providers.modrinth.model.Version;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -135,5 +136,10 @@ public class Modrinth implements IModProvider {
             throw new Exception(response.body());
         }
         return gson.fromJson(response.body(), Mod.class).toDetailedMod();
+    }
+
+    @Override
+    public List<Version> getVersionsForMod(String id) throws Exception {
+        return null;
     }
 }

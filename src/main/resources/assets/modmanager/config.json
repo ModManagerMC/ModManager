@@ -1,6 +1,4 @@
 {
   "stable-only": false,
-  "providers": [
-	"Modrinth"
-  ]
+  "provider": "Modrinth"
 }
