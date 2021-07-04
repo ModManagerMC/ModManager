@@ -16,6 +16,7 @@
 
 package xyz.deathsgun.modmanager.util;
 
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
@@ -27,30 +28,51 @@ import java.util.regex.Pattern;
 public class MarkdownPreprocessor {
 
     private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*(.*?)\\*\\*");
+    private static final Pattern LINK_PATTERN = Pattern.compile("\\[(.*?)]\\((.*?)\\)");
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("!\\[(.*?)]\\((.*?)\\)");
 
     public static MutableText[] processText(String text) {
         text = text.replaceAll("<br>", "\n");
         String[] lines = text.split("\n");
         ArrayList<MutableText> texts = new ArrayList<>();
         for (String line : lines) {
+            if (IMAGE_PATTERN.matcher(line).find()) {
+                continue;
+            }
             texts.add(processLine(line));
         }
-        return (MutableText[]) texts.toArray();
+        return texts.toArray(new MutableText[]{});
     }
 
     private static MutableText processLine(String text) {
-        if (text.contains("**")) {
+        if (BOLD_PATTERN.matcher(text).find()) {
             return extractBoldText(text);
+        }
+        if (LINK_PATTERN.matcher(text).find()) {
+            return extractLinkText(text);
         }
         return new LiteralText(text);
     }
 
+    private static MutableText extractLinkText(String text) {
+        Matcher matcher = LINK_PATTERN.matcher(text);
+        if (!matcher.find()) {
+            return new LiteralText(text);
+        }
+        MutableText linkText = new LiteralText(matcher.group(1)).formatted(Formatting.UNDERLINE, Formatting.BLUE);
+        return linkText.setStyle(linkText.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, matcher.group(2))));
+    }
+
     private static MutableText extractBoldText(String text) {
         Matcher matcher = BOLD_PATTERN.matcher(text);
-        int start = matcher.start();
-        int end = matcher.end();
-        MutableText boldText = new LiteralText(text.substring(start, end)).formatted(Formatting.BOLD);
-        return new LiteralText(text.substring(0, start - 1)).append(boldText).append(text.substring(end + 1));
+        if (!matcher.find()) {
+            return new LiteralText(text);
+        }
+        String boldText = matcher.group(1);
+        int begin = text.indexOf(boldText);
+        LiteralText preText = new LiteralText(text.substring(0, begin).replaceAll("\\*\\*", ""));
+        MutableText matchedText = new LiteralText(boldText).formatted(Formatting.BOLD);
+        return preText.append(matchedText).append(extractBoldText(text.substring(begin + 2 + boldText.length())));
     }
 
 }

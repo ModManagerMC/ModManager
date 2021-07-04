@@ -15,5 +15,11 @@
   "modmanager.category.food": "Food",
   "modmanager.category.equipment": "Equipment",
   "modmanager.category.misc": "Miscellaneous",
-  "modmanager.details.author": "By %s"
+  "modmanager.details.author": "By %s",
+  "modmanager.message.install": "Install",
+  "modmanager.message.installing": "Installing...",
+  "modmanager.message.update": "Update",
+  "modmanager.message.updating": "Updating...",
+  "modmanager.message.remove": "Remove",
+  "modmanager.message.removing": "Removing..."
 }

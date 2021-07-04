@@ -82,23 +82,23 @@ public class IconDownloader extends Thread {
     }
 
     private void downloadIcon(SummarizedMod mod) throws Exception {
-        logger.info("Downloading icon for {}", mod.slug());
+        logger.debug("Downloading icon for {}", mod.slug());
         this.loading.add(mod.id());
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(mod.icon())).build();
         HttpResponse<InputStream> response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
         if (response.statusCode() != 200) {
-            logger.info("Failed to download icon for {} ! received status code: {}", mod.slug(), response.statusCode());
+            logger.debug("Failed to download icon for {} ! received status code: {}", mod.slug(), response.statusCode());
             errored.add(mod.id());
             return;
         }
-        logger.info("Reading icon for {}", mod.slug());
+        logger.debug("Reading icon for {}", mod.slug());
         NativeImage image = NativeImage.read(response.body());
         Identifier iconLocation = new Identifier("modmanager", mod.slug() + "_icon");
         MinecraftClient.getInstance().getTextureManager().registerTexture(iconLocation, new NativeImageBackedTexture(image));
         this.images.put(mod.id(), iconLocation);
         this.loading.remove(mod.id());
         this.errored.remove(mod.id());
-        logger.info("Finished downloading icon for {}", mod.slug());
+        logger.debug("Finished downloading icon for {}", mod.slug());
     }
 
     public boolean isLoading(String id) {
@@ -106,7 +106,7 @@ public class IconDownloader extends Thread {
     }
 
     public void destroyIcon(SummarizedMod mod) {
-        logger.info("Removing {} icon", mod.slug());
+        logger.debug("Removing {} icon", mod.slug());
         this.loading.remove(mod.id());
         this.errored.remove(mod.id());
         this.mods.remove(mod.id());

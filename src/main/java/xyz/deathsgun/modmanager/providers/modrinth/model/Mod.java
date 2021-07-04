@@ -44,9 +44,7 @@ public class Mod {
 
     public DetailedMod toDetailedMod() {
         ArrayList<Category> categoriesList = new ArrayList<>();
-        categories.forEach(s -> {
-            categoriesList.add(new Category(s, new TranslatableText("modmanager.category." + s)));
-        });
+        categories.forEach(s -> categoriesList.add(new Category(s, new TranslatableText("modmanager.category." + s))));
         return new DetailedMod(title, description, body, license.name(), downloads, categoriesList, issuesUrl, sourceUrl, wikiUrl, versions);
     }
 }
