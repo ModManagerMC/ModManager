@@ -5,9 +5,9 @@ This is ground up rewrite of the old ModManager which used an index on GitHub an
 
 ### TODO
 
-- [ ] Add descriptions
-- [ ] Add markdown support
-- [ ] Allow installing mods
+- [X] Add descriptions
+- [X] Add markdown support
+- [X] Allow installing mods
 - [ ] Allow mods to be updated
 - [ ] Remove mods over UI
 
