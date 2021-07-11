@@ -31,6 +31,7 @@ public class DescriptionListEntry extends EntryListWidget.Entry<DescriptionListE
     private final OrderedText orderedText;
     private final TextRenderer textRenderer;
     private Text text;
+    private int x = 0;
 
     public DescriptionListEntry(DescriptionWidget widget, Text text) {
         this(widget, text.asOrderedText());
@@ -48,6 +49,7 @@ public class DescriptionListEntry extends EntryListWidget.Entry<DescriptionListE
         if (y >= widget.getBottom() - textRenderer.fontHeight + 2) {
             return;
         }
+        this.x = x;
         textRenderer.draw(matrices, orderedText, x, y, 0xFFFFFF);
     }
 
@@ -64,5 +66,10 @@ public class DescriptionListEntry extends EntryListWidget.Entry<DescriptionListE
             Util.getOperatingSystem().open(event.getValue());
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return super.isMouseOver(mouseX, mouseY) && x + textRenderer.getWidth(text) >= mouseX;
     }
 }
