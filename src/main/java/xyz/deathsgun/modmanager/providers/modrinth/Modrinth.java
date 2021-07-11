@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.api.mod.DetailedMod;
+import xyz.deathsgun.modmanager.api.mod.ModVersion;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
 import xyz.deathsgun.modmanager.api.provider.Sorting;
@@ -48,11 +49,7 @@ public class Modrinth implements IModProvider {
     private final HashMap<String, List<SummarizedMod>> cachedCategoryRequests = new HashMap<>();
     private final Gson gson = new Gson();
     private final String baseUrl = "https://api.modrinth.com";
-    private final HttpClient http;
-
-    public Modrinth() {
-        this.http = HttpClient.newHttpClient();
-    }
+    private final HttpClient http = HttpClient.newHttpClient();
 
     @Override
     public String getName() {
@@ -139,7 +136,14 @@ public class Modrinth implements IModProvider {
     }
 
     @Override
-    public List<Version> getVersionsForMod(String id) throws Exception {
-        return null;
+    public List<ModVersion> getVersionsForMod(String id) throws Exception {
+        ArrayList<ModVersion> result = new ArrayList<>();
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(this.baseUrl + "/api/v1/mod/" + id + "/version")).build();
+        HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            throw new Exception(response.body());
+        }
+        return Version.toModVersion(gson.fromJson(response.body(), new TypeToken<ArrayList<Version>>() {
+        }.getType()));
     }
 }

@@ -20,38 +20,40 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
 import xyz.deathsgun.modmanager.downloader.IconDownloader;
+import xyz.deathsgun.modmanager.downloader.ModDownloader;
 import xyz.deathsgun.modmanager.providers.modrinth.Modrinth;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public class ModManager implements ClientModInitializer, ModMenuApi {
 
     private static final String currentProvider = "Modrinth";
     private static final ArrayList<IModProvider> modProviders = new ArrayList<>();
+    private static final ModDownloader modDownloader = new ModDownloader();
     private static final IconDownloader iconDownloader = new IconDownloader();
 
-    public static Path getModMenuDir() {
-        Path p = FabricLoader.getInstance().getGameDir().resolve("mods").resolve("ModManager");
-        p.toFile().mkdirs();
-        return p;
+    public static void registerModProvider(IModProvider provider) {
+        ModManager.modProviders.removeIf(value -> value.getName().equals(provider.getName()));
+        ModManager.modProviders.add(provider);
     }
 
-    public static Optional<IModProvider> getModProvider() {
-        return modProviders.stream().filter(iModProvider -> iModProvider.getName().equals(currentProvider)).findFirst();
+    public static IModProvider getModProvider() {
+        return modProviders.stream().filter(iModProvider -> iModProvider.getName().equals(currentProvider)).findFirst().orElse(null);
     }
 
     public static IconDownloader getIconDownloader() {
         return iconDownloader;
     }
 
+    public static ModDownloader getModDownloader() {
+        return modDownloader;
+    }
+
     @Override
     public void onInitializeClient() {
-        modProviders.add(new Modrinth());
+        registerModProvider(new Modrinth());
     }
 }

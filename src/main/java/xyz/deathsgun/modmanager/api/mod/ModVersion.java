@@ -16,11 +16,15 @@
 
 package xyz.deathsgun.modmanager.api.mod;
 
+import java.util.Date;
+import java.util.List;
+
 public record ModVersion(
         String version,
-        String minecraftVersion,
-        String downloadUrl,
-        boolean stable,
-        boolean latest
+        String changelog,
+        VersionType type,
+        Date releaseDate,
+        List<String> gameVersions,
+        List<Asset> assets
 ) {
 }

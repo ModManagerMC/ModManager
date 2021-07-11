@@ -15,6 +15,10 @@ repositories {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/releases/"
 	}
+	maven {
+		name = "TerraformersMC Fallback"
+		url = "https://raw.githubusercontent.com/TerraformersMC/Archive/main/releases/"
+	}
 }
 
 dependencies {

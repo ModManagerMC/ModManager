@@ -20,14 +20,12 @@ import net.minecraft.client.MinecraftClient;
 import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
-import xyz.deathsgun.modmanager.api.provider.IModProvider;
 import xyz.deathsgun.modmanager.downloader.IconDownloader;
 import xyz.deathsgun.modmanager.gui.ModsOverviewScreen;
 import xyz.deathsgun.modmanager.gui.widget.better.BetterListWidget;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Optional;
 
 public class ModListWidget extends BetterListWidget<ModListEntry> {
 
@@ -58,12 +56,7 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
         }
         this.clearEntries();
         try {
-            Optional<IModProvider> provider = ModManager.getModProvider();
-            if (provider.isEmpty()) {
-                return;
-            }
-            IModProvider modProvider = provider.get();
-            modProvider.getMods(category, page, limit).forEach(mod -> this.addEntry(new ModListEntry(this, mod)));
+            ModManager.getModProvider().getMods(category, page, limit).forEach(mod -> this.addEntry(new ModListEntry(this, mod)));
         } catch (Exception e) {
             e.printStackTrace();
         }

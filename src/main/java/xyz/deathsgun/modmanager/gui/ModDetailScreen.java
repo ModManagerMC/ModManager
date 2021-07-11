@@ -30,11 +30,9 @@ import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
-import xyz.deathsgun.modmanager.api.provider.IModProvider;
 import xyz.deathsgun.modmanager.gui.widget.DescriptionWidget;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static xyz.deathsgun.modmanager.gui.widget.ModListEntry.LOADING_ICON;
@@ -58,12 +56,8 @@ public class ModDetailScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        Optional<IModProvider> opt = ModManager.getModProvider();
-        if (opt.isEmpty()) {
-            return;
-        }
         try {
-            detailedMod = opt.get().getMod(summarizedMod.id());
+            detailedMod = ModManager.getModProvider().getMod(summarizedMod.id());
         } catch (Exception e) {
             e.printStackTrace();
             Objects.requireNonNull(this.client).openScreen(new ModManagerErrorScreen(this, e));
@@ -86,6 +80,23 @@ public class ModDetailScreen extends Screen {
     private void handleActionClick(ButtonWidget buttonWidget) {
         buttonWidget.active = false;
         buttonWidget.setMessage(new TranslatableText("modmanager.message.installing"));
+        ModManager.getModDownloader().addToQueue(detailedMod);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (ModManager.getModDownloader().isQueued(detailedMod)) {
+            actionButton.setMessage(new TranslatableText("modmanager.message.installing"));
+            return;
+        }
+        if (ModManager.getModDownloader().isInstalled(detailedMod)) {
+            actionButton.setMessage(new TranslatableText("modmanager.message.remove"));
+            actionButton.active = true;
+            return;
+        }
+        actionButton.setMessage(new TranslatableText("modmanager.message.install"));
+        actionButton.active = true;
     }
 
     @Override

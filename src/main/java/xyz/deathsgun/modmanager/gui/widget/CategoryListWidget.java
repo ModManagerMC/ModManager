@@ -20,13 +20,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.api.mod.Category;
-import xyz.deathsgun.modmanager.api.provider.IModProvider;
 import xyz.deathsgun.modmanager.gui.ModManagerErrorScreen;
 import xyz.deathsgun.modmanager.gui.ModsOverviewScreen;
 import xyz.deathsgun.modmanager.gui.widget.better.BetterListWidget;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class CategoryListWidget extends BetterListWidget<CategoryListEntry> {
 
@@ -40,12 +38,8 @@ public class CategoryListWidget extends BetterListWidget<CategoryListEntry> {
     @Override
     public void init() {
         try {
-            Optional<IModProvider> opt = ModManager.getModProvider();
-            if (opt.isEmpty()) {
-                return;
-            }
             this.categories = new ArrayList<>();
-            opt.get().getCategories().forEach(category -> this.addEntry(new CategoryListEntry(this, category)));
+            ModManager.getModProvider().getCategories().forEach(category -> this.addEntry(new CategoryListEntry(this, category)));
             if (parent.getEntry(this) != null) {
                 setSelected(parent.getEntry(this));
                 return;

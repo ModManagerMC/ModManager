@@ -17,11 +17,46 @@
 package xyz.deathsgun.modmanager.providers.modrinth.model;
 
 import com.google.gson.annotations.SerializedName;
+import xyz.deathsgun.modmanager.api.mod.Asset;
+import xyz.deathsgun.modmanager.api.mod.ModVersion;
+import xyz.deathsgun.modmanager.api.mod.VersionType;
 
-public record Version(
-        @SerializedName("mod_id")
-        String id,
-        @SerializedName("version_number")
-        String version
-) {
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class Version {
+
+    @SerializedName("version_number")
+    private String version;
+    private String changelog;
+    @SerializedName("date_published")
+    private Date releaseDate;
+    @SerializedName("version_type")
+    private String type;
+    @SerializedName("game_versions")
+    private List<String> gameVersions;
+    private List<File> files;
+
+    public static ArrayList<ModVersion> toModVersion(ArrayList<Version> versions) {
+        ArrayList<ModVersion> result = new ArrayList<>();
+        for (Version version : versions) {
+            result.add(new ModVersion(version.version, version.changelog, VersionType.fromString(version.version), version.releaseDate, version.gameVersions, File.toFiles(version.files)));
+        }
+        return result;
+    }
+
+    private static class File {
+        private String url;
+        private String filename;
+
+        public static List<Asset> toFiles(List<File> files) {
+            ArrayList<Asset> result = new ArrayList<>();
+            for (File file : files) {
+                result.add(new Asset(file.url, file.filename));
+            }
+            return result;
+        }
+    }
+
 }

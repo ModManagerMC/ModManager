@@ -18,8 +18,8 @@ package xyz.deathsgun.modmanager.api.provider;
 
 import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.api.mod.DetailedMod;
+import xyz.deathsgun.modmanager.api.mod.ModVersion;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
-import xyz.deathsgun.modmanager.providers.modrinth.model.Version;
 
 import java.util.List;
 
@@ -84,7 +84,7 @@ public interface IModProvider {
      */
     DetailedMod getMod(String id) throws Exception;
 
-    List<Version> getVersionsForMod(String id) throws Exception;
+    List<ModVersion> getVersionsForMod(String id) throws Exception;
 
 
 }

@@ -16,19 +16,14 @@
 
 package xyz.deathsgun.modmanager.api.mod;
 
-import java.util.List;
+public enum VersionType {
+    RELEASE, PRE_RELEASE;
 
-public record DetailedMod(
-        String id,
-        String name,
-        String description,
-        String body,
-        String license,
-        int downloads,
-        List<Category> categories,
-        String issuesUrl,
-        String sourceUrl,
-        String wikiUrl,
-        List<String> versions
-) {
+    public static VersionType fromString(String type) {
+        return switch (type) {
+            case "pre_release" -> PRE_RELEASE;
+            default -> RELEASE;
+        };
+    }
+
 }
