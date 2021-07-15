@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package xyz.deathsgun.modmanager.downloader;
+package xyz.deathsgun.modmanager.services;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.SemanticVersion;
+import net.fabricmc.loader.util.version.VersionDeserializer;
 import net.minecraft.MinecraftVersion;
 import net.minecraft.client.MinecraftClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.deathsgun.modmanager.ModManager;
+import xyz.deathsgun.modmanager.api.mod.Asset;
 import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 import xyz.deathsgun.modmanager.api.mod.ModVersion;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
@@ -33,11 +36,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class ModDownloader extends Thread {
+public class ModDownloadService extends Thread {
 
     private final Logger logger = LogManager.getLogger();
     private final ArrayList<DetailedMod> queue = new ArrayList<>();
@@ -45,7 +49,7 @@ public class ModDownloader extends Thread {
     private final ArrayList<String> installed = new ArrayList<>();
     private final HttpClient http = HttpClient.newHttpClient();
 
-    public ModDownloader() {
+    public ModDownloadService() {
         super("Mod Downloader");
         start();
     }
@@ -62,7 +66,7 @@ public class ModDownloader extends Thread {
             }
             for (DetailedMod mod : new ArrayList<>(queue)) {
                 try {
-                    downloadMod(mod);
+                    downloadMod(mod.id(), getVersionForMod(mod));
                     queue.remove(mod);
                 } catch (Exception e) {
                     logger.error("Error while downloading mod:", e);
@@ -77,21 +81,40 @@ public class ModDownloader extends Thread {
         }
     }
 
-    private void downloadMod(DetailedMod mod) throws Exception {
+    private ModVersion getVersionForMod(DetailedMod mod) throws Exception {
         IModProvider provider = ModManager.getModProvider();
-        List<ModVersion> versions = provider.getVersionsForMod(mod.id());
-        ModVersion version = versions.stream().filter(value -> value.gameVersions().contains(MinecraftVersion.GAME_VERSION.getName()))
-                .min(Comparator.comparing(ModVersion::releaseDate)).orElse(null);
+        List<ModVersion> versions = provider.getVersionsForMod(mod.id()).stream()
+                .filter(value -> value.gameVersions().contains(MinecraftVersion.GAME_VERSION.getReleaseTarget())).collect(Collectors.toList());
+        ModVersion latest = null;
+        SemanticVersion latestVersion = null;
+        for (ModVersion modVersion : versions) {
+            if (!modVersion.gameVersions().contains(MinecraftVersion.GAME_VERSION.getReleaseTarget())) {
+                continue;
+            }
+            SemanticVersion version = VersionDeserializer.deserializeSemantic(modVersion.version());
+            if (latestVersion == null || version.compareTo(latestVersion) > 0) {
+                latest = modVersion;
+                latestVersion = version;
+            }
+        }
+        return latest;
+    }
+
+    private void downloadMod(String id, ModVersion version) throws Exception {
         if (version == null) {
             throw new Exception("no version found!");
         }
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(version.assets().get(0).url())).build();
-        Path output = FabricLoader.getInstance().getGameDir().resolve("mods").resolve(version.assets().get(0).filename());
+        Optional<Asset> asset = version.assets().stream().filter(value -> value.filename().endsWith(".jar")).findFirst();
+        if (asset.isEmpty()) {
+            throw new Exception("jar in downloadable assets found");
+        }
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(asset.get().url())).build();
+        Path output = FabricLoader.getInstance().getGameDir().resolve("mods").resolve(asset.get().filename());
         HttpResponse<Path> response = this.http.send(request, HttpResponse.BodyHandlers.ofFile(output));
         if (response.statusCode() != 200) {
             throw new Exception("Invalid status code: " + response.statusCode());
         }
-        installed.add(mod.id());
+        installed.add(id);
     }
 
 

@@ -22,15 +22,16 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.StringVisitable;
-import net.minecraft.text.Text;
+import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.NotNull;
 import xyz.deathsgun.modmanager.ModManager;
+import xyz.deathsgun.modmanager.api.mod.ModState;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.gui.widget.better.BetterListWidget;
+
+import java.util.concurrent.CompletableFuture;
 
 public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry> {
 
@@ -39,10 +40,12 @@ public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry>
 
     private final SummarizedMod mod;
     private final MinecraftClient client = MinecraftClient.getInstance();
+    private ModState modState = ModState.CHECKING;
 
     public ModListEntry(ModListWidget list, @NotNull SummarizedMod mod) {
         super(list, new LiteralText(mod.name()));
         this.mod = mod;
+        CompletableFuture.runAsync(() -> this.modState = ModManager.getState(this.mod));
     }
 
     @Override
@@ -62,12 +65,33 @@ public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry>
         StringVisitable trimmedName = name;
         int maxNameWidth = entryWidth - iconSize - 3;
         TextRenderer font = this.client.textRenderer;
-        if (font.getWidth(name) > maxNameWidth) {
+
+        int primaryColor = 0xFFFFFF;
+        int secondaryColor = 0xFFFFFF;
+        OrderedText badgeText = null;
+        if (modState == ModState.INSTALLED) {
+            primaryColor = 0xff0e2a55;
+            secondaryColor = 0xff2b4b7c;
+            badgeText = new TranslatableText("modmanager.badge.installed").asOrderedText();
+            maxNameWidth -= font.getWidth(badgeText) + 6;
+        } else if (modState == ModState.OUTDATED) {
+            primaryColor = 0xff530C17;
+            secondaryColor = 0xff841426;
+            badgeText = new TranslatableText("modmanager.badge.outdated").asOrderedText();
+            maxNameWidth -= font.getWidth(badgeText) + 6;
+        }
+
+        int textWidth = font.getWidth(name);
+        if (textWidth > maxNameWidth) {
             StringVisitable ellipsis = StringVisitable.plain("...");
             trimmedName = StringVisitable.concat(font.trimToWidth(name, maxNameWidth - font.getWidth(ellipsis)), ellipsis);
         }
         font.draw(matrices, Language.getInstance().reorder(trimmedName), x + iconSize + 3, y + 1, 0xFFFFFF);
-        DrawingUtil.drawWrappedString(matrices, mod.description(), (x + iconSize + 3 + 4), (y + client.textRenderer.fontHeight + 2), entryWidth - iconSize - 7, 2, 0x808080);
+        if (badgeText != null) {
+            DrawingUtil.drawBadge(matrices, x + iconSize + 3 + textWidth + 3, y + 1, font.getWidth(badgeText) + 6, badgeText, secondaryColor, primaryColor, 0xFFFFFF);
+        }
+
+        DrawingUtil.drawWrappedString(matrices, mod.description(), (x + iconSize + 3 + 4), (y + client.textRenderer.fontHeight + 4), entryWidth - iconSize - 7, 2, 0x808080);
     }
 
 

@@ -137,7 +137,6 @@ public class Modrinth implements IModProvider {
 
     @Override
     public List<ModVersion> getVersionsForMod(String id) throws Exception {
-        ArrayList<ModVersion> result = new ArrayList<>();
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(this.baseUrl + "/api/v1/mod/" + id + "/version")).build();
         HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {

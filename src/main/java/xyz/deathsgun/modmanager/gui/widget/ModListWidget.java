@@ -20,9 +20,9 @@ import net.minecraft.client.MinecraftClient;
 import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
-import xyz.deathsgun.modmanager.downloader.IconDownloader;
 import xyz.deathsgun.modmanager.gui.ModsOverviewScreen;
 import xyz.deathsgun.modmanager.gui.widget.better.BetterListWidget;
+import xyz.deathsgun.modmanager.services.IconDownloadService;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -30,7 +30,7 @@ import java.util.Objects;
 public class ModListWidget extends BetterListWidget<ModListEntry> {
 
     private final int limit = 20;
-    private final IconDownloader iconDownloader = new IconDownloader();
+    private final IconDownloadService iconDownloadService = new IconDownloadService();
     private final ArrayList<SummarizedMod> mods = new ArrayList<>();
     private int page = 0;
     private Category category;
@@ -103,6 +103,6 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     }
 
     public void close() {
-        this.iconDownloader.destroyIcons();
+        this.iconDownloadService.destroyIcons();
     }
 }

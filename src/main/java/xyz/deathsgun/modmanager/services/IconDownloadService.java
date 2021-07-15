@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package xyz.deathsgun.modmanager.downloader;
+package xyz.deathsgun.modmanager.services;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
@@ -33,7 +33,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class IconDownloader extends Thread {
+public class IconDownloadService extends Thread {
 
     private final Logger logger = LogManager.getLogger("Icon Downloader");
     private final HashMap<String, SummarizedMod> mods = new HashMap<>();
@@ -42,7 +42,7 @@ public class IconDownloader extends Thread {
     private final ArrayList<String> errored = new ArrayList<>();
     private final HttpClient httpClient;
 
-    public IconDownloader() {
+    public IconDownloadService() {
         this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3)).build();
         setName("Icon downloader");
         start();

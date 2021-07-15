@@ -1,7 +1,6 @@
 {
-  "modmanager.title": "Mod's overview",
-  "modmanager.page.next": "Next page",
-  "modmanager.page.previous": "Previous page",
+  "modmanager.badge.installed": "Installed",
+  "modmanager.badge.outdated": "Outdated",
   "modmanager.categories": "Categories",
   "modmanager.category.technology": "Technology",
   "modmanager.category.adventure": "Adventure",
@@ -21,5 +20,8 @@
   "modmanager.message.update": "Update",
   "modmanager.message.updating": "Updating...",
   "modmanager.message.remove": "Remove",
-  "modmanager.message.removing": "Removing..."
+  "modmanager.message.removing": "Removing...",
+  "modmanager.page.next": "Next page",
+  "modmanager.page.previous": "Previous page",
+  "modmanager.title": "Mod's overview"
 }

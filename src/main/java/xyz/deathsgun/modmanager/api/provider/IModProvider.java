@@ -70,7 +70,7 @@ public interface IModProvider {
      * Returns a limited number of {@link SummarizedMod}'s from a given search.
      *
      * @param query the search string
-     * @param page  the current requested page starts at 1
+     * @param page  the current requested page starts at 0
      * @param limit the amount of mods to return
      * @return a list of mods matching the search term
      */

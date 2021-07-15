@@ -16,14 +16,22 @@
 
 package xyz.deathsgun.modmanager.api.mod;
 
-public enum VersionType {
-    RELEASE, BETA;
+public enum ModState {
 
-    public static VersionType fromString(String type) {
-        return switch (type) {
-            case "beta" -> BETA;
-            default -> RELEASE;
-        };
-    }
+    /**
+     * Returns this if the mod has been found in the current
+     * mod list
+     */
+    INSTALLED,
+    /**
+     * Returns this if the mod has been found and also has been
+     * checked for updates
+     */
+    OUTDATED,
+    /**
+     * Returns this if the mod was not found
+     */
+    DOWNLOADABLE,
+    CHECKING
 
 }
