@@ -42,9 +42,9 @@ public class ModManagerErrorScreen extends Screen {
     protected void init() {
         super.init();
         String error = ExceptionUtils.getStackTrace(exception);
-        error = error.replaceAll("\t", "");
-        descriptionWidget = this.addSelectableChild(new DescriptionWidget(client, (int) (width * 0.8), height, (int) (height * 0.2), this.height - 36, 9, error));
-        descriptionWidget.setLeftPos((int) (this.width * 0.1));
+        error = error.replaceAll("\t", "").replaceAll("\r", "");
+        descriptionWidget = this.addSelectableChild(new DescriptionWidget(client, (int) (width * 0.90), height, (int) (height * 0.1), this.height - 36, 9, error));
+        descriptionWidget.setLeftPos((int) (this.width * 0.05));
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 154, this.height - 28, 150, 20, ScreenTexts.CANCEL, button -> this.onClose()));
     }
 
@@ -56,7 +56,7 @@ public class ModManagerErrorScreen extends Screen {
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         renderBackground(matrices);
-        super.render(matrices, mouseX, mouseY, delta);
         this.descriptionWidget.render(matrices, mouseX, mouseY, delta);
+        super.render(matrices, mouseX, mouseY, delta);
     }
 }

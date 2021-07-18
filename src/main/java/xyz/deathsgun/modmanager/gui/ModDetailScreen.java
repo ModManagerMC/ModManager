@@ -18,6 +18,7 @@ package xyz.deathsgun.modmanager.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.terraformersmc.modmenu.util.DrawingUtil;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -46,6 +47,7 @@ public class ModDetailScreen extends Screen {
     private ButtonWidget actionButton;
     private DetailedMod detailedMod;
     private DescriptionWidget descriptionWidget;
+    private Exception exception;
 
     public ModDetailScreen(Screen previousScreen, SummarizedMod mod) {
         super(new LiteralText(mod.name()));
@@ -78,20 +80,30 @@ public class ModDetailScreen extends Screen {
     }
 
     private void handleActionClick(ButtonWidget buttonWidget) {
+        if (exception != null) {
+            MinecraftClient.getInstance().openScreen(new ModManagerErrorScreen(this, exception));
+            return;
+        }
         buttonWidget.active = false;
         buttonWidget.setMessage(new TranslatableText("modmanager.message.installing"));
-        ModManager.getModDownloader().addToQueue(detailedMod);
+        ModManager.getModManipulationManager().installMod(summarizedMod, this::handleErrors);
+    }
+
+    private void handleErrors(Exception e) {
+        this.exception = e;
+        ModManager.getManipulationService().removeTasks(summarizedMod.id());
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (ModManager.getModDownloader().isQueued(detailedMod)) {
-            actionButton.setMessage(new TranslatableText("modmanager.message.installing"));
+        if (ModManager.getModManipulationManager().isInstalled(summarizedMod)) {
+            actionButton.setMessage(new TranslatableText("modmanager.message.remove"));
+            actionButton.active = true;
             return;
         }
-        if (ModManager.getModDownloader().isInstalled(detailedMod)) {
-            actionButton.setMessage(new TranslatableText("modmanager.message.remove"));
+        if (exception != null) {
+            actionButton.setMessage(new TranslatableText("modmanager.message.showError"));
             actionButton.active = true;
             return;
         }
@@ -135,16 +147,16 @@ public class ModDetailScreen extends Screen {
     }
 
     private void bindIconTexture() {
-        if (ModManager.getIconDownloader().isErrored(summarizedMod.id())) {
+        if (ModManager.getIconManager().isErrored(summarizedMod.id())) {
             RenderSystem.setShaderTexture(0, UNKNOWN_ICON);
             return;
         }
-        Identifier icon = ModManager.getIconDownloader().getIcon(summarizedMod.id());
+        Identifier icon = ModManager.getIconManager().getIconByModId(summarizedMod.id());
         if (icon == null) {
-            if (ModManager.getIconDownloader().isLoading(summarizedMod.id())) {
+            if (ModManager.getIconManager().isLoading(summarizedMod.id())) {
                 icon = LOADING_ICON;
             } else {
-                ModManager.getIconDownloader().addMod(summarizedMod);
+                ModManager.getIconManager().downloadIcon(summarizedMod);
                 return;
             }
         }

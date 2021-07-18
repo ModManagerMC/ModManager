@@ -21,7 +21,10 @@
   "modmanager.message.updating": "Updating...",
   "modmanager.message.remove": "Remove",
   "modmanager.message.removing": "Removing...",
+  "modmanager.message.showError": "Show error",
   "modmanager.page.next": "Next page",
   "modmanager.page.previous": "Previous page",
-  "modmanager.title": "Mod's overview"
+  "modmanager.title": "Mod's overview",
+  "modmanager.toast.update.title": "Updates available!",
+  "modmanager.toast.update.description": "%d mods can be updated"
 }

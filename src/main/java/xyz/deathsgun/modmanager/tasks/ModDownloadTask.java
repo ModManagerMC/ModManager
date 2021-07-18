@@ -14,74 +14,47 @@
  * limitations under the License.
  */
 
-package xyz.deathsgun.modmanager.services;
+package xyz.deathsgun.modmanager.tasks;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.util.version.VersionDeserializer;
 import net.minecraft.MinecraftVersion;
-import net.minecraft.client.MinecraftClient;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.deathsgun.modmanager.ModManager;
+import xyz.deathsgun.modmanager.api.manipulation.ErrorHandler;
+import xyz.deathsgun.modmanager.api.manipulation.NetworkTask;
 import xyz.deathsgun.modmanager.api.mod.Asset;
-import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 import xyz.deathsgun.modmanager.api.mod.ModVersion;
+import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
-import xyz.deathsgun.modmanager.gui.ModManagerErrorScreen;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ModDownloadService extends Thread {
+public class ModDownloadTask extends NetworkTask {
 
-    private final Logger logger = LogManager.getLogger();
-    private final ArrayList<DetailedMod> queue = new ArrayList<>();
-    private final HashMap<String, Exception> errored = new HashMap<>();
-    private final ArrayList<String> installed = new ArrayList<>();
-    private final HttpClient http = HttpClient.newHttpClient();
-
-    public ModDownloadService() {
-        super("Mod Downloader");
-        start();
-    }
-
-    public void addToQueue(DetailedMod detailedMod) {
-        this.queue.add(detailedMod);
+    public ModDownloadTask(@NotNull String id, @NotNull SummarizedMod subject, @Nullable ErrorHandler errorHandler) {
+        super(id, subject, errorHandler);
+        logger = LogManager.getLogger("Mod downloader");
     }
 
     @Override
-    public void run() {
-        while (isAlive()) {
-            if (queue.isEmpty()) {
-                continue;
-            }
-            for (DetailedMod mod : new ArrayList<>(queue)) {
-                try {
-                    downloadMod(mod.id(), getVersionForMod(mod));
-                    queue.remove(mod);
-                } catch (Exception e) {
-                    logger.error("Error while downloading mod:", e);
-                    errored.put(mod.id(), e);
-                    queue.remove(mod);
-                    MinecraftClient.getInstance().runTasks(() -> {
-                        MinecraftClient.getInstance().openScreen(new ModManagerErrorScreen(MinecraftClient.getInstance().currentScreen, e));
-                        return true;
-                    });
-                }
-            }
+    protected void execute() throws Exception {
+        if (subject == null) {
+            throw new Exception("Summarized mod is empty");
         }
+        downloadMod(getVersionForMod(subject));
     }
 
-    private ModVersion getVersionForMod(DetailedMod mod) throws Exception {
+    private ModVersion getVersionForMod(SummarizedMod mod) throws Exception {
         IModProvider provider = ModManager.getModProvider();
         List<ModVersion> versions = provider.getVersionsForMod(mod.id()).stream()
                 .filter(value -> value.gameVersions().contains(MinecraftVersion.GAME_VERSION.getReleaseTarget())).collect(Collectors.toList());
@@ -100,7 +73,7 @@ public class ModDownloadService extends Thread {
         return latest;
     }
 
-    private void downloadMod(String id, ModVersion version) throws Exception {
+    private void downloadMod(ModVersion version) throws Exception {
         if (version == null) {
             throw new Exception("no version found!");
         }
@@ -114,20 +87,6 @@ public class ModDownloadService extends Thread {
         if (response.statusCode() != 200) {
             throw new Exception("Invalid status code: " + response.statusCode());
         }
-        installed.add(id);
-    }
-
-
-    public boolean isQueued(DetailedMod detailedMod) {
-        return this.queue.stream().anyMatch(mod -> mod.id().equals(detailedMod.id()));
-    }
-
-    public boolean isInstalled(DetailedMod detailedMod) {
-        return this.installed.stream().anyMatch(mod -> mod.equals(detailedMod.id()));
-    }
-
-    public void removeInstalled(String id) {
-        this.installed.remove(id);
     }
 
 }

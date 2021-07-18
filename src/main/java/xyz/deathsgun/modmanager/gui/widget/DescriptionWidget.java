@@ -41,7 +41,7 @@ public class DescriptionWidget extends EntryListWidget<DescriptionListEntry> {
         MutableText[] lines = MarkdownPreprocessor.processText(text);
         TextRenderer textRenderer = client.textRenderer;
         for (MutableText line : lines) {
-            if (textRenderer.getWidth(line) - 10 >= width) {
+            if (textRenderer.getWidth(line) >= width - 10) {
                 List<OrderedText> texts = textRenderer.wrapLines(line, width - 10);
                 for (OrderedText wrappedLine : texts) {
                     addEntry(new DescriptionListEntry(this, wrappedLine));

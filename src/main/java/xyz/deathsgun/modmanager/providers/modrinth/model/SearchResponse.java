@@ -35,7 +35,7 @@ public class SearchResponse {
         ArrayList<SummarizedMod> result = new ArrayList<>();
         for (ModResult modResult : hits) {
             String slug = modResult.getSlug().toLowerCase(Locale.ROOT).replaceAll(" ", "");
-            result.add(new SummarizedMod(modResult.getModId(), slug, modResult.getAuthor(), modResult.getTitle(), modResult.getVersions(), modResult.getDescription(), modResult.getIconUrl()));
+            result.add(new SummarizedMod(modResult.getModId().replaceAll("local-", ""), slug, modResult.getAuthor(), modResult.getTitle(), modResult.getVersions(), modResult.getDescription(), modResult.getIconUrl()));
         }
         return result;
     }

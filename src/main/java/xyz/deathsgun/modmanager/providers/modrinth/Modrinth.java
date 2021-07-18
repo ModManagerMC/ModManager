@@ -24,6 +24,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 import xyz.deathsgun.modmanager.api.mod.ModVersion;
@@ -62,7 +63,8 @@ public class Modrinth implements IModProvider {
             return this.categories;
         }
         logger.debug("Getting categories");
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(this.baseUrl + "/api/v1/tag/category")).build();
+        HttpRequest request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
+                .uri(URI.create(this.baseUrl + "/api/v1/tag/category")).build();
         HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
             logger.error("Received an invalid status code while getting the categories {}: {}", response.statusCode(), response.body());
@@ -115,7 +117,8 @@ public class Modrinth implements IModProvider {
         uriBuilder.addParameter("offset", String.valueOf(page * limit));
         uriBuilder.addParameter("limit", String.valueOf(limit));
         logger.debug("Using {} for query", uriBuilder.toString());
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(uriBuilder.build()).build();
+        HttpRequest request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
+                .uri(uriBuilder.build()).build();
         HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
             throw new Exception(response.body());
@@ -127,7 +130,8 @@ public class Modrinth implements IModProvider {
     @Override
     public DetailedMod getMod(@NotNull String id) throws Exception {
         id = id.replaceFirst("local-", "");
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(this.baseUrl + "/api/v1/mod/" + id)).build();
+        HttpRequest request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
+                .uri(URI.create(this.baseUrl + "/api/v1/mod/" + id)).build();
         HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
             throw new Exception(response.body());
@@ -137,7 +141,8 @@ public class Modrinth implements IModProvider {
 
     @Override
     public List<ModVersion> getVersionsForMod(String id) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(this.baseUrl + "/api/v1/mod/" + id + "/version")).build();
+        HttpRequest request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
+                .uri(URI.create(this.baseUrl + "/api/v1/mod/" + id + "/version")).build();
         HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
             throw new Exception(response.body());

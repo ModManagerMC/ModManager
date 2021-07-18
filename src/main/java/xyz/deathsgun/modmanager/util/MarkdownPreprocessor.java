@@ -32,7 +32,8 @@ public class MarkdownPreprocessor {
     private static final Pattern IMAGE_PATTERN = Pattern.compile("!\\[(.*?)]\\((.*?)\\)");
 
     public static MutableText[] processText(String text) {
-        text = text.replaceAll("<br>", "\n");
+        text = text.replaceAll("\r", "");
+        text = text.replaceAll("<br>", "\n").replaceAll("<br/>", "\n");
         String[] lines = text.split("\n");
         ArrayList<MutableText> texts = new ArrayList<>();
         for (String line : lines) {

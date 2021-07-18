@@ -16,9 +16,11 @@
 
 package xyz.deathsgun.modmanager.services;
 
+import com.terraformersmc.modmenu.util.mod.fabric.CustomValueUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.SemanticVersion;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.util.version.VersionDeserializer;
 import net.minecraft.MinecraftVersion;
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +32,6 @@ import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.api.mod.VersionType;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
 
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,45 +43,49 @@ public class UpdateCheckService extends Thread {
     private final List<String> blockedIds = Arrays.asList("java", "minecraft");
 
     public UpdateCheckService() {
-        start();
+        super();
+        setName("ModManager-U");
     }
 
     @Override
     public void run() {
-        FabricLoader.getInstance().getAllMods().stream().filter(container -> Files.exists(container.getRootPath(), LinkOption.NOFOLLOW_LINKS))
-                .filter(container -> blockedIds.contains(container.getMetadata().getId())).forEach(this::checkForUpdate);
+        FabricLoader.getInstance().getAllMods().stream().map(ModContainer::getMetadata)
+                .filter(metadata -> !metadata.getId().startsWith("fabric") && !metadata.containsCustomValue("fabric-api:module-lifecycle"))
+                .filter(metadata -> !CustomValueUtil.getBoolean("fabric-loom:generated", metadata).orElse(false))
+                .filter(metadata -> !blockedIds.contains(metadata.getId()))
+                .forEach(this::checkForUpdate);
     }
 
-    private void checkForUpdate(ModContainer modContainer) {
-        if (!(modContainer.getMetadata().getVersion() instanceof SemanticVersion)) {
-            LogManager.getLogger().warn("Update checking for mod {} not supported because it has no semantic version scheme", modContainer.getMetadata().getId());
+    private void checkForUpdate(ModMetadata metadata) {
+        if (!(metadata.getVersion() instanceof SemanticVersion)) {
+            LogManager.getLogger().warn("Update checking for mod {} not supported because it has no semantic version scheme", metadata.getId());
             return;
         }
         try {
-            String modId = findModId(modContainer);
-            ModVersion version = getUpdateVersion(modId, modContainer);
+            String modId = findModId(metadata);
+            ModVersion version = getUpdateVersion(modId, metadata);
             if (version == null) {
                 return;
             }
-            updates.add(new AvailableUpdates(modId, modContainer.getMetadata().getId(), version));
+            updates.add(new AvailableUpdates(modId, metadata.getId(), version));
         } catch (Exception e) {
-            logger.error("Failed to check for updates for {}", modContainer.getMetadata().getId(), e);
+            logger.error("Failed to check for updates for {}", metadata.getId(), e);
         }
     }
 
-    private String findModId(ModContainer container) throws Exception {
+    private String findModId(ModMetadata container) throws Exception {
         IModProvider provider = ModManager.getModProvider();
-        List<SummarizedMod> hits = provider.getMods(container.getMetadata().getName(), 0, 1);
+        List<SummarizedMod> hits = provider.getMods(container.getName(), 0, 1);
         if (hits.isEmpty()) {
-            throw new Exception(String.format("Mod %s not found on %s", container.getMetadata().getId(), provider.getName()));
+            throw new Exception(String.format("Mod %s not found on %s", container.getId(), provider.getName()));
         }
         return hits.get(0).id();
     }
 
     @Nullable
-    private ModVersion getUpdateVersion(String modId, ModContainer container) throws Exception {
+    private ModVersion getUpdateVersion(String modId, ModMetadata container) throws Exception {
         IModProvider provider = ModManager.getModProvider();
-        SemanticVersion installedVersion = (SemanticVersion) container.getMetadata().getVersion();
+        SemanticVersion installedVersion = (SemanticVersion) container.getVersion();
         List<ModVersion> versions = provider.getVersionsForMod(modId);
         ModVersion latest = null;
         SemanticVersion latestVersion = null;
@@ -96,13 +100,13 @@ public class UpdateCheckService extends Thread {
             }
         }
         if (latest == null) {
-            logger.info("No update for {} found!", container.getMetadata().getId());
+            logger.info("No update for {} found!", container.getId());
         }
         return latest;
     }
 
-    public boolean isUpdateAvailable(SummarizedMod mod, ModContainer modContainer) {
-        return this.updates.stream().anyMatch(update -> update.modId.equalsIgnoreCase(mod.id()) || update.fabricModId.equalsIgnoreCase(modContainer.getMetadata().getId()));
+    public boolean isUpdateAvailable(SummarizedMod mod, ModMetadata modContainer) {
+        return this.updates.stream().anyMatch(update -> update.modId.equalsIgnoreCase(mod.id()) || update.fabricModId.equalsIgnoreCase(modContainer.getId()));
     }
 
     public boolean updatesAvailable() {
@@ -119,9 +123,12 @@ public class UpdateCheckService extends Thread {
         return null;
     }
 
+    public int updatesAvailableCount() {
+        return this.updates.size();
+    }
+
     private record AvailableUpdates(String modId, String fabricModId,
                                     ModVersion update) {
-
     }
 
 }

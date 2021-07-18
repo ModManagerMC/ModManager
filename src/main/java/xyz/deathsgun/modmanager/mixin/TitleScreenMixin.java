@@ -50,7 +50,7 @@ public abstract class TitleScreenMixin extends Screen {
         }
         Objects.requireNonNull(client).getToastManager().add(new SystemToast(SystemToast.Type.TUTORIAL_HINT,
                 new TranslatableText("modmanager.toast.update.title"),
-                new TranslatableText("modmanager.toast.update.description")));
+                new TranslatableText("modmanager.toast.update.description", ModManager.getUpdateChecker().updatesAvailableCount())));
     }
 
 }

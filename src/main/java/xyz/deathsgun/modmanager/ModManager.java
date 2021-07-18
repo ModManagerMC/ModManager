@@ -20,15 +20,16 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import xyz.deathsgun.modmanager.api.mod.ModState;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
+import xyz.deathsgun.modmanager.manager.IconManager;
+import xyz.deathsgun.modmanager.manager.ModManipulationManager;
 import xyz.deathsgun.modmanager.providers.modrinth.Modrinth;
-import xyz.deathsgun.modmanager.services.IconDownloadService;
-import xyz.deathsgun.modmanager.services.ModDownloadService;
+import xyz.deathsgun.modmanager.services.ManipulationService;
 import xyz.deathsgun.modmanager.services.UpdateCheckService;
+import xyz.deathsgun.modmanager.util.FabricMods;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -38,9 +39,10 @@ public class ModManager implements ClientModInitializer, ModMenuApi {
 
     private static final String currentProvider = "Modrinth";
     private static final ArrayList<IModProvider> modProviders = new ArrayList<>();
+    private static final ManipulationService manipulationService = new ManipulationService();
+    private static final IconManager iconManager = new IconManager();
+    private static final ModManipulationManager modManipulationManager = new ModManipulationManager();
     private static final UpdateCheckService updateCheckService = new UpdateCheckService();
-    private static final ModDownloadService modDownloadService = new ModDownloadService();
-    private static final IconDownloadService iconService = new IconDownloadService();
 
     public static void registerModProvider(IModProvider provider) {
         ModManager.modProviders.removeIf(value -> value.getName().equals(provider.getName()));
@@ -51,32 +53,35 @@ public class ModManager implements ClientModInitializer, ModMenuApi {
         return modProviders.stream().filter(iModProvider -> iModProvider.getName().equals(currentProvider)).findFirst().orElse(null);
     }
 
-    public static IconDownloadService getIconDownloader() {
-        return iconService;
+    public static IconManager getIconManager() {
+        return iconManager;
     }
 
-    public static ModDownloadService getModDownloader() {
-        return modDownloadService;
+    public static ModManipulationManager getModManipulationManager() {
+        return modManipulationManager;
     }
 
     public static UpdateCheckService getUpdateChecker() {
         return updateCheckService;
     }
 
-    @Override
-    public void onInitializeClient() {
-        registerModProvider(new Modrinth());
+    public static ManipulationService getManipulationService() {
+        return manipulationService;
+    }
+
+    public static String getVersion() {
+        return "0.1.0";
     }
 
     public static ModState getState(SummarizedMod mod) {
-        Optional<ModContainer> installedMod = getInstalledMod(mod);
-        return installedMod.map(modContainer -> updateCheckService.isUpdateAvailable(mod, modContainer) ? ModState.OUTDATED : ModState.INSTALLED).orElse(ModState.DOWNLOADABLE);
+        Optional<ModContainer> installedMod = FabricMods.getModContainerByMod(mod);
+        return installedMod.map(modContainer -> updateCheckService.isUpdateAvailable(mod, modContainer.getMetadata()) ? ModState.OUTDATED : ModState.INSTALLED).orElse(ModState.DOWNLOADABLE);
     }
 
-    private static Optional<ModContainer> getInstalledMod(SummarizedMod mod) {
-        return FabricLoader.getInstance().getAllMods().stream().filter(container -> container.getMetadata().getId().equalsIgnoreCase(mod.slug()) ||
-                container.getMetadata().getId().equalsIgnoreCase(mod.slug().replaceAll("-", "")))
-                .filter(container -> container.getMetadata().getAuthors().stream().anyMatch(person -> person.getName().equalsIgnoreCase(mod.author()))).findFirst();
+    @Override
+    public void onInitializeClient() {
+        registerModProvider(new Modrinth());
+        updateCheckService.start();
     }
 
 }

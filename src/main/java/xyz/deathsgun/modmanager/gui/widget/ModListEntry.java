@@ -96,16 +96,16 @@ public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry>
 
 
     private void bindIconTexture() {
-        if (ModManager.getIconDownloader().isErrored(mod.id())) {
+        if (ModManager.getIconManager().isErrored(mod.id())) {
             RenderSystem.setShaderTexture(0, UNKNOWN_ICON);
             return;
         }
-        Identifier icon = ModManager.getIconDownloader().getIcon(mod.id());
+        Identifier icon = ModManager.getIconManager().getIconByModId(mod.id());
         if (icon == null) {
-            if (ModManager.getIconDownloader().isLoading(mod.id())) {
+            if (ModManager.getIconManager().isLoading(mod.id())) {
                 icon = LOADING_ICON;
             } else {
-                ModManager.getIconDownloader().addMod(mod);
+                ModManager.getIconManager().downloadIcon(mod);
                 return;
             }
         }
