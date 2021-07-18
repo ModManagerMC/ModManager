@@ -5,11 +5,8 @@ This is ground up rewrite of the old ModManager which used an index on GitHub an
 
 ### TODO
 
-- [X] Add descriptions
-- [X] Add markdown support
-- [X] Allow installing mods
-- [ ] Allow mods to be updated
-- [ ] Remove mods over UI
+For a better overview of the current status, take a look at
+the [project board](https://github.com/DeathsGun/ModManager/projects/1)
 
 ### Credits
 
