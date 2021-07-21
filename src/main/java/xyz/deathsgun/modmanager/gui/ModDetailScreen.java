@@ -80,22 +80,25 @@ public class ModDetailScreen extends Screen {
     }
 
     private void handleActionClick(ButtonWidget buttonWidget) {
+        if (exception != null) {
+            buttonWidget.active = true;
+            MinecraftClient.getInstance().openScreen(new ModManagerErrorScreen(this, exception));
+            return;
+        }
         buttonWidget.active = false;
-        String key = ((TranslatableText) buttonWidget.getMessage()).getKey();
-        switch (key) {
-            case "modmanager.message.install" -> {
+        switch (ModManager.getState(summarizedMod)) {
+            case OUTDATED -> {
+                buttonWidget.setMessage(new TranslatableText("modmanager.message.updating"));
+                ModManager.getModManipulationManager().updateMod(summarizedMod, this::handleTaskResult);
+            }
+            case DOWNLOADABLE -> {
                 buttonWidget.setMessage(new TranslatableText("modmanager.message.installing"));
                 ModManager.getModManipulationManager().installMod(summarizedMod, this::handleTaskResult);
             }
-            case "modmanager.message.remove" -> {
+            case INSTALLED -> {
                 buttonWidget.setMessage(new TranslatableText("modmanager.message.removing"));
                 ModManager.getModManipulationManager().removeMod(summarizedMod, this::handleTaskResult);
             }
-            case "modmanager.message.showError" -> {
-                buttonWidget.active = true;
-                MinecraftClient.getInstance().openScreen(new ModManagerErrorScreen(this, exception));
-            }
-            case "modmanager.message.update" -> buttonWidget.setMessage(new TranslatableText("modmanager.message.updating"));
         }
     }
 
@@ -110,14 +113,11 @@ public class ModDetailScreen extends Screen {
             actionButton.setMessage(new TranslatableText("modmanager.message.showError"));
             return;
         }
-        if (ModManager.getModManipulationManager().isInstalled(summarizedMod)) {
-            if (ModManager.getModManipulationManager().isMarkedUninstalled(summarizedMod)) {
-                actionButton.setMessage(new TranslatableText("modmanager.message.install"));
-            }
-            actionButton.setMessage(new TranslatableText("modmanager.message.remove"));
-            return;
+        switch (ModManager.getState(summarizedMod)) {
+            case DOWNLOADABLE -> actionButton.setMessage(new TranslatableText("modmanager.message.install"));
+            case INSTALLED -> actionButton.setMessage(new TranslatableText("modmanager.message.remove"));
+            case OUTDATED -> actionButton.setMessage(new TranslatableText("modmanager.message.update"));
         }
-        actionButton.setMessage(new TranslatableText("modmanager.message.install"));
     }
 
     @Override

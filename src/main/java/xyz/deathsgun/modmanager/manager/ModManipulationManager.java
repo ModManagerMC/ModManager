@@ -53,6 +53,10 @@ public class ModManipulationManager {
     }
 
     public boolean isMarkedUninstalled(SummarizedMod summarizedMod) {
-        return this.uninstalledMods.add(summarizedMod.id());
+        return this.uninstalledMods.contains(summarizedMod.id());
+    }
+
+    public void updateMod(SummarizedMod summarizedMod, TaskCallback taskCallback) {
+
     }
 }

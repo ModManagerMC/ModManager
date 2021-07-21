@@ -75,7 +75,13 @@ public class ModManager implements ClientModInitializer, ModMenuApi {
 
     public static ModState getState(SummarizedMod mod) {
         Optional<ModContainer> installedMod = FabricMods.getModContainerByMod(mod);
-        return installedMod.map(modContainer -> updateCheckService.isUpdateAvailable(mod, modContainer.getMetadata()) ? ModState.OUTDATED : ModState.INSTALLED).orElse(ModState.DOWNLOADABLE);
+        if (installedMod.isEmpty()) {
+            return getModManipulationManager().isInstalled(mod) ? ModState.INSTALLED : ModState.DOWNLOADABLE;
+        }
+        if (getModManipulationManager().isMarkedUninstalled(mod)) {
+            return ModState.DOWNLOADABLE;
+        }
+        return updateCheckService.isUpdateAvailable(mod, installedMod.get().getMetadata()) ? ModState.OUTDATED : ModState.INSTALLED;
     }
 
     @Override
