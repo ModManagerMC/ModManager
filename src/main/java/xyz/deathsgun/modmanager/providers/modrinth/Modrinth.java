@@ -62,7 +62,7 @@ public class Modrinth implements IModProvider {
         if (!this.categories.isEmpty()) {
             return this.categories;
         }
-        logger.debug("Getting categories");
+        logger.info("Getting categories");
         HttpRequest request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
                 .uri(URI.create(this.baseUrl + "/api/v1/tag/category")).build();
         HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());
@@ -81,7 +81,7 @@ public class Modrinth implements IModProvider {
 
     @Override
     public List<SummarizedMod> getMods(Sorting sorting, int page, int limit) throws Exception {
-        logger.debug("Getting a general list of mods");
+        logger.info("Getting a general list of mods");
         URIBuilder uriBuilder = new URIBuilder(this.baseUrl + "/api/v1/mod");
         uriBuilder.addParameter("index", sorting.name());
         uriBuilder.addParameter("filters", "categories=\"fabric\"");
@@ -90,7 +90,7 @@ public class Modrinth implements IModProvider {
 
     @Override
     public List<SummarizedMod> getMods(Category category, int page, int limit) throws Exception {
-        logger.debug("Getting category '{}' from Modrinth", category.id());
+        logger.info("Getting category '{}' from Modrinth", category.id());
         String key = String.format("%s|%d|%d", category.id(), page, limit);
         if (this.cachedCategoryRequests.containsKey(key)) {
             return this.cachedCategoryRequests.get(key);
@@ -104,7 +104,7 @@ public class Modrinth implements IModProvider {
 
     @Override
     public List<SummarizedMod> getMods(@NotNull String query, int page, int limit) throws Exception {
-        logger.debug("Searching for '{}' in Modrinth", query);
+        logger.info("Searching for '{}' in Modrinth", query);
         URIBuilder uriBuilder = new URIBuilder(this.baseUrl + "/api/v1/mod");
         uriBuilder.addParameter("query", query);
         uriBuilder.addParameter("filters", "categories=\"fabric\" AND NOT client_side=\"unsupported\"");
@@ -116,7 +116,7 @@ public class Modrinth implements IModProvider {
         uriBuilder.addParameter("version", String.format("versions=%s", MinecraftClient.getInstance().getGame().getVersion().getReleaseTarget()));
         uriBuilder.addParameter("offset", String.valueOf(page * limit));
         uriBuilder.addParameter("limit", String.valueOf(limit));
-        logger.debug("Using {} for query", uriBuilder.toString());
+        logger.info("Using {} for query", uriBuilder.toString());
         HttpRequest request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
                 .uri(uriBuilder.build()).build();
         HttpResponse<String> response = this.http.send(request, HttpResponse.BodyHandlers.ofString());

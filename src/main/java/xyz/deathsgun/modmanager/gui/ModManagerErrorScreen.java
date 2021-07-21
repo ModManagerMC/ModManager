@@ -22,6 +22,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.gui.widget.DescriptionWidget;
 
 import java.util.Objects;
@@ -29,7 +30,7 @@ import java.util.Objects;
 public class ModManagerErrorScreen extends Screen {
 
     private final Exception exception;
-    private final Screen parentScreen;
+    private Screen parentScreen;
     private DescriptionWidget descriptionWidget;
 
     public ModManagerErrorScreen(Screen screen, Exception exception) {
@@ -46,6 +47,21 @@ public class ModManagerErrorScreen extends Screen {
         descriptionWidget = this.addSelectableChild(new DescriptionWidget(client, (int) (width * 0.90), height, (int) (height * 0.1), this.height - 36, 9, error));
         descriptionWidget.setLeftPos((int) (this.width * 0.05));
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 154, this.height - 28, 150, 20, ScreenTexts.CANCEL, button -> this.onClose()));
+        this.addDrawableChild(new ButtonWidget(this.width / 2, this.height - 28, 150, 20,
+                new TranslatableText("modmanager.message.goBackAndTryAgain"), button -> {
+            if (this.parentScreen instanceof ModDetailScreen) {
+                this.clearErrors();
+            }
+            this.onClose();
+        }));
+    }
+
+    private void clearErrors() {
+        ModDetailScreen screen = (ModDetailScreen) parentScreen;
+        screen.exception = null;
+        ModManager.getManipulationService().removeTasks(screen.summarizedMod.id());
+        screen.updateActionButton();
+        this.parentScreen = screen;
     }
 
     @Override

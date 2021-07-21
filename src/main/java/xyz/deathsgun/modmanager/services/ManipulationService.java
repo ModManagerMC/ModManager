@@ -33,9 +33,6 @@ public class ManipulationService extends Thread {
     }
 
     public void add(ManipulationTask task) {
-        if (getTask(task.getId()).isPresent()) {
-            return;
-        }
         this.tasks.add(task);
     }
 

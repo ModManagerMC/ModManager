@@ -28,6 +28,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import xyz.deathsgun.modmanager.ModManager;
+import xyz.deathsgun.modmanager.api.manipulation.ManipulationTask;
 import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
@@ -42,12 +43,12 @@ import static xyz.deathsgun.modmanager.gui.widget.ModListEntry.UNKNOWN_ICON;
 public class ModDetailScreen extends Screen {
 
     private static final Pattern HTML_PATTERN = Pattern.compile("<.*?>.*?</.*?>|</*.?>");
-    private final SummarizedMod summarizedMod;
+    final SummarizedMod summarizedMod;
     private final Screen previousScreen;
     private ButtonWidget actionButton;
     private DetailedMod detailedMod;
     private DescriptionWidget descriptionWidget;
-    private Exception exception;
+    Exception exception;
 
     public ModDetailScreen(Screen previousScreen, SummarizedMod mod) {
         super(new LiteralText(mod.name()));
@@ -75,40 +76,48 @@ public class ModDetailScreen extends Screen {
 
         this.actionButton = this.addDrawableChild(new ButtonWidget(this.width - buttonX - 150, this.height - 28, 150, 20, new TranslatableText("modmanager.message.install"),
                 this::handleActionClick));
-
-        //TODO: If only remove available show only that button
+        this.updateActionButton();
     }
 
     private void handleActionClick(ButtonWidget buttonWidget) {
-        if (exception != null) {
-            MinecraftClient.getInstance().openScreen(new ModManagerErrorScreen(this, exception));
-            return;
-        }
         buttonWidget.active = false;
-        buttonWidget.setMessage(new TranslatableText("modmanager.message.installing"));
-        ModManager.getModManipulationManager().installMod(summarizedMod, this::handleErrors);
-    }
-
-    private void handleErrors(Exception e) {
-        this.exception = e;
-        ModManager.getManipulationService().removeTasks(summarizedMod.id());
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (ModManager.getModManipulationManager().isInstalled(summarizedMod)) {
-            actionButton.setMessage(new TranslatableText("modmanager.message.remove"));
-            actionButton.active = true;
-            return;
+        String key = ((TranslatableText) buttonWidget.getMessage()).getKey();
+        switch (key) {
+            case "modmanager.message.install" -> {
+                buttonWidget.setMessage(new TranslatableText("modmanager.message.installing"));
+                ModManager.getModManipulationManager().installMod(summarizedMod, this::handleTaskResult);
+            }
+            case "modmanager.message.remove" -> {
+                buttonWidget.setMessage(new TranslatableText("modmanager.message.removing"));
+                ModManager.getModManipulationManager().removeMod(summarizedMod, this::handleTaskResult);
+            }
+            case "modmanager.message.showError" -> {
+                buttonWidget.active = true;
+                MinecraftClient.getInstance().openScreen(new ModManagerErrorScreen(this, exception));
+            }
+            case "modmanager.message.update" -> buttonWidget.setMessage(new TranslatableText("modmanager.message.updating"));
         }
+    }
+
+    private void handleTaskResult(ManipulationTask task) {
+        this.exception = task.getException();
+        updateActionButton();
+    }
+
+    void updateActionButton() {
+        actionButton.active = true;
         if (exception != null) {
             actionButton.setMessage(new TranslatableText("modmanager.message.showError"));
-            actionButton.active = true;
+            return;
+        }
+        if (ModManager.getModManipulationManager().isInstalled(summarizedMod)) {
+            if (ModManager.getModManipulationManager().isMarkedUninstalled(summarizedMod)) {
+                actionButton.setMessage(new TranslatableText("modmanager.message.install"));
+            }
+            actionButton.setMessage(new TranslatableText("modmanager.message.remove"));
             return;
         }
         actionButton.setMessage(new TranslatableText("modmanager.message.install"));
-        actionButton.active = true;
     }
 
     @Override

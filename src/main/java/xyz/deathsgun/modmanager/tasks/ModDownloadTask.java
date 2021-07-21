@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.deathsgun.modmanager.ModManager;
-import xyz.deathsgun.modmanager.api.manipulation.ErrorHandler;
+import xyz.deathsgun.modmanager.api.manipulation.TaskCallback;
 import xyz.deathsgun.modmanager.api.manipulation.NetworkTask;
 import xyz.deathsgun.modmanager.api.mod.Asset;
 import xyz.deathsgun.modmanager.api.mod.ModVersion;
@@ -41,8 +41,8 @@ import java.util.stream.Collectors;
 
 public class ModDownloadTask extends NetworkTask {
 
-    public ModDownloadTask(@NotNull String id, @NotNull SummarizedMod subject, @Nullable ErrorHandler errorHandler) {
-        super(id, subject, errorHandler);
+    public ModDownloadTask(@NotNull String id, @NotNull SummarizedMod subject, @Nullable TaskCallback taskCallback) {
+        super(id, subject, taskCallback);
         logger = LogManager.getLogger("Mod downloader");
     }
 
@@ -52,6 +52,7 @@ public class ModDownloadTask extends NetworkTask {
             throw new Exception("Summarized mod is empty");
         }
         downloadMod(getVersionForMod(subject));
+        ModManager.getModManipulationManager().markManuallyInstalled(subject);
     }
 
     private ModVersion getVersionForMod(SummarizedMod mod) throws Exception {

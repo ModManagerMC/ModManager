@@ -25,4 +25,5 @@ public interface IListScreen {
     <E> void updateSelectedEntry(Object widget, E entry);
 
     <E> E getEntry(Object widget);
+
 }

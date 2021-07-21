@@ -32,6 +32,7 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     private final ArrayList<SummarizedMod> mods = new ArrayList<>();
     private int page = 0;
     private Category category;
+    private String query;
 
     public ModListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight, ModsOverviewScreen parentScreen) {
         super(client, width, height, top, bottom, itemHeight, parentScreen);
@@ -43,23 +44,42 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     }
 
     public void setCategory(Category category, boolean force) {
-        setScrollAmount(0.0 * Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4)));
+        setScrollAmount(0.0);
         if (this.category != null && Objects.equals(this.category.id(), category.id()) && !force) {
             return;
         }
         this.category = category;
-        this.mods.clear();
-        for (int i = 0; i < this.getEntryCount(); i++) {
-            this.remove(i);
-        }
-        this.clearEntries();
+        this.clearMods();
         try {
-            ModManager.getModProvider().getMods(category, page, limit).forEach(mod -> this.addEntry(new ModListEntry(this, mod)));
+            ModManager.getModProvider().getMods(category, page, limit)
+                    .forEach(mod -> this.addEntry(new ModListEntry(this, mod)));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void searchMods(String query) {
+        if (query == null || "".equals(query)) {
+            return;
+        }
+        setScrollAmount(0.0);
+        this.clearMods();
+        try {
+            this.category = null;
+            ModManager.getModProvider().getMods(query, page, limit)
+                    .forEach(mod -> this.addEntry(new ModListEntry(this, mod)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void clearMods() {
+        this.mods.clear();
+        for (int i = 0; i < this.getEntryCount(); i++) {
+            this.remove(i);
+        }
+        this.clearEntries();
+    }
 
     @Override
     public int addEntry(ModListEntry entry) {
@@ -89,7 +109,11 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
 
     public void showNextPage() {
         this.page++;
-        this.setCategory(category, true);
+        if (this.category != null) {
+            this.setCategory(category, true);
+            return;
+        }
+        this.searchMods(this.query);
     }
 
     public void showPreviousPage() {
@@ -97,7 +121,11 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
         if (this.page < 0) {
             page = 0;
         }
-        this.setCategory(category, true);
+        if (this.category != null) {
+            this.setCategory(category, true);
+            return;
+        }
+        this.searchMods(this.query);
     }
 
     public void close() {

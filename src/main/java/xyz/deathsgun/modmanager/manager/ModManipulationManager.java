@@ -17,7 +17,7 @@
 package xyz.deathsgun.modmanager.manager;
 
 import xyz.deathsgun.modmanager.ModManager;
-import xyz.deathsgun.modmanager.api.manipulation.ErrorHandler;
+import xyz.deathsgun.modmanager.api.manipulation.TaskCallback;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.tasks.ModDownloadTask;
 import xyz.deathsgun.modmanager.tasks.ModRemovalTask;
@@ -28,24 +28,31 @@ import java.util.ArrayList;
 public class ModManipulationManager {
 
     private final ArrayList<String> manuallyInstalled = new ArrayList<>();
+    private final ArrayList<String> uninstalledMods = new ArrayList<>();
 
-    public void installMod(SummarizedMod mod, ErrorHandler errorHandler) {
-        ModManager.getManipulationService().add(new ModDownloadTask(mod.id() + "_mod_download", mod, errorHandler));
+    public void installMod(SummarizedMod mod, TaskCallback taskCallback) {
+        ModManager.getManipulationService().add(new ModDownloadTask(mod.id() + "_mod_download", mod, taskCallback));
     }
 
     public void markManuallyInstalled(SummarizedMod mod) {
         this.manuallyInstalled.add(mod.id());
+        this.uninstalledMods.removeIf(s -> mod.id().equals(s));
     }
 
     public void removeManuallyInstalled(SummarizedMod mod) {
         this.manuallyInstalled.removeIf(s -> mod.id().equals(s));
+        this.uninstalledMods.add(mod.id());
     }
 
-    public void removeMod(SummarizedMod mod, ErrorHandler errorHandler) {
-        ModManager.getManipulationService().add(new ModRemovalTask(mod.id() + "_mod_removal", mod, errorHandler));
+    public void removeMod(SummarizedMod mod, TaskCallback taskCallback) {
+        ModManager.getManipulationService().add(new ModRemovalTask(mod.id() + "_mod_removal", mod, taskCallback));
     }
 
     public boolean isInstalled(SummarizedMod mod) {
         return this.manuallyInstalled.contains(mod.id()) || FabricMods.getModContainerByMod(mod).isPresent();
+    }
+
+    public boolean isMarkedUninstalled(SummarizedMod summarizedMod) {
+        return this.uninstalledMods.add(summarizedMod.id());
     }
 }

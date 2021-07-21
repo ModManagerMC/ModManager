@@ -28,8 +28,8 @@ public abstract class NetworkTask extends ManipulationTask {
 
     protected final HttpClient http;
 
-    public NetworkTask(@NotNull String id, @NotNull SummarizedMod subject, @Nullable ErrorHandler errorHandler) {
-        super(id, subject, errorHandler);
+    public NetworkTask(@NotNull String id, @NotNull SummarizedMod subject, @Nullable TaskCallback taskCallback) {
+        super(id, subject, taskCallback);
         this.http = HttpClient.newHttpClient();
     }
 

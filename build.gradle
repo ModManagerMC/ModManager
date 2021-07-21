@@ -11,13 +11,9 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-	//maven {
-	//	name = "TerraformersMC"
-	//	url = "https://maven.terraformersmc.com/releases/"
-	//}
 	maven {
-		name = "TerraformersMC Fallback"
-		url = "https://raw.githubusercontent.com/TerraformersMC/Archive/main/releases/"
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/releases/"
 	}
 }
 

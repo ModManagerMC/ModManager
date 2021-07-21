@@ -19,6 +19,8 @@ package xyz.deathsgun.modmanager.gui;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import org.apache.logging.log4j.LogManager;
@@ -38,6 +40,7 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
     private ModListEntry selectedMod;
     private CategoryListWidget categoryListWidget;
     private CategoryListEntry selectedCategory;
+    private TextFieldWidget searchBox;
     private int paneWidth;
     private int rightPaneX;
 
@@ -51,17 +54,27 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         Objects.requireNonNull(this.client).keyboard.setRepeatEvents(true);
         paneWidth = this.width / 4;
         rightPaneX = this.paneWidth + 10;
+        int searchBoxWidth = paneWidth + 40;
+        this.searchBox = this.addSelectableChild(new TextFieldWidget(textRenderer, 5, 5, searchBoxWidth, 20, new TranslatableText("modmanager.message.search")));
+        this.searchBox.setChangedListener(this::handleSearch);
+
         this.categoryListWidget = this.addSelectableChild(new CategoryListWidget(this.client, paneWidth, this.height, 30, this.height - 10, 14, this));
         this.categoryListWidget.setLeftPos(0);
+
         int modListWidth = this.width - paneWidth - 20;
         this.modListWidget = this.addSelectableChild(new ModListWidget(this.client, modListWidth, this.height, 30, this.height - 40, 36, this));
         this.modListWidget.setLeftPos(rightPaneX);
         this.categoryListWidget.init();
         this.modListWidget.init();
+
         this.addDrawableChild(new ButtonWidget(rightPaneX, this.height - 30, modListWidth / 2 - 10, 20,
                 new TranslatableText("modmanager.page.previous"), button -> this.modListWidget.showPreviousPage()));
         this.addDrawableChild(new ButtonWidget(rightPaneX + modListWidth / 2, this.height - 30, modListWidth / 2, 20,
                 new TranslatableText("modmanager.page.next"), button -> this.modListWidget.showNextPage()));
+    }
+
+    private void handleSearch(String query) {
+        this.modListWidget.searchMods(query);
     }
 
     @Override
@@ -71,11 +84,13 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         font.draw(matrices, new TranslatableText("modmanager.categories"), 5, 29 - font.fontHeight, 0xFFFFFF);
         this.categoryListWidget.render(matrices, mouseX, mouseY, delta);
         this.modListWidget.render(matrices, mouseX, mouseY, delta);
+        this.searchBox.render(matrices, mouseX, mouseY, delta);
         super.render(matrices, mouseX, mouseY, delta);
     }
 
     @Override
     public void tick() {
+        this.searchBox.tick();
     }
 
     @Override
@@ -89,6 +104,8 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
     public <E> void updateSelectedEntry(Object widget, E entry) {
         if (widget == this.categoryListWidget) {
             if (entry != null) {
+                this.searchBox.setText("");
+                this.searchBox.setTextFieldFocused(false);
                 this.selectedCategory = (CategoryListEntry) entry;
                 this.modListWidget.setCategory(selectedCategory.getCategory(), false);
             }

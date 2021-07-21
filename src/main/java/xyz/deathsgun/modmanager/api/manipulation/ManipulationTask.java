@@ -26,15 +26,16 @@ public abstract class ManipulationTask {
 
     protected final String id;
     protected final SummarizedMod subject;
-    private final @Nullable ErrorHandler errorHandler;
+    private final @Nullable TaskCallback taskCallback;
     private final boolean debugMode;
     protected Logger logger;
     protected TaskState state = TaskState.SCHEDULED;
+    private Exception error;
 
-    public ManipulationTask(@NotNull String id, @NotNull SummarizedMod subject, @Nullable ErrorHandler errorHandler) {
+    public ManipulationTask(@NotNull String id, @NotNull SummarizedMod subject, @Nullable TaskCallback taskCallback) {
         this.id = id;
         this.subject = subject;
-        this.errorHandler = errorHandler;
+        this.taskCallback = taskCallback;
         this.debugMode = FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
@@ -45,11 +46,15 @@ public abstract class ManipulationTask {
             this.state = TaskState.RUNNING;
             execute();
             this.state = TaskState.FINISHED;
+            if (taskCallback != null) {
+                taskCallback.onTaskFinish(this);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            this.error = e;
+            logger.error("Error while executing task for {}", subject.slug(), e);
             this.state = TaskState.FAILED;
-            if (errorHandler != null) {
-                errorHandler.onError(e);
+            if (taskCallback != null) {
+                taskCallback.onTaskFinish(this);
             }
         }
     }
@@ -71,6 +76,10 @@ public abstract class ManipulationTask {
             return;
         }
         logger.info(message, o);
+    }
+
+    public Exception getException() {
+        return error;
     }
 
     public enum TaskState {

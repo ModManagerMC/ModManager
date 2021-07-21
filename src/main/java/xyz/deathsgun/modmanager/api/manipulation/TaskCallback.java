@@ -16,8 +16,8 @@
 
 package xyz.deathsgun.modmanager.api.manipulation;
 
-public interface ErrorHandler {
+public interface TaskCallback {
 
-    void onError(Exception error);
+    void onTaskFinish(ManipulationTask task);
 
 }

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.deathsgun.modmanager.ModManager;
-import xyz.deathsgun.modmanager.api.manipulation.ErrorHandler;
+import xyz.deathsgun.modmanager.api.manipulation.TaskCallback;
 import xyz.deathsgun.modmanager.api.manipulation.NetworkTask;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 
@@ -36,8 +36,8 @@ public class IconDownloadTask extends NetworkTask {
 
     private final HttpClient http = HttpClient.newHttpClient();
 
-    public IconDownloadTask(@NotNull String id, @NotNull SummarizedMod subject, @Nullable ErrorHandler errorHandler) {
-        super(id, subject, errorHandler);
+    public IconDownloadTask(@NotNull String id, @NotNull SummarizedMod subject, @Nullable TaskCallback taskCallback) {
+        super(id, subject, taskCallback);
         logger = LogManager.getLogger("Icon downloader");
     }
 
@@ -47,6 +47,7 @@ public class IconDownloadTask extends NetworkTask {
             throw new Exception("Summarized mod is null");
         }
         debug("Downloading icon for {}", subject.slug());
+        debug("Using URL {}", subject.icon());
         HttpRequest request = build(HttpRequest.newBuilder().GET().uri(URI.create(subject.icon())));
         HttpResponse<InputStream> response = this.http.send(request, HttpResponse.BodyHandlers.ofInputStream());
         if (response.statusCode() != 200) {
