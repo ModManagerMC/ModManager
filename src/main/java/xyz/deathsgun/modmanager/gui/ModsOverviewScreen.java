@@ -20,11 +20,8 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import xyz.deathsgun.modmanager.gui.widget.CategoryListEntry;
 import xyz.deathsgun.modmanager.gui.widget.CategoryListWidget;
 import xyz.deathsgun.modmanager.gui.widget.ModListEntry;
@@ -43,6 +40,8 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
     private TextFieldWidget searchBox;
     private int paneWidth;
     private int rightPaneX;
+    private ButtonWidget previousPage;
+    private ButtonWidget nextPage;
 
     public ModsOverviewScreen(Screen previousScreen) {
         super(new TranslatableText("modmanager.title"));
@@ -67,9 +66,9 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         this.categoryListWidget.init();
         this.modListWidget.init();
 
-        this.addDrawableChild(new ButtonWidget(rightPaneX, this.height - 30, modListWidth / 2 - 10, 20,
+        this.previousPage = this.addDrawableChild(new ButtonWidget(rightPaneX, this.height - 30, modListWidth / 2 - 10, 20,
                 new TranslatableText("modmanager.page.previous"), button -> this.modListWidget.showPreviousPage()));
-        this.addDrawableChild(new ButtonWidget(rightPaneX + modListWidth / 2, this.height - 30, modListWidth / 2, 20,
+        this.nextPage = this.addDrawableChild(new ButtonWidget(rightPaneX + modListWidth / 2, this.height - 30, modListWidth / 2, 20,
                 new TranslatableText("modmanager.page.next"), button -> this.modListWidget.showNextPage()));
     }
 
@@ -91,6 +90,7 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
     @Override
     public void tick() {
         this.searchBox.tick();
+        this.nextPage.active = this.modListWidget.getEntryCount() >= this.modListWidget.getLimit();
     }
 
     @Override
@@ -116,7 +116,9 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
                     Objects.requireNonNull(this.client).openScreen(new ModDetailScreen(this, ((ModListEntry) entry).getMod()));
                     return;
                 }
-                this.selectedMod = (ModListEntry) entry;
+                if (entry instanceof ModListEntry) {
+                    this.selectedMod = (ModListEntry) entry;
+                }
             }
         }
     }

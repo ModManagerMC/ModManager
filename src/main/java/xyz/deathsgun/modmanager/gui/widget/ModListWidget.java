@@ -68,9 +68,14 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
             this.category = null;
             ModManager.getModProvider().getMods(query, page, limit)
                     .forEach(mod -> this.addEntry(new ModListEntry(this, mod)));
+            this.query = query;
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int getLimit() {
+        return limit;
     }
 
     private void clearMods() {

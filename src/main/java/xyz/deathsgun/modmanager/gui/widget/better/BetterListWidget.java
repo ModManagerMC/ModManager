@@ -185,6 +185,10 @@ public abstract class BetterListWidget<E extends BetterListWidget.BetterListEntr
     }
 
 
+    public int getEntryCount() {
+        return super.getEntryCount();
+    }
+
     public static abstract class BetterListEntry<E extends BetterListWidget.BetterListEntry<E>> extends AlwaysSelectedEntryListWidget.Entry<E> {
 
         protected final BetterListWidget<E> list;
