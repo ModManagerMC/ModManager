@@ -115,4 +115,9 @@ public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry>
     public SummarizedMod getMod() {
         return mod;
     }
+
+    @Override
+    public Text getNarration() {
+        return null;
+    }
 }

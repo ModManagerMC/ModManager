@@ -66,7 +66,7 @@ public class ModManagerErrorScreen extends Screen {
 
     @Override
     public void onClose() {
-        Objects.requireNonNull(client).openScreen(parentScreen);
+        Objects.requireNonNull(client).setScreen(parentScreen);
     }
 
     @Override

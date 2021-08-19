@@ -47,7 +47,7 @@ public class ModsScreenMixin extends Screen {
         int searchBoxWidth = this.paneWidth - 32 - 22;
         this.addDrawableChild(new ModManagerTexturedButtonWidget(this.paneWidth / 2 + searchBoxWidth / 2 + 14,
                 22, 20, 20, 0, 0, MODMANAGER_BUTTON_LOCATION, 32, 64, button -> {
-            Objects.requireNonNull(this.client).openScreen(new ModsOverviewScreen(this));
+            Objects.requireNonNull(this.client).setScreen(new ModsOverviewScreen(this));
         }, new TranslatableText("modmanager.button.open")));
     }
 

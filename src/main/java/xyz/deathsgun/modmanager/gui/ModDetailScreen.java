@@ -63,7 +63,7 @@ public class ModDetailScreen extends Screen {
             detailedMod = ModManager.getModProvider().getMod(summarizedMod.id());
         } catch (Exception e) {
             e.printStackTrace();
-            Objects.requireNonNull(this.client).openScreen(new ModManagerErrorScreen(this, e));
+            Objects.requireNonNull(this.client).setScreen(new ModManagerErrorScreen(this, e));
         }
         int buttonX = this.width / 8;
         String text = detailedMod.body();
@@ -72,7 +72,7 @@ public class ModDetailScreen extends Screen {
         }
         this.descriptionWidget = this.addSelectableChild(new DescriptionWidget(client, this.width - 20, this.height - 34, 79, this.height - 30, textRenderer.fontHeight, text));
         this.descriptionWidget.setLeftPos(10);
-        this.addDrawableChild(new ButtonWidget(buttonX, this.height - 28, 150, 20, ScreenTexts.BACK, button -> Objects.requireNonNull(client).openScreen(previousScreen)));
+        this.addDrawableChild(new ButtonWidget(buttonX, this.height - 28, 150, 20, ScreenTexts.BACK, button -> Objects.requireNonNull(client).setScreen(previousScreen)));
 
         this.actionButton = this.addDrawableChild(new ButtonWidget(this.width - buttonX - 150, this.height - 28, 150, 20, new TranslatableText("modmanager.message.install"),
                 this::handleActionClick));
@@ -82,7 +82,7 @@ public class ModDetailScreen extends Screen {
     private void handleActionClick(ButtonWidget buttonWidget) {
         if (exception != null) {
             buttonWidget.active = true;
-            MinecraftClient.getInstance().openScreen(new ModManagerErrorScreen(this, exception));
+            MinecraftClient.getInstance().setScreen(new ModManagerErrorScreen(this, exception));
             return;
         }
         buttonWidget.active = false;
@@ -179,6 +179,6 @@ public class ModDetailScreen extends Screen {
 
     @Override
     public void onClose() {
-        Objects.requireNonNull(this.client).openScreen(previousScreen);
+        Objects.requireNonNull(this.client).setScreen(previousScreen);
     }
 }

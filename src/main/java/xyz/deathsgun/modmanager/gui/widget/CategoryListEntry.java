@@ -52,11 +52,16 @@ public class CategoryListEntry extends BetterListWidget.BetterListEntry<Category
     }
 
     @Override
-    public Text method_37006() {
+    public Text getTitle() {
         return category.text();
     }
 
     public Category getCategory() {
         return category;
+    }
+
+    @Override
+    public Text getNarration() {
+        return null;
     }
 }

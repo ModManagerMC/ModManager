@@ -1,7 +1,7 @@
 //file:noinspection GroovyAssignabilityCheck
 //file:noinspection GroovyAccessibility
 plugins {
-	id "fabric-loom" version "0.8-SNAPSHOT"
+	id "fabric-loom" version "0.9-SNAPSHOT"
 	id "maven-publish"
 }
 
@@ -82,6 +82,7 @@ publishing {
 	}
 
 	repositories {
+		mavenLocal()
 		maven {
 			url = "http://vault:8081/repository/maven-snapshots/"
 			allowInsecureProtocol true

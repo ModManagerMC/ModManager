@@ -46,7 +46,7 @@ public class CategoryListWidget extends BetterListWidget<CategoryListEntry> {
             }
             setSelected(this.getEntry(0));
         } catch (Exception e) {
-            client.openScreen(new ModManagerErrorScreen((Screen) parent, e));
+            client.setScreen(new ModManagerErrorScreen((Screen) parent, e));
             e.printStackTrace();
         }
     }

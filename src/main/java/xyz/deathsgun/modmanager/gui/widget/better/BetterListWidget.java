@@ -201,8 +201,7 @@ public abstract class BetterListWidget<E extends BetterListWidget.BetterListEntr
 
         public abstract String id();
 
-        @Override
-        public Text method_37006() {
+        public Text getTitle() {
             return title;
         }
 

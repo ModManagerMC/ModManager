@@ -97,7 +97,7 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
     public void onClose() {
         super.onClose();
         this.modListWidget.close();
-        Objects.requireNonNull(this.client).openScreen(this.previousScreen);
+        Objects.requireNonNull(this.client).setScreen(this.previousScreen);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
         if (widget == this.modListWidget) {
             if (entry != null) {
                 if (this.selectedMod == entry) {
-                    Objects.requireNonNull(this.client).openScreen(new ModDetailScreen(this, ((ModListEntry) entry).getMod()));
+                    Objects.requireNonNull(this.client).setScreen(new ModDetailScreen(this, ((ModListEntry) entry).getMod()));
                     return;
                 }
                 if (entry instanceof ModListEntry) {
