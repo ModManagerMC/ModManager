@@ -16,11 +16,20 @@
 
 package xyz.deathsgun.modmanager.util;
 
+import com.google.gson.Gson;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
+import xyz.deathsgun.modmanager.model.ReducedModMetadata;
 
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class FabricMods {
 
@@ -28,6 +37,23 @@ public class FabricMods {
         return FabricLoader.getInstance().getAllMods().stream()
                 .filter(metadata -> metadata.getMetadata().getId().equalsIgnoreCase(mod.slug()) ||
                         metadata.getMetadata().getName().equalsIgnoreCase(mod.name())).findFirst();
+    }
+
+    public static Path getJarFromModContainer(String id, String name) throws Exception {
+        List<Path> jars = Files.list(FabricLoader.getInstance().getGameDir().resolve("mods"))
+                .filter(file -> file.toFile().getName().endsWith(".jar"))
+                .collect(Collectors.toList());
+        Gson gson = new Gson();
+        for (Path path : jars) {
+            ZipFile zipFile = new ZipFile(path.toFile());
+            ZipEntry entry = zipFile.getEntry("fabric.mod.json");
+            ReducedModMetadata metadata = gson.fromJson(new InputStreamReader(zipFile.getInputStream(entry)), ReducedModMetadata.class);
+            zipFile.close();
+            if (metadata.getId().equals(id) || metadata.getName().equals(name)) {
+                return path;
+            }
+        }
+        return null;
     }
 
 }

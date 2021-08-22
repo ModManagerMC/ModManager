@@ -70,7 +70,7 @@ public class UpdateCheckService extends Thread {
             }
             updates.add(new AvailableUpdates(modId, metadata.getId(), version));
         } catch (Exception e) {
-            logger.error("Failed to check for updates for {}", metadata.getId(), e);
+            logger.error("Failed to check for updates for {}", metadata.getId());
         }
     }
 

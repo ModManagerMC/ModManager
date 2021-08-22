@@ -52,6 +52,7 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
         this.clearMods();
         if (category.id().equals("updatable")) {
             this.addUpdatableMods();
+            return;
         }
         try {
             ModManager.getModProvider().getMods(category, page, limit)
@@ -62,8 +63,9 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
     }
 
     private void addUpdatableMods() {
-        ModManager.getUpdateChecker().getUpdatableMods().forEach(mod ->
-                this.addEntry(new ModListEntry(this, mod)));
+        ModManager.getUpdateChecker().getUpdatableMods().stream()
+                .filter(detailedMod -> !ModManager.getModManipulationManager().isMarkedUpdated(detailedMod.toSummarizedMod()))
+                .forEach(mod -> this.addEntry(new ModListEntry(this, mod)));
     }
 
     public void searchMods(String query) {
@@ -139,6 +141,10 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
             return;
         }
         this.searchMods(this.query);
+    }
+
+    public int getCurrentPage() {
+        return page;
     }
 
     public void close() {

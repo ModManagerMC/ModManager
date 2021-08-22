@@ -16,11 +16,13 @@
 
 package xyz.deathsgun.modmanager.manager;
 
+import com.google.gson.JsonArray;
 import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.api.manipulation.TaskCallback;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.tasks.ModDownloadTask;
 import xyz.deathsgun.modmanager.tasks.ModRemovalTask;
+import xyz.deathsgun.modmanager.tasks.ModUpdateTask;
 import xyz.deathsgun.modmanager.util.FabricMods;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class ModManipulationManager {
 
     private final ArrayList<String> manuallyInstalled = new ArrayList<>();
     private final ArrayList<String> uninstalledMods = new ArrayList<>();
+    private final ArrayList<String> updatedMods = new ArrayList<>();
 
     public void installMod(SummarizedMod mod, TaskCallback taskCallback) {
         ModManager.getManipulationService().add(new ModDownloadTask(mod.id() + "_mod_download", mod, taskCallback));
@@ -36,6 +39,12 @@ public class ModManipulationManager {
 
     public void markManuallyInstalled(SummarizedMod mod) {
         this.manuallyInstalled.add(mod.id());
+        this.uninstalledMods.removeIf(s -> mod.id().equals(s));
+    }
+
+    public void markManuallyUpdated(SummarizedMod mod) {
+        this.updatedMods.add(mod.id());
+        this.manuallyInstalled.removeIf(s -> mod.id().equals(s));
         this.uninstalledMods.removeIf(s -> mod.id().equals(s));
     }
 
@@ -56,7 +65,11 @@ public class ModManipulationManager {
         return this.uninstalledMods.contains(summarizedMod.id());
     }
 
-    public void updateMod(SummarizedMod summarizedMod, TaskCallback taskCallback) {
+    public void updateMod(SummarizedMod mod, TaskCallback taskCallback) {
+        ModManager.getManipulationService().add(new ModUpdateTask(mod.id() + "_mod_update", mod, taskCallback));
+    }
 
+    public boolean isMarkedUpdated(SummarizedMod mod) {
+        return this.updatedMods.contains(mod.id());
     }
 }

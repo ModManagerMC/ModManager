@@ -81,6 +81,9 @@ public class ModManager implements ClientModInitializer, ModMenuApi {
         if (getModManipulationManager().isMarkedUninstalled(mod)) {
             return ModState.DOWNLOADABLE;
         }
+        if (getModManipulationManager().isMarkedUpdated(mod)) {
+            return ModState.INSTALLED;
+        }
         return updateCheckService.isUpdateAvailable(mod, installedMod.get().getMetadata()) ? ModState.OUTDATED : ModState.INSTALLED;
     }
 

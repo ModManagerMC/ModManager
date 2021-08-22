@@ -90,6 +90,7 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
     @Override
     public void tick() {
         this.searchBox.tick();
+        this.previousPage.active = this.modListWidget.getCurrentPage() > 0;
         this.nextPage.active = this.modListWidget.getEntryCount() >= this.modListWidget.getLimit();
     }
 

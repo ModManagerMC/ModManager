@@ -4,9 +4,9 @@
   "package": "xyz.deathsgun.modmanager.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-	"TitleScreenMixin"
   ],
   "client": [
+    "TitleScreenMixin",
 	"ModsScreenMixin"
   ],
   "injectors": {
