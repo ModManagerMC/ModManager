@@ -88,7 +88,7 @@ publishing {
 			allowInsecureProtocol true
 			credentials {
 				username "buildtool"
-				password project.buildtools_pw
+				password project.hasProperty("buildtools_pw") ? project.buildtools_pw : ""
 			}
 		}
 	}
