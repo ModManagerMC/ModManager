@@ -27,6 +27,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.NotNull;
 import xyz.deathsgun.modmanager.ModManager;
+import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 import xyz.deathsgun.modmanager.api.mod.ModState;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.gui.widget.better.BetterListWidget;
@@ -46,6 +47,13 @@ public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry>
         super(list, new LiteralText(mod.name()));
         this.mod = mod;
         CompletableFuture.runAsync(() -> this.modState = ModManager.getState(this.mod));
+    }
+
+    public ModListEntry(ModListWidget list, DetailedMod mod) {
+        super(list, new LiteralText(mod.name()));
+        this.mod = mod.toSummarizedMod();
+        // When calling this it's almost likely because of the updatable mods overview
+        this.modState = ModState.OUTDATED;
     }
 
     @Override
@@ -118,6 +126,6 @@ public class ModListEntry extends BetterListWidget.BetterListEntry<ModListEntry>
 
     @Override
     public Text getNarration() {
-        return null;
+        return getTitle();
     }
 }

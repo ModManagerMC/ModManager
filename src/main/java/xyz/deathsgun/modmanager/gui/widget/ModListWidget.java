@@ -50,12 +50,20 @@ public class ModListWidget extends BetterListWidget<ModListEntry> {
         }
         this.category = category;
         this.clearMods();
+        if (category.id().equals("updatable")) {
+            this.addUpdatableMods();
+        }
         try {
             ModManager.getModProvider().getMods(category, page, limit)
                     .forEach(mod -> this.addEntry(new ModListEntry(this, mod)));
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void addUpdatableMods() {
+        ModManager.getUpdateChecker().getUpdatableMods().forEach(mod ->
+                this.addEntry(new ModListEntry(this, mod)));
     }
 
     public void searchMods(String query) {

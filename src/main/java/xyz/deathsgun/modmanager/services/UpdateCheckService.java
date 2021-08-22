@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import xyz.deathsgun.modmanager.ModManager;
+import xyz.deathsgun.modmanager.api.mod.DetailedMod;
 import xyz.deathsgun.modmanager.api.mod.ModVersion;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.api.mod.VersionType;
@@ -125,6 +126,18 @@ public class UpdateCheckService extends Thread {
 
     public int updatesAvailableCount() {
         return this.updates.size();
+    }
+
+    public List<DetailedMod> getUpdatableMods() {
+        ArrayList<DetailedMod> mods = new ArrayList<>();
+        for (AvailableUpdates update : this.updates) {
+            try {
+                mods.add(ModManager.getModProvider().getMod(update.modId()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return mods;
     }
 
     private record AvailableUpdates(String modId, String fabricModId,
