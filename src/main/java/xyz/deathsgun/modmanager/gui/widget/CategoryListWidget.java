@@ -18,6 +18,7 @@ package xyz.deathsgun.modmanager.gui.widget;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.TranslatableText;
 import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.api.mod.Category;
 import xyz.deathsgun.modmanager.gui.ModManagerErrorScreen;
@@ -39,6 +40,10 @@ public class CategoryListWidget extends BetterListWidget<CategoryListEntry> {
     public void init() {
         try {
             this.categories = new ArrayList<>();
+            this.addEntry(new CategoryListEntry(this, new Category(
+                    "updatable",
+                    new TranslatableText("modmanager.categories.updatable")
+            )));
             ModManager.getModProvider().getCategories().forEach(category -> this.addEntry(new CategoryListEntry(this, category)));
             if (parent.getEntry(this) != null) {
                 setSelected(parent.getEntry(this));

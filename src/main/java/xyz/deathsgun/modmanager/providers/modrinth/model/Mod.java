@@ -36,6 +36,8 @@ public class Mod {
     private List<String> categories;
     @SerializedName("issues_url")
     private String issuesUrl;
+    @SerializedName("icon_url")
+    private String icon;
     @SerializedName("source_url")
     private String sourceUrl;
     @SerializedName("wiki_url")
@@ -45,6 +47,6 @@ public class Mod {
     public DetailedMod toDetailedMod() {
         ArrayList<Category> categoriesList = new ArrayList<>();
         categories.forEach(s -> categoriesList.add(new Category(s, new TranslatableText("modmanager.category." + s))));
-        return new DetailedMod(id.replaceFirst("local-", ""), title, description, body, license.name(), downloads, categoriesList, issuesUrl, sourceUrl, wikiUrl, versions);
+        return new DetailedMod(id.replaceFirst("local-", ""), slug, title, description, body, license.name(), icon, downloads, categoriesList, issuesUrl, sourceUrl, wikiUrl, versions);
     }
 }

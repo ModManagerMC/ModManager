@@ -16,14 +16,17 @@
 
 package xyz.deathsgun.modmanager.api.mod;
 
+import java.util.Collections;
 import java.util.List;
 
 public record DetailedMod(
         String id,
+        String slug,
         String name,
         String description,
         String body,
         String license,
+        String icon,
         int downloads,
         List<Category> categories,
         String issuesUrl,
@@ -31,4 +34,7 @@ public record DetailedMod(
         String wikiUrl,
         List<String> versions
 ) {
+    public SummarizedMod toSummarizedMod() {
+        return new SummarizedMod(id, slug, "", name, Collections.emptyList(), description, icon);
+    }
 }

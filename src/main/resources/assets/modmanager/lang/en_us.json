@@ -2,6 +2,7 @@
   "modmanager.badge.installed": "Installed",
   "modmanager.badge.outdated": "Outdated",
   "modmanager.categories": "Categories",
+  "modmanager.categories.updatable": "Updatable mods",
   "modmanager.category.technology": "Technology",
   "modmanager.category.adventure": "Adventure",
   "modmanager.category.magic": "Magic",
