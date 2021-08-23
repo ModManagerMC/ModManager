@@ -43,5 +43,6 @@ public class ModUpdateTask extends NetworkTask {
         Files.delete(jar);
         InstallationUtil.downloadMod(http, InstallationUtil.getVersionForMod(subject));
         ModManager.getModManipulationManager().markManuallyUpdated(subject);
+        ModManager.getUpdateChecker().removeUpdate(subject.id());
     }
 }
