@@ -36,6 +36,7 @@ import xyz.deathsgun.modmanager.api.provider.IModProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class UpdateCheckService extends Thread {
 
@@ -113,6 +114,10 @@ public class UpdateCheckService extends Thread {
 
     public boolean updatesAvailable() {
         return !this.updates.isEmpty();
+    }
+
+    public void removeUpdate(String modId) {
+        this.updates.removeIf(update -> Objects.equals(update.modId, modId));
     }
 
     @Nullable
