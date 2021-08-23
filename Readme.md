@@ -1,12 +1,20 @@
 # ModManager
 
-This is ground up rewrite of the old ModManager which used an index on GitHub and a local sql database. The new version
-+uses only the Modrinth API.
+Extends [ModManager](https://github.com/TerraformersMC/ModMenu) with a new tab for installing,
+removing and updating mods.
 
-### TODO
+Features:
+* Browse through Modrinth in minecraft
+* Install, remove and update mods in minecraft (needs restart to apply changes)
+* Notify about outdated mods
+* Show a list of all outdated mods
 
-For a better overview of the current status, take a look at
-the [project board](https://github.com/DeathsGun/ModManager/projects/1)
+### Screenshots
+
+Search view:
+![](screenshots/search.png)
+Updatable mods list:
+![](screenshots/update-required.png)
 
 ### Credits
 
