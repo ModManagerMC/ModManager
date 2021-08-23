@@ -8,10 +8,11 @@
 	"DeathsGun"
   ],
   "contact": {
-	"homepage": "https://github.com/DeathsGun/ModManager",
+	"homepage": "https://modrinth.com/mod/modmanager",
 	"sources": "https://github.com/DeathsGun/ModManager",
 	"issues": "https://github.com/DeathsGun/ModManager/issues"
   },
+  "icon": "assets/modmanager/icon.png",
   "license": "APL-2.0",
   "environment": "client",
   "entrypoints": {
