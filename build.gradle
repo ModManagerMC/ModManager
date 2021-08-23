@@ -1,8 +1,8 @@
 //file:noinspection GroovyAssignabilityCheck
 //file:noinspection GroovyAccessibility
 plugins {
-	id "fabric-loom" version "0.9-SNAPSHOT"
-	id "maven-publish"
+    id "fabric-loom" version "0.9-SNAPSHOT"
+    id "com.modrinth.minotaur" version "1.2.1"
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
@@ -13,83 +13,60 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-	maven {
-		name = "TerraformersMC"
-		url = "https://maven.terraformersmc.com/releases/"
-	}
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/releases/"
+    }
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 processResources {
-	inputs.property "version", project.version
-	inputs.property "modmenu_version", project.modmenu_version
+    inputs.property "version", project.version
+    inputs.property "modmenu_version", project.modmenu_version
 
-	filesMatching("fabric.mod.json") {
-		expand project.properties
-	}
+    filesMatching("fabric.mod.json") {
+        expand project.properties
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = "UTF-8"
-	// Minecraft 1.17 (21w19a) upwards uses Java 16.
-	it.options.release = 16
+    it.options.encoding = "UTF-8"
+    // Minecraft 1.17 (21w19a) upwards uses Java 16.
+    it.options.release = 16
 }
 
 java {
-	withSourcesJar()
+    withSourcesJar()
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}" }
+    }
 }
 
-/*
- * Copyright 2021 DeathsGun
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import com.modrinth.minotaur.TaskModrinthUpload
+import com.modrinth.minotaur.request.VersionType
+import com.modrinth.minotaur.request.Dependency
 
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
-		}
-	}
+task publishModrinth(type: TaskModrinthUpload) {
+    onlyIf {
+        System.getenv("MODRINTH")
+    }
 
-	repositories {
-		mavenLocal()
-		maven {
-			url = "http://vault:8081/repository/maven-snapshots/"
-			allowInsecureProtocol true
-			credentials {
-				username "buildtool"
-				password project.hasProperty("buildtools_pw") ? project.buildtools_pw : ""
-			}
-		}
-	}
+    token = System.getenv("MODRINTH")
+    projectId = '6kq7BzRK'
+    versionNumber = version
+    uploadFile = remapJar
+    versionType = VersionType.ALPHA
+    addGameVersion(project.minecraft_version)
+    addLoader('fabric')
+    addDependency("E4QBMVtO", Dependency.DependencyType.REQUIRED)
 }
