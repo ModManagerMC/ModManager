@@ -17,11 +17,13 @@
 package xyz.deathsgun.modmanager.gui;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
+import org.jetbrains.annotations.Nullable;
 import xyz.deathsgun.modmanager.gui.widget.CategoryListEntry;
 import xyz.deathsgun.modmanager.gui.widget.CategoryListWidget;
 import xyz.deathsgun.modmanager.gui.widget.ModListEntry;
@@ -122,6 +124,12 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
                 }
             }
         }
+    }
+
+    @Nullable
+    @Override
+    public Element getFocused() {
+        return super.getFocused();
     }
 
     @SuppressWarnings("unchecked")
