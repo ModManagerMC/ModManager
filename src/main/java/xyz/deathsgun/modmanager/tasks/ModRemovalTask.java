@@ -26,7 +26,6 @@ import xyz.deathsgun.modmanager.api.manipulation.TaskCallback;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.util.FabricMods;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -53,7 +52,8 @@ public class ModRemovalTask extends ManipulationTask {
         if (jar == null) {
             throw new Exception(String.format("Couldn't find jar for %s", subject.name()));
         }
-        Files.delete(jar);
+        //TODO: Delete file directly
+        jar.toFile().deleteOnExit();
         ModManager.getModManipulationManager().removeManuallyInstalled(subject);
     }
 
