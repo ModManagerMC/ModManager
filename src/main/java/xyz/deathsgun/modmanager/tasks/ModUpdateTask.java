@@ -41,7 +41,7 @@ public class ModUpdateTask extends NetworkTask {
         }
         //TODO: Delete file directly
         jar.toFile().deleteOnExit();
-        InstallationUtil.downloadMod(http, InstallationUtil.getVersionForMod(subject));
+        InstallationUtil.downloadMod(http, InstallationUtil.getInstallableVersionForMod(subject));
         ModManager.getModManipulationManager().markManuallyUpdated(subject);
         ModManager.getUpdateChecker().removeUpdate(subject.id());
     }

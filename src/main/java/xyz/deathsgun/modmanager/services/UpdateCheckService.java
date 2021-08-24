@@ -46,7 +46,7 @@ public class UpdateCheckService extends Thread {
 
     public UpdateCheckService() {
         super();
-        setName("ModManager-U");
+        setName("ModManager");
     }
 
     @Override
@@ -71,17 +71,27 @@ public class UpdateCheckService extends Thread {
             }
             updates.add(new AvailableUpdates(modId, metadata.getId(), version));
         } catch (Exception e) {
-            logger.error("Failed to check for updates for {}", metadata.getId());
+            logger.error("Failed to check for updates for {}: {}", metadata.getId(), e.getMessage());
         }
     }
 
     private String findModId(ModMetadata container) throws Exception {
         IModProvider provider = ModManager.getModProvider();
-        List<SummarizedMod> hits = provider.getMods(container.getName(), 0, 1);
+        try {
+            DetailedMod mod = provider.getMod(container.getId()); // Try mod id most of the time it's also the Modrinth slug
+            return mod.id();
+        } catch (Exception ignored) {
+        }
+        List<SummarizedMod> hits = provider.getMods(container.getName(), 0, 10);
         if (hits.isEmpty()) {
             throw new Exception(String.format("Mod %s not found on %s", container.getId(), provider.getName()));
         }
-        return hits.get(0).id();
+        for (SummarizedMod hit : hits) {
+            if (hit.name().equals(container.getName())) {
+                return hit.id();
+            }
+        }
+        throw new Exception(String.format("Mod %s not found on %s", container.getId(), provider.getName()));
     }
 
     @Nullable
@@ -101,10 +111,11 @@ public class UpdateCheckService extends Thread {
                 latestVersion = version;
             }
         }
-        if (latest == null || installedVersion.compareTo(latestVersion) > 0) {
+        if (latest == null || installedVersion.compareTo(latestVersion) >= 0) {
             logger.info("No update for {} found!", container.getId());
             return null;
         }
+        logger.info("Found an update for {} {} new version: {}", container.getId(), container.getVersion().toString(), latestVersion.toString());
         return latest;
     }
 

@@ -37,7 +37,7 @@ public class ModDownloadTask extends NetworkTask {
         if (subject == null) {
             throw new Exception("Summarized mod is empty");
         }
-        InstallationUtil.downloadMod(http, InstallationUtil.getVersionForMod(subject));
+        InstallationUtil.downloadMod(http, InstallationUtil.getInstallableVersionForMod(subject));
         ModManager.getModManipulationManager().markManuallyInstalled(subject);
     }
 

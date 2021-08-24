@@ -8,6 +8,7 @@ import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.api.mod.Asset;
 import xyz.deathsgun.modmanager.api.mod.ModVersion;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
+import xyz.deathsgun.modmanager.api.mod.VersionType;
 import xyz.deathsgun.modmanager.api.provider.IModProvider;
 
 import java.net.URI;
@@ -21,10 +22,11 @@ import java.util.stream.Collectors;
 
 public class InstallationUtil {
 
-    public static ModVersion getVersionForMod(SummarizedMod mod) throws Exception {
+    public static ModVersion getInstallableVersionForMod(SummarizedMod mod) throws Exception {
         IModProvider provider = ModManager.getModProvider();
         List<ModVersion> versions = provider.getVersionsForMod(mod.id()).stream()
-                .filter(value -> value.gameVersions().contains(MinecraftVersion.GAME_VERSION.getReleaseTarget())).collect(Collectors.toList());
+                .filter(value -> value.gameVersions().contains(MinecraftVersion.GAME_VERSION.getReleaseTarget()))
+                .filter(value -> value.type() == VersionType.RELEASE).collect(Collectors.toList());
         ModVersion latest = null;
         SemanticVersion latestVersion = null;
         for (ModVersion modVersion : versions) {
