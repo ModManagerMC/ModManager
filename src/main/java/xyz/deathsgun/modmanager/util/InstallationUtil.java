@@ -56,4 +56,12 @@ public class InstallationUtil {
         }
     }
 
+    public static OS getCurrentOS() {
+        String name = System.getProperty("os.name");
+        if (name.contains("win")) {
+            return OS.WINDOWS;
+        }
+        return name.contains("mac") ? OS.MACOS : OS.LINUX;
+    }
+
 }
