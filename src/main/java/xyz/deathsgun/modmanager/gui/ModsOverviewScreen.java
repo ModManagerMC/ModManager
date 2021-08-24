@@ -24,6 +24,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 import xyz.deathsgun.modmanager.gui.widget.CategoryListEntry;
 import xyz.deathsgun.modmanager.gui.widget.CategoryListWidget;
 import xyz.deathsgun.modmanager.gui.widget.ModListEntry;
@@ -40,6 +41,7 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
     private CategoryListWidget categoryListWidget;
     private CategoryListEntry selectedCategory;
     private TextFieldWidget searchBox;
+    private String query;
     private int paneWidth;
     private int rightPaneX;
     private ButtonWidget previousPage;
@@ -75,7 +77,15 @@ public class ModsOverviewScreen extends Screen implements IListScreen {
     }
 
     private void handleSearch(String query) {
-        this.modListWidget.searchMods(query);
+        this.query = query;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_ENTER && this.searchBox.isFocused()) {
+            this.modListWidget.searchMods(query);
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
