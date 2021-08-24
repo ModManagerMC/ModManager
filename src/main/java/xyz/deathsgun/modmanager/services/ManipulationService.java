@@ -28,7 +28,7 @@ public class ManipulationService extends Thread {
     private final ArrayList<ManipulationTask> tasks = new ArrayList<>();
 
     public ManipulationService() {
-        setName("ModMenu-M");
+        setName("ModMenu");
         start();
     }
 
