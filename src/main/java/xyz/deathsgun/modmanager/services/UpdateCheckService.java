@@ -101,7 +101,7 @@ public class UpdateCheckService extends Thread {
                 latestVersion = version;
             }
         }
-        if (latest == null || installedVersion.compareTo(latestVersion) == 0) {
+        if (latest == null || installedVersion.compareTo(latestVersion) > 0) {
             logger.info("No update for {} found!", container.getId());
             return null;
         }
