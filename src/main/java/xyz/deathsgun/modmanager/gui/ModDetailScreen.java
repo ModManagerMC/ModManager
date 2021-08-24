@@ -63,7 +63,8 @@ public class ModDetailScreen extends Screen {
             detailedMod = ModManager.getModProvider().getMod(summarizedMod.id());
         } catch (Exception e) {
             e.printStackTrace();
-            Objects.requireNonNull(this.client).setScreen(new ModManagerErrorScreen(this, e));
+            Objects.requireNonNull(this.client).setScreen(new ModManagerErrorScreen(previousScreen, e));
+            return;
         }
         int buttonX = this.width / 8;
         String text = detailedMod.body().replaceAll("\\u00A0", " ");
