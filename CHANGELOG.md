@@ -5,6 +5,8 @@ Bugs fixed:
 - Search only when enter key was hit for improved performance [#7](https://github.com/DeathsGun/ModManager/issues/7)
 - Fixed crash when ModManager loses connection while opening a more detailed
   view [#16](https://github.com/DeathsGun/ModManager/issues/16)
+- Fixed icons being mixed up [#22](https://github.com/DeathsGun/ModManager/issues/22)
+- Fixed unknown mods showing up [#18](https://github.com/DeathsGun/ModManager/issues/18)
 
 Improvements:
 
