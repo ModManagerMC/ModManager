@@ -22,8 +22,8 @@ import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.deathsgun.modmanager.ModManager;
-import xyz.deathsgun.modmanager.api.manipulation.TaskCallback;
 import xyz.deathsgun.modmanager.api.manipulation.NetworkTask;
+import xyz.deathsgun.modmanager.api.manipulation.TaskCallback;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 
 import java.io.InputStream;
@@ -31,6 +31,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Locale;
 
 public class IconDownloadTask extends NetworkTask {
 
@@ -56,7 +57,7 @@ public class IconDownloadTask extends NetworkTask {
         }
         debug("Reading icon for {}", subject.slug());
         NativeImage image = NativeImage.read(response.body());
-        Identifier iconLocation = new Identifier("modmanager", subject.slug() + "_icon");
+        Identifier iconLocation = new Identifier("modmanager", subject.id().toLowerCase(Locale.ROOT) + "_icon");
         ModManager.getIconManager().registerIcon(subject.id(), iconLocation, image);
         debug("Finished downloading icon for {}", subject.slug());
     }
