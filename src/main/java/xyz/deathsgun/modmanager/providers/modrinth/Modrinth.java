@@ -42,6 +42,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Modrinth implements IModProvider {
 
@@ -146,7 +147,9 @@ public class Modrinth implements IModProvider {
         if (response.statusCode() != 200) {
             throw new Exception(response.body());
         }
-        return Version.toModVersion(gson.fromJson(response.body(), new TypeToken<ArrayList<Version>>() {
-        }.getType()));
+        List<Version> versions = gson.fromJson(response.body(), new TypeToken<ArrayList<Version>>() {
+        }.getType());
+        versions = versions.stream().filter(v -> v.getLoaders().contains("fabric")).collect(Collectors.toList());
+        return Version.toModVersion(versions);
     }
 }

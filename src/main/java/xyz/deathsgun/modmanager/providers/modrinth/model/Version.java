@@ -37,13 +37,18 @@ public class Version {
     @SerializedName("game_versions")
     private List<String> gameVersions;
     private List<File> files;
+    private List<String> loaders;
 
-    public static ArrayList<ModVersion> toModVersion(ArrayList<Version> versions) {
+    public static ArrayList<ModVersion> toModVersion(List<Version> versions) {
         ArrayList<ModVersion> result = new ArrayList<>();
         for (Version version : versions) {
             result.add(new ModVersion(version.version, version.changelog, VersionType.fromString(version.version), version.releaseDate, version.gameVersions, File.toFiles(version.files)));
         }
         return result;
+    }
+
+    public List<String> getLoaders() {
+        return loaders;
     }
 
     private static class File {
