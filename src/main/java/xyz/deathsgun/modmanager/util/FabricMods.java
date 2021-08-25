@@ -19,6 +19,7 @@ package xyz.deathsgun.modmanager.util;
 import com.google.gson.Gson;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import org.apache.logging.log4j.LogManager;
 import xyz.deathsgun.modmanager.api.mod.SummarizedMod;
 import xyz.deathsgun.modmanager.model.ReducedModMetadata;
 
@@ -47,6 +48,10 @@ public class FabricMods {
         for (Path path : jars) {
             ZipFile zipFile = new ZipFile(path.toFile());
             ZipEntry entry = zipFile.getEntry("fabric.mod.json");
+            if (entry == null) {
+                LogManager.getLogger().warn("No fabric.mod.json found in {}", path);
+                continue;
+            }
             ReducedModMetadata metadata = gson.fromJson(new InputStreamReader(zipFile.getInputStream(entry)), ReducedModMetadata.class);
             zipFile.close();
             if (metadata.getId().equals(id) || metadata.getName().equals(name)) {
