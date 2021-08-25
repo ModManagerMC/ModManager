@@ -1,6 +1,6 @@
 # ModManager
 
-Extends [ModManager](https://github.com/TerraformersMC/ModMenu) with a new tab for installing,
+Extends [Mod Menu](https://github.com/TerraformersMC/ModMenu) with a new tab for installing,
 removing and updating mods.
 
 Features:
