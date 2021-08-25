@@ -2,7 +2,7 @@
   "modmanager.badge.installed": "Kurulu",
   "modmanager.badge.outdated": "Eski",
   "modmanager.categories": "Kategoriler",
-  "modmanager.categories.updatable": "Güncellenebilir modlar",
+  "modmanager.categories.updatable": "Güncellenebilir Modlar",
   "modmanager.category.technology": "Teknoloji",
   "modmanager.category.adventure": "Macera",
   "modmanager.category.magic": "Sihir",
@@ -16,7 +16,7 @@
   "modmanager.category.equipment": "Teçhizat",
   "modmanager.category.misc": "Çeşitli",
   "modmanager.details.author": "%s tarafından",
-  "modmanager.message.goBackAndTryAgain": "Geri dön ve tekrar dene",
+  "modmanager.message.goBackAndTryAgain": "Geri Dön ve Tekrar Dene",
   "modmanager.message.install": "Kur",
   "modmanager.message.installing": "Kuruluyor...",
   "modmanager.message.update": "Güncelle",
@@ -25,9 +25,9 @@
   "modmanager.message.removing": "Kaldırılıyor...",
   "modmanager.message.search": "Mod Ara...",
   "modmanager.message.showError": "Hatayı Göster",
-  "modmanager.page.next": "Sıradaki sayfa",
-  "modmanager.page.previous": "Önceki sayfa",
-  "modmanager.title": "Mod'a genel bakış",
+  "modmanager.page.next": "Sıradaki Sayfa",
+  "modmanager.page.previous": "Önceki Sayfa",
+  "modmanager.title": "Modları Keşfet",
   "modmanager.toast.update.title": "Güncelleme var!",
-  "modmanager.toast.update.description": "%d tane mod, güncellenebilir durumda."
+  "modmanager.toast.update.description": "%d tane mod için güncelleme mevcut."
 }
