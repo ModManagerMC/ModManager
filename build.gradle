@@ -1,8 +1,26 @@
+/*
+ * Copyright 2021 DeathsGun
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 //file:noinspection GroovyAssignabilityCheck
 //file:noinspection GroovyAccessibility
 plugins {
     id "fabric-loom" version "0.9-SNAPSHOT"
     id "com.modrinth.minotaur" version "1.2.1"
+    id "org.jetbrains.kotlin.jvm" version "1.5.30"
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.30'
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
@@ -17,14 +35,17 @@ repositories {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/releases/"
     }
+    mavenCentral()
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
+    modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+    testImplementation "org.jetbrains.kotlin:kotlin-test"
 }
 
 processResources {
@@ -36,10 +57,22 @@ processResources {
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
     // Minecraft 1.17 (21w19a) upwards uses Java 16.
     it.options.release = 16
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "16"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "16"
 }
 
 java {
@@ -62,12 +95,12 @@ task publishModrinth(type: TaskModrinthUpload) {
     }
 
     token = System.getenv("MODRINTH")
-    projectId = '6kq7BzRK'
+    projectId = "6kq7BzRK"
     versionNumber = version
     uploadFile = remapJar
     versionType = VersionType.ALPHA
     addGameVersion(project.minecraft_version)
-    addLoader('fabric')
+    addLoader("fabric")
     addDependency("E4QBMVtO", Dependency.DependencyType.REQUIRED)
-    changelog = file("CHANGELOG.md").getText('UTF-8')
+    changelog = file("CHANGELOG.md").getText("UTF-8")
 }
