@@ -42,7 +42,11 @@ class ModManager : ClientModInitializer {
         lateinit var modManager: ModManager
 
         fun getVersion(): String {
-            return FabricLoader.getInstance().allMods.first { it.metadata.id.equals("modmanager") }.metadata.version.friendlyString
+            return try {
+                FabricLoader.getInstance().allMods.first { it.metadata.id.equals("modmanager") }.metadata.version.friendlyString
+            } catch (ignored: NoSuchElementException) {
+                "1.1.0+1.17.1-alpha"
+            }
         }
 
         fun getMinecraftVersion(): String {
