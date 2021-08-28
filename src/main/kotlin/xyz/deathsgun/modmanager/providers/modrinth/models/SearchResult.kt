@@ -39,7 +39,7 @@ data class SearchResult(
             }
             mods.add(
                 Mod(
-                    mod.id,
+                    mod.id.replaceFirst("local-", ""),
                     mod.slug,
                     mod.author,
                     mod.title,

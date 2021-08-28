@@ -19,6 +19,21 @@ package xyz.deathsgun.modmanager.config
 import xyz.deathsgun.modmanager.api.mod.VersionType
 
 data class Config(
-    var provider: String,
-    var updateChannel: VersionType
-)
+    var defaultProvider: String,
+    var updateChannel: UpdateChannel
+) {
+
+    enum class UpdateChannel {
+        ALL, STABLE, UNSTABLE
+    }
+
+    fun isReleaseAllowed(type: VersionType): Boolean {
+        if (updateChannel == UpdateChannel.ALL) {
+            return true
+        }
+        if (updateChannel == UpdateChannel.STABLE && type == VersionType.RELEASE) {
+            return true
+        }
+        return updateChannel == UpdateChannel.UNSTABLE
+    }
+}

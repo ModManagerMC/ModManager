@@ -19,7 +19,6 @@ package xyz.deathsgun.modmanager.providers.modrinth
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import net.minecraft.client.MinecraftClient
 import net.minecraft.text.TranslatableText
 import org.apache.http.client.utils.URIBuilder
 import org.apache.logging.log4j.LogManager
@@ -58,7 +57,6 @@ class Modrinth : IModProvider, IModUpdateProvider {
         if (this.categories.isNotEmpty()) {
             return CategoriesResult.Success(this.categories)
         }
-        logger.info("Getting categories")
         val request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
             .uri(URI.create("${baseUri}/api/v1/tag/category")).build()
         val response = this.http.send(request, HttpResponse.BodyHandlers.ofString())
@@ -80,7 +78,6 @@ class Modrinth : IModProvider, IModUpdateProvider {
     }
 
     override fun getMods(sorting: Sorting, page: Int, limit: Int): ModsResult {
-        logger.info("Getting a general list of mods")
         val builder = URIBuilder("${baseUri}/api/v1/mod")
         builder.addParameter("index", sorting.name.lowercase())
         builder.addParameter("filters", "categories=\"fabric\"")
@@ -88,7 +85,6 @@ class Modrinth : IModProvider, IModUpdateProvider {
     }
 
     override fun getMods(category: Category, page: Int, limit: Int): ModsResult {
-        logger.info("Getting category '{}' from Modrinth", category.id)
         val key = java.lang.String.format("%s|%d|%d", category.id, page, limit)
         if (this.cache.containsKey(key)) {
             val cachedResult = this.cache[key]!!
@@ -116,7 +112,6 @@ class Modrinth : IModProvider, IModUpdateProvider {
     }
 
     override fun getMods(query: String, page: Int, limit: Int): ModsResult {
-        logger.info("Searching for '{}' in Modrinth", query)
         val builder = URIBuilder("${baseUri}/api/v1/mod")
         builder.addParameter("query", query)
         builder.addParameter("filters", "categories=\"fabric\" AND NOT client_side=\"unsupported\"")
@@ -130,7 +125,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
     private fun getMods(builder: URIBuilder, page: Int, limit: Int): ModsResult {
         builder.addParameter(
             "version",
-            String.format("versions=%s", MinecraftClient.getInstance()?.game?.version?.releaseTarget ?: "1.17.1")
+            String.format("versions=%s", ModManager.getMinecraftVersion())
         )
         builder.addParameter("offset", (page * limit).toString())
         builder.addParameter("limit", limit.toString())
@@ -180,7 +175,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             }
             ModResult.Success(
                 Mod(
-                    id = result.id,
+                    id = result.id.replaceFirst("local-", ""),
                     slug = result.slug,
                     author = mod.author,
                     name = result.title,

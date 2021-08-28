@@ -16,15 +16,20 @@
   "license": "APL-2.0",
   "environment": "client",
   "entrypoints": {
-	"client": [
+    "client": [
       {
         "adapter": "kotlin",
-        "value": "xyz.deathsgun.modmanager.Initializer"
+        "value": "xyz.deathsgun.modmanager.ModManager"
       }
     ]
   },
+  "custom": {
+    "modmanager": {
+      "Modrinth": "6kq7BzRK"
+    }
+  },
   "mixins": [
-	"modmanager.mixins.json"
+    "modmanager.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.11.3",
