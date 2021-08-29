@@ -30,6 +30,7 @@ import xyz.deathsgun.modmanager.api.provider.Sorting
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -101,7 +102,7 @@ internal class ModrinthTest {
             assertTrue(it.slug.isNotEmpty())
             assertTrue(it.name.isNotEmpty())
             assertTrue(it.author.isNotEmpty())
-            assertTrue(it.iconUrl.isNotEmpty())
+            assertNotNull(it.iconUrl)
             assertTrue(it.shortDescription.isNotEmpty())
             assertTrue(it.categories.isNotEmpty())
 
@@ -132,7 +133,7 @@ internal class ModrinthTest {
         assertTrue(mod.slug.isNotEmpty())
         assertTrue(mod.name.isNotEmpty())
         assertTrue(mod.author.isNotEmpty())
-        assertTrue(mod.iconUrl.isNotEmpty())
+        assertNotNull(mod.iconUrl)
         assertTrue(mod.shortDescription.isNotEmpty())
         assertTrue(mod.categories.isNotEmpty())
         assertNotEquals(mod.description, null)
