@@ -28,6 +28,6 @@ data class ModResult(
     val title: String,
     val description: String,
     @SerialName("icon_url")
-    val iconUrl: String,
+    val iconUrl: String?,
     val categories: ArrayList<String>
 )

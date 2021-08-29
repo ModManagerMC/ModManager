@@ -30,6 +30,9 @@ import xyz.deathsgun.modmanager.api.provider.Sorting
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 internal class ModrinthTest {
 
@@ -45,9 +48,9 @@ internal class ModrinthTest {
             fail(result.text.key)
         }
         val categories = (result as CategoriesResult.Success).categories
-        assert(categories.isNotEmpty())
+        assertTrue(categories.isNotEmpty())
         categories.forEach {
-            assert(it.id.isNotEmpty())
+            assertTrue(it.id.isNotEmpty())
             assertEquals(String.format("modmanager.category.%s", it.id), it.text.key)
         }
     }
@@ -92,20 +95,20 @@ internal class ModrinthTest {
     }
 
     private fun checkMods(mods: List<Mod>) {
-        assert(mods.isNotEmpty())
+        assertTrue(mods.isNotEmpty())
         assertEquals(mods.size, 10)
         mods.forEach {
-            assert(it.id.isNotEmpty())
-            assert(it.slug.isNotEmpty())
-            assert(it.name.isNotEmpty())
-            assert(it.author.isNotEmpty())
-            assert(it.iconUrl.isNotEmpty())
-            assert(it.shortDescription.isNotEmpty())
-            assert(it.categories.isNotEmpty())
+            assertTrue(it.id.isNotEmpty())
+            assertTrue(it.slug.isNotEmpty())
+            assertTrue(it.name.isNotEmpty())
+            assertTrue(it.author.isNotEmpty())
+            assertNotNull(it.iconUrl)
+            assertTrue(it.shortDescription.isNotEmpty())
+            assertTrue(it.categories.isNotEmpty())
 
             // Only filled when getMod(id) is called
-            assertEquals(null, it.description, "description should be null as it's only loaded by getMod")
-            assertEquals(null, it.license, "description should be null as it's only loaded by getMod")
+            assertNull(it.description, "description should be null as it's only loaded by getMod")
+            assertNull(it.license, "description should be null as it's only loaded by getMod")
         }
     }
 
@@ -126,17 +129,17 @@ internal class ModrinthTest {
             fail(result.text.key)
         }
         val mod = (result as ModResult.Success).mod
-        assert(mod.id.isNotEmpty())
-        assert(mod.slug.isNotEmpty())
-        assert(mod.name.isNotEmpty())
-        assert(mod.author.isNotEmpty())
-        assert(mod.iconUrl.isNotEmpty())
-        assert(mod.shortDescription.isNotEmpty())
-        assert(mod.categories.isNotEmpty())
+        assertTrue(mod.id.isNotEmpty())
+        assertTrue(mod.slug.isNotEmpty())
+        assertTrue(mod.name.isNotEmpty())
+        assertTrue(mod.author.isNotEmpty())
+        assertNotNull(mod.iconUrl)
+        assertTrue(mod.shortDescription.isNotEmpty())
+        assertTrue(mod.categories.isNotEmpty())
         assertNotEquals(mod.description, null)
-        assert(mod.description!!.isNotEmpty())
+        assertTrue(mod.description!!.isNotEmpty())
         assertNotEquals(mod.license, null)
-        assert(mod.license!!.isNotEmpty())
+        assertTrue(mod.license!!.isNotEmpty())
     }
 
     @Test
@@ -149,19 +152,19 @@ internal class ModrinthTest {
             fail(result.text.key)
         }
         val versions = (result as VersionResult.Success).versions
-        assert(versions.isNotEmpty())
+        assertTrue(versions.isNotEmpty())
         versions.forEach {
-            assert(it.gameVersions.isNotEmpty())
+            assertTrue(it.gameVersions.isNotEmpty())
             assertContains(it.gameVersions, "1.17.1")
-            assert(it.version.isNotEmpty())
-            assert(it.changelog.isNotEmpty())
+            assertTrue(it.version.isNotEmpty())
+            assertTrue(it.changelog.isNotEmpty())
             assertEquals(VersionType.ALPHA, it.type)
-            assert(it.assets.isNotEmpty())
+            assertTrue(it.assets.isNotEmpty())
             it.assets.forEach { asset ->
-                assert(asset.filename.isNotEmpty())
-                assert(asset.filename.endsWith(".jar"))
-                assert(asset.url.isNotEmpty())
-                assert(asset.hashes.isNotEmpty())
+                assertTrue(asset.filename.isNotEmpty())
+                assertTrue(asset.filename.endsWith(".jar"))
+                assertTrue(asset.url.isNotEmpty())
+                assertTrue(asset.hashes.isNotEmpty())
                 assertContains(asset.hashes, "sha512")
             }
         }

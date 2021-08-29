@@ -22,7 +22,7 @@ data class Mod(
     val author: String,
     val name: String,
     val shortDescription: String,
-    val iconUrl: String,
+    val iconUrl: String?,
     val description: String?,
     val license: String?,
     val categories: List<Category>,
