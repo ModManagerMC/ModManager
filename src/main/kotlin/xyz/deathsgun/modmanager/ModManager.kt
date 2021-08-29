@@ -39,8 +39,10 @@ class ModManager : ClientModInitializer {
     private val states = ArrayList<SavedState>()
 
     companion object {
+        @JvmStatic
         lateinit var modManager: ModManager
 
+        @JvmStatic
         fun getVersion(): String {
             return try {
                 FabricLoader.getInstance().allMods.first { it.metadata.id.equals("modmanager") }.metadata.version.friendlyString
@@ -49,6 +51,7 @@ class ModManager : ClientModInitializer {
             }
         }
 
+        @JvmStatic
         fun getMinecraftVersion(): String {
             return MinecraftClient.getInstance()?.game?.version?.releaseTarget ?: "1.17.1"
         }
@@ -57,10 +60,10 @@ class ModManager : ClientModInitializer {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onInitializeClient() {
         modManager = this
-        config = Config("Modrinth", Config.UpdateChannel.STABLE)
+        config = Config.loadConfig()
         val modrinth = Modrinth()
-        provider[modrinth.getName()] = modrinth
-        updateProvider[modrinth.getName()] = modrinth
+        provider[modrinth.getName().lowercase()] = modrinth
+        updateProvider[modrinth.getName().lowercase()] = modrinth
         GlobalScope.launch {
             update.checkUpdates()
         }

@@ -100,7 +100,8 @@ class UpdateManager {
     private fun checkForUpdates(metadata: ModMetadata, ids: Map<String, String>) {
         var provider: IModUpdateProvider? = null
         var id: String? = null
-        for ((providerId, modId) in ids) {
+        for ((provId, modId) in ids) {
+            val providerId = provId.lowercase()
             if (!ModManager.modManager.updateProvider.containsKey(providerId)) {
                 logger.warn("Update provider {} for {} not found!", providerId, metadata.id)
                 continue

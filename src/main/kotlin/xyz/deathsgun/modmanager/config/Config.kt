@@ -16,12 +16,46 @@
 
 package xyz.deathsgun.modmanager.config
 
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import net.fabricmc.loader.api.FabricLoader
 import xyz.deathsgun.modmanager.api.mod.VersionType
+import java.nio.charset.Charset
+import java.nio.file.Files
 
+@Serializable
 data class Config(
     var defaultProvider: String,
     var updateChannel: UpdateChannel
 ) {
+
+    companion object {
+        @OptIn(ExperimentalSerializationApi::class)
+        fun loadConfig(): Config {
+            return try {
+                val file = FabricLoader.getInstance().configDir.resolve("modmanager.json")
+                val data = Files.readString(file, Charset.forName("UTF-8"))
+                Json.decodeFromString(data)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                saveConfig(Config("modrinth", UpdateChannel.STABLE))
+            }
+        }
+
+        @OptIn(ExperimentalSerializationApi::class)
+        private fun saveConfig(config: Config): Config {
+            try {
+                val file = FabricLoader.getInstance().configDir.resolve("modmanager.json")
+                val data = Json.encodeToString(config)
+                Files.writeString(file, data, Charset.forName("UTF-8"))
+            } catch (ignored: Exception) {
+            }
+            return config
+        }
+    }
 
     enum class UpdateChannel {
         ALL, STABLE, UNSTABLE
