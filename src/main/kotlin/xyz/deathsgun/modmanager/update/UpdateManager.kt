@@ -20,6 +20,7 @@ class UpdateManager {
 
     private val logger = LogManager.getLogger("UpdateCheck")
     private val blockedIds = arrayOf("java", "minecraft")
+    val updates = HashMap<String, Version>()
 
     suspend fun checkUpdates() = coroutineScope {
         val mods = getCheckableMods()
@@ -59,6 +60,7 @@ class UpdateManager {
             }
             logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
             ModManager.modManager.setModState(metadata.id, metadata.id, ModState.OUTDATED)
+            this.updates[metadata.id] = version
             return
         }
 
@@ -92,6 +94,7 @@ class UpdateManager {
         }
         logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
         ModManager.modManager.setModState(metadata.id, mod.id, ModState.OUTDATED)
+        this.updates[metadata.id] = version
     }
 
     private fun checkForUpdates(metadata: ModMetadata, ids: Map<String, String>) {
@@ -126,6 +129,7 @@ class UpdateManager {
         }
         logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
         ModManager.modManager.setModState(metadata.id, id, ModState.OUTDATED)
+        this.updates[metadata.id] = version
     }
 
     private fun findLatestCompatible(installedVersion: String, versions: List<Version>): Version? {
@@ -135,7 +139,7 @@ class UpdateManager {
             VersionDeserializer.deserializeSemantic(installedVersion.split("+")[0]) // Remove additional info from version
         for (version in versions) {
             if (!version.gameVersions.contains(ModManager.getMinecraftVersion()) ||
-                ModManager.modManager.config.isReleaseAllowed(version.type)
+                !ModManager.modManager.config.isReleaseAllowed(version.type)
             ) {
                 continue
             }
