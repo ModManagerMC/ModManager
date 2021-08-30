@@ -23,7 +23,7 @@
   "modmanager.message.updating": "업데이트중...",
   "modmanager.message.remove": "삭제",
   "modmanager.message.removing": "삭제중...",
-  "modmanager.message.search": "검색...",
+  "modmanager.search": "검색...",
   "modmanager.message.showError": "에러 보이기",
   "modmanager.page.next": "다음",
   "modmanager.page.previous": "이전",

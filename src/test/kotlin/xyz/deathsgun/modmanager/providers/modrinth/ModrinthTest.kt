@@ -18,7 +18,6 @@ package xyz.deathsgun.modmanager.providers.modrinth
 
 import net.minecraft.text.TranslatableText
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
 import xyz.deathsgun.modmanager.api.http.CategoriesResult
 import xyz.deathsgun.modmanager.api.http.ModResult
 import xyz.deathsgun.modmanager.api.http.ModsResult
@@ -27,12 +26,7 @@ import xyz.deathsgun.modmanager.api.mod.Category
 import xyz.deathsgun.modmanager.api.mod.Mod
 import xyz.deathsgun.modmanager.api.mod.VersionType
 import xyz.deathsgun.modmanager.api.provider.Sorting
-import kotlin.test.assertContains
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 internal class ModrinthTest {
 
@@ -83,7 +77,7 @@ internal class ModrinthTest {
 
     @Test
     fun getModsByQuery() {
-        val result = modrinth.getMods("Mod", 0, 10)
+        val result = modrinth.search("Mod", 0, 10)
         if (result is ModsResult.Error) {
             result.cause?.let {
                 fail(result.text.key, it)

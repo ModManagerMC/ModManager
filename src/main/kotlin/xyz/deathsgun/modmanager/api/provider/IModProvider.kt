@@ -68,7 +68,7 @@ interface IModProvider {
      * @param limit the amount of mods to return
      * @return a list of mods matching the search term
      */
-    fun getMods(query: String, page: Int, limit: Int): ModsResult
+    fun search(query: String, page: Int, limit: Int): ModsResult
 
     /**
      * Returns a more detailed representation of the mod

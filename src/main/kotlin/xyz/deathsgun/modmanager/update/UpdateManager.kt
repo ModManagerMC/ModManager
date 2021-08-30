@@ -64,7 +64,7 @@ class UpdateManager {
             return
         }
 
-        val queryResult = provider.getMods(metadata.name, 0, 10)
+        val queryResult = provider.search(metadata.name, 0, 10)
         if (queryResult is ModsResult.Error) {
             logger.warn("Error while searching for fallback id for mod {}: ", metadata.id, queryResult.cause)
             ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)

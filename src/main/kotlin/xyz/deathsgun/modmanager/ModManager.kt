@@ -25,6 +25,7 @@ import net.minecraft.client.MinecraftClient
 import xyz.deathsgun.modmanager.api.provider.IModProvider
 import xyz.deathsgun.modmanager.api.provider.IModUpdateProvider
 import xyz.deathsgun.modmanager.config.Config
+import xyz.deathsgun.modmanager.icon.IconCache
 import xyz.deathsgun.modmanager.providers.modrinth.Modrinth
 import xyz.deathsgun.modmanager.state.ModState
 import xyz.deathsgun.modmanager.state.SavedState
@@ -32,11 +33,12 @@ import xyz.deathsgun.modmanager.update.UpdateManager
 
 class ModManager : ClientModInitializer {
 
+    private val states = ArrayList<SavedState>()
     lateinit var config: Config
     val update: UpdateManager = UpdateManager()
+    val icons: IconCache = IconCache()
     val provider: HashMap<String, IModProvider> = HashMap()
     val updateProvider: HashMap<String, IModUpdateProvider> = HashMap()
-    private val states = ArrayList<SavedState>()
 
     companion object {
         @JvmStatic
@@ -76,6 +78,10 @@ class ModManager : ClientModInitializer {
 
     fun getModState(id: String): ModState {
         return this.states.find { it.modId == id || it.fabricId == id }?.state ?: ModState.DOWNLOADABLE
+    }
+
+    fun getSelectedProvider(): IModProvider? {
+        return this.provider[config.defaultProvider]
     }
 
 }

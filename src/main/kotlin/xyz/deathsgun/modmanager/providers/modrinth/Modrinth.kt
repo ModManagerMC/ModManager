@@ -111,7 +111,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
         }
     }
 
-    override fun getMods(query: String, page: Int, limit: Int): ModsResult {
+    override fun search(query: String, page: Int, limit: Int): ModsResult {
         val builder = URIBuilder("${baseUri}/api/v1/mod")
         builder.addParameter("query", query)
         builder.addParameter("filters", "categories=\"fabric\" AND NOT client_side=\"unsupported\"")
