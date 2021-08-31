@@ -17,22 +17,27 @@
 package xyz.deathsgun.modmanager.gui.widget
 
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget
+import xyz.deathsgun.modmanager.api.gui.list.IListScreen
+import xyz.deathsgun.modmanager.api.gui.list.ListWidget
 import xyz.deathsgun.modmanager.api.mod.Mod
 
-class ModListWidget(client: MinecraftClient, width: Int, height: Int, top: Int, bottom: Int, itemHeight: Int) :
-    AlwaysSelectedEntryListWidget<ModListEntry>(
-        client,
-        width,
-        height,
-        top,
-        bottom,
-        itemHeight
-    ) { //TODO: Mojang's implementation is still broken replace it with custom one
+class ModListWidget(
+    client: MinecraftClient,
+    width: Int,
+    height: Int,
+    top: Int,
+    bottom: Int,
+    itemHeight: Int,
+    parent: IListScreen
+) : ListWidget<ModListEntry>(client, width, height, top, bottom, itemHeight, parent) {
+
+    override fun init() {
+
+    }
 
     fun setMods(mods: List<Mod>) {
         mods.forEach {
-            this.addEntry(ModListEntry(client, it))
+            this.addEntry(ModListEntry(client, this, it))
         }
     }
 

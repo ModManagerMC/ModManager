@@ -16,17 +16,20 @@
 
 package xyz.deathsgun.modmanager.gui
 
+import net.minecraft.client.gui.Element
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.TranslatableText
 import org.lwjgl.glfw.GLFW
 import xyz.deathsgun.modmanager.ModManager
+import xyz.deathsgun.modmanager.api.gui.list.IListScreen
 import xyz.deathsgun.modmanager.api.http.ModsResult
 import xyz.deathsgun.modmanager.gui.widget.ErrorWidget
 import xyz.deathsgun.modmanager.gui.widget.ModListWidget
 
-class ModsOverviewScreen(private val previousScreen: Screen) : Screen(TranslatableText("modmanager.title.overview")) {
+class ModsOverviewScreen(private val previousScreen: Screen) : Screen(TranslatableText("modmanager.title.overview")),
+    IListScreen {
 
     private var query: String = ""
     private lateinit var errorWidget: ErrorWidget
@@ -47,7 +50,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         )
         searchField.setChangedListener { this.query = it }
         errorWidget = ErrorWidget(client!!, 10, 35, width - 130, height - 150)
-        modList = addSelectableChild(ModListWidget(client!!, width - 130, height, 35, height - 10, 36))
+        modList = addSelectableChild(ModListWidget(client!!, width - 130, height, 35, height - 10, 36, this))
         modList.setLeftPos(10)
         //TODO: Sorting selector
         //TODO: Paging
@@ -69,6 +72,18 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             }
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
+    }
+
+    override fun getFocused(): Element? {
+        return super.getFocused()
+    }
+
+    override fun <E> updateSelectedEntry(widget: Any, entry: E?) {
+
+    }
+
+    override fun <E> getEntry(widget: Any): E? {
+        return null
     }
 
     override fun tick() {

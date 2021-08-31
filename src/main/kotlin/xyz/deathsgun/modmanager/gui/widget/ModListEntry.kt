@@ -20,17 +20,17 @@ import com.mojang.blaze3d.systems.RenderSystem
 import com.terraformersmc.modmenu.util.DrawingUtil
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.*
 import net.minecraft.util.Language
 import xyz.deathsgun.modmanager.ModManager
+import xyz.deathsgun.modmanager.api.gui.list.ListWidget
 import xyz.deathsgun.modmanager.api.mod.Mod
 import xyz.deathsgun.modmanager.state.ModState
 
 
-class ModListEntry(private val client: MinecraftClient, val mod: Mod) :
-    AlwaysSelectedEntryListWidget.Entry<ModListEntry>() {
+class ModListEntry(private val client: MinecraftClient, override val list: ModListWidget, val mod: Mod) :
+    ListWidget.Entry<ModListEntry>(list, mod.id) {
 
     private val state = ModManager.modManager.getModState(mod.id)
 
