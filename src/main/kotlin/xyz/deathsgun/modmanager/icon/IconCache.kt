@@ -33,9 +33,6 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.file.Files
-import java.nio.file.Path
-import java.util.stream.Collectors
-import kotlin.io.path.name
 
 class IconCache {
 
@@ -43,115 +40,75 @@ class IconCache {
     private val unknownIcon = Identifier("textures/misc/unknown_pack.png")
     private val loadingIcon = Identifier("modmanager", "textures/gui/loading.png")
     private val iconsDir = FabricLoader.getInstance().gameDir.resolve(".icons")
-    private val state: ArrayList<String>
-    private val icons = HashMap<String, Identifier>()
-    private val downloading = ArrayList<String>()
+    private val state = HashMap<String, IconState>()
     private val http = HttpClient.newHttpClient()
 
-    init {
-        state = loadCache()
-    }
-
     @OptIn(DelicateCoroutinesApi::class)
-    fun downloadIcon(mod: Mod) {
-        if (mod.iconUrl == null) {
-            state.add(mod.id)
-            icons[mod.id] = unknownIcon
-            return
-        }
-        if (downloading.contains(mod.id)) {
-            return
-        }
-        downloading.add(mod.id)
-        GlobalScope.launch {
-            download(mod)
-        }
-    }
-
-    fun bindIconTexture(mod: Mod) {
-        if (!hasIcon(mod)) {
-            RenderSystem.setShaderTexture(0, loadingIcon)
-            downloadIcon(mod)
-            return
-        }
-        val icon = getIcon(mod)
-        if (icon == null) {
-            RenderSystem.setShaderTexture(0, loadingIcon)
-            downloadIcon(mod)
-            return
+    fun bindIcon(mod: Mod) {
+        val icon = when (this.state[mod.id] ?: IconState.NOT_FOUND) {
+            IconState.NOT_FOUND -> {
+                GlobalScope.launch {
+                    downloadIcon(mod)
+                }
+                loadingIcon
+            }
+            IconState.DOWNLOADED -> {
+                readIcon(mod)
+            }
+            IconState.LOADED -> {
+                Identifier("modmanager", "mod_icons/${mod.id.lowercase()}")
+            }
+            IconState.DOWNLOADING -> loadingIcon
+            IconState.ERRORED -> unknownIcon
         }
         RenderSystem.setShaderTexture(0, icon)
     }
 
-    fun destroyAll() {
-        icons.values.forEach {
-            MinecraftClient.getInstance().textureManager.destroyTexture(it)
+    private fun readIcon(mod: Mod): Identifier {
+        return try {
+            val icon = Identifier("modmanager", "mod_icons/${mod.id.lowercase()}")
+            val image = NativeImage.read(Files.newInputStream(iconsDir.resolve(mod.id)))
+            MinecraftClient.getInstance().textureManager.registerTexture(icon, NativeImageBackedTexture(image))
+            this.state[mod.id] = IconState.LOADED
+            icon
+        } catch (e: Exception) {
+            this.state[mod.id] = IconState.ERRORED
+            logger.error("Error while loading icon for {}: {}", mod.slug, e.message)
+            unknownIcon
         }
     }
 
-    private fun hasIcon(mod: Mod): Boolean {
-        return state.contains(mod.id)
-    }
-
-    private fun getIcon(mod: Mod): Identifier? {
-        if (!hasIcon(mod)) {
-            return unknownIcon
-        }
-        if (icons.containsKey(mod.id)) {
-            return icons[mod.id]!!
-        }
-        val iconFile = iconsDir.resolve(mod.id)
-        if (Files.exists(iconFile)) {
-            return readIcon(mod.id, iconFile)
-        }
-        return null
-    }
-
-    private fun download(mod: Mod) {
+    private fun downloadIcon(mod: Mod) {
         if (mod.iconUrl == null) {
+            state[mod.id] = IconState.ERRORED
             return
         }
+        val iconState = state[mod.id] ?: IconState.NOT_FOUND
+        if (iconState != IconState.NOT_FOUND) {
+            return
+        }
+        state[mod.id] = IconState.DOWNLOADING
         try {
             val request = HttpRequest.newBuilder(URI.create(mod.iconUrl)).GET()
                 .setHeader("User-Agent", "ModMenu " + ModManager.getVersion()).build()
             val response = http.send(request, HttpResponse.BodyHandlers.ofByteArray())
             if (response.statusCode() != 200) {
-                logger.error(
-                    "Failed to download icon for {} ! received status code: {}", mod.slug,
-                    response.statusCode()
-                )
-                state.add(mod.id)
-                icons[mod.id] = unknownIcon
-                downloading.removeIf { it == mod.id }
+                state[mod.id] = IconState.ERRORED
                 return
             }
-            val iconFile = iconsDir.resolve(mod.id)
-            Files.write(iconFile, response.body())
-            readIcon(mod.id, iconFile)
-            state.add(mod.id)
+            Files.write(iconsDir.resolve(mod.id), response.body())
+            state[mod.id] = IconState.DOWNLOADED
         } catch (e: Exception) {
-            logger.error(e)
-            state.add(mod.id)
-            icons[mod.id] = unknownIcon
+            state[mod.id] = IconState.ERRORED
+            logger.error("Error while downloading icon for {}: {}", mod.slug, e.message)
         }
-        downloading.removeIf { it == mod.id }
     }
 
-    private fun readIcon(modId: String, file: Path): Identifier {
-        val image = NativeImage.read(Files.newInputStream(file))
-        val identifier = Identifier("modmanager", "icons/${modId.lowercase()}")
-        MinecraftClient.getInstance().textureManager.registerTexture(identifier, NativeImageBackedTexture(image))
-        icons[modId] = identifier
-        return identifier
+    fun destroyAll() {
     }
 
-    private fun loadCache(): ArrayList<String> {
-        return try {
-            ArrayList(Files.list(iconsDir).map { it.name }.collect(Collectors.toList()))
-        } catch (e: Exception) {
-            Files.createDirectories(iconsDir)
-            ArrayList()
-        }
+    private enum class IconState {
+        NOT_FOUND, DOWNLOADING, DOWNLOADED, LOADED, ERRORED
     }
 
 }

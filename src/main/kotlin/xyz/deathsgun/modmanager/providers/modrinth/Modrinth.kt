@@ -72,7 +72,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             }
             CategoriesResult.Success(this.categories)
         } catch (e: Exception) {
-            logger.error("Error while getting categories: ", e)
+            logger.error("Error while getting categories: ", e.message)
             CategoriesResult.Error(TranslatableText("modmanager.response.failedToParse"), e)
         }
     }
@@ -139,7 +139,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             val result = json.decodeFromString<SearchResult>(response.body())
             ModsResult.Success(result.toList())
         } catch (e: Exception) {
-            logger.error("Error while requesting mods", e)
+            logger.error("Error while requesting mods", e.message)
             ModsResult.Error(TranslatableText("modmanager.error.failedToParse"))
         }
     }
@@ -156,7 +156,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
         val response = try {
             this.http.send(request, HttpResponse.BodyHandlers.ofString())
         } catch (e: Exception) {
-            logger.error("Error while getting mod", e)
+            logger.error("Error while getting mod", e.message)
             return ModResult.Error(TranslatableText("modmanager.error.network"), e)
         }
         if (response.statusCode() != 200) {
@@ -198,7 +198,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
         val response = try {
             this.http.send(request, HttpResponse.BodyHandlers.ofString())
         } catch (e: Exception) {
-            logger.error("Error while getting mod", e)
+            logger.error("Error while getting mod", e.message)
             return VersionResult.Error(TranslatableText("modmanager.error.network"), e)
         }
         if (response.statusCode() != 200) {

@@ -40,7 +40,7 @@ class ModListEntry(private val client: MinecraftClient, override val list: ModLi
     ) {
         val iconSize = 32
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-        ModManager.modManager.icons.bindIconTexture(mod)
+        ModManager.modManager.icons.bindIcon(mod)
         RenderSystem.enableBlend()
         DrawableHelper.drawTexture(matrices, x, y, 0.0f, 0.0f, iconSize, iconSize, iconSize, iconSize)
         RenderSystem.disableBlend()

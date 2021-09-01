@@ -16,6 +16,9 @@
 
 package xyz.deathsgun.modmanager.gui
 
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.minecraft.client.gui.Element
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.TextFieldWidget
@@ -25,17 +28,21 @@ import org.lwjgl.glfw.GLFW
 import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.gui.list.IListScreen
 import xyz.deathsgun.modmanager.api.http.ModsResult
+import xyz.deathsgun.modmanager.api.provider.Sorting
 import xyz.deathsgun.modmanager.gui.widget.ErrorWidget
+import xyz.deathsgun.modmanager.gui.widget.ModListEntry
 import xyz.deathsgun.modmanager.gui.widget.ModListWidget
 
 class ModsOverviewScreen(private val previousScreen: Screen) : Screen(TranslatableText("modmanager.title.overview")),
     IListScreen {
 
     private var query: String = ""
+    private var selectedMod: ModListEntry? = null
     private lateinit var errorWidget: ErrorWidget
     private lateinit var searchField: TextFieldWidget
     private lateinit var modList: ModListWidget
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun init() {
         client!!.keyboard.setRepeatEvents(true)
         searchField = this.addSelectableChild(
@@ -50,8 +57,20 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         )
         searchField.setChangedListener { this.query = it }
         errorWidget = ErrorWidget(client!!, 10, 35, width - 130, height - 150)
-        modList = addSelectableChild(ModListWidget(client!!, width - 130, height, 35, height - 10, 36, this))
+        modList = addSelectableChild(ModListWidget(client!!, width - 130, height, 35, height - 50, 36, this))
         modList.setLeftPos(10)
+        GlobalScope.launch {
+            val provider = ModManager.modManager.getSelectedProvider() ?: return@launch
+            when (val result = provider.getMods(Sorting.RELEVANCE, 0, 20)) {
+                is ModsResult.Error -> {
+                    errorWidget.error = result.text
+                }
+                is ModsResult.Success -> {
+                    errorWidget.error = null
+                    modList.setMods(result.mods)
+                }
+            }
+        }
         //TODO: Sorting selector
         //TODO: Paging
     }
@@ -79,7 +98,16 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     }
 
     override fun <E> updateSelectedEntry(widget: Any, entry: E?) {
-
+        if (widget is ModListWidget) {
+            if (entry == null) {
+                return
+            }
+            if (selectedMod == entry) {
+                return // TODO: Open detail view
+            }
+            selectedMod = entry as ModListEntry
+            return
+        }
     }
 
     override fun <E> getEntry(widget: Any): E? {
