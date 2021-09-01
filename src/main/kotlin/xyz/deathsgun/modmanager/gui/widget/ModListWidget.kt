@@ -36,6 +36,7 @@ class ModListWidget(
     }
 
     fun setMods(mods: List<Mod>) {
+        this.clearEntries()
         mods.forEach {
             this.addEntry(ModListEntry(client, this, it))
         }

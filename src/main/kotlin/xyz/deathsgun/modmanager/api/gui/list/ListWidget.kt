@@ -136,6 +136,10 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
         ) children()[index] else null
     }
 
+    fun getElementCount(): Int {
+        return super.getEntryCount()
+    }
+
     abstract class Entry<E : Entry<E>>(open val list: ListWidget<E>, val id: String) :
         AlwaysSelectedEntryListWidget.Entry<E>() {
         @Suppress("UNCHECKED_CAST")

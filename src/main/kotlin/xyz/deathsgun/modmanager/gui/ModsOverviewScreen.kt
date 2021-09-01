@@ -21,6 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.minecraft.client.gui.Element
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.TranslatableText
@@ -28,6 +29,7 @@ import org.lwjgl.glfw.GLFW
 import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.gui.list.IListScreen
 import xyz.deathsgun.modmanager.api.http.ModsResult
+import xyz.deathsgun.modmanager.api.mod.Category
 import xyz.deathsgun.modmanager.api.provider.Sorting
 import xyz.deathsgun.modmanager.gui.widget.ErrorWidget
 import xyz.deathsgun.modmanager.gui.widget.ModListEntry
@@ -38,9 +40,15 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     private var query: String = ""
     private var selectedMod: ModListEntry? = null
-    private lateinit var errorWidget: ErrorWidget
+    private var page: Int = 0
+    private var limit: Int = 20
+    private var scrollPercentage: Double = 0.0
+    private var category: Category? = null
     private lateinit var searchField: TextFieldWidget
+    private lateinit var errorWidget: ErrorWidget
     private lateinit var modList: ModListWidget
+    private lateinit var nextPage: ButtonWidget
+    private lateinit var previousPage: ButtonWidget
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun init() {
@@ -50,18 +58,51 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 textRenderer,
                 10,
                 10,
-                100,
+                160,
                 20,
                 TranslatableText("modmanager.search")
             )
         )
         searchField.setChangedListener { this.query = it }
-        errorWidget = ErrorWidget(client!!, 10, 35, width - 130, height - 150)
-        modList = addSelectableChild(ModListWidget(client!!, width - 130, height, 35, height - 50, 36, this))
-        modList.setLeftPos(10)
+        errorWidget = ErrorWidget(client!!, 110, 35, width - 20, height - 150)
+        modList = addSelectableChild(ModListWidget(client!!, width - 10 - 110, height, 35, height - 30, 36, this))
+        modList.setLeftPos(110)
+
+        val buttonWidth = (width - 110 - 10 - 20) / 2
+
+        previousPage = addDrawableChild(
+            ButtonWidget(
+                110,
+                height - 25,
+                buttonWidth,
+                20,
+                TranslatableText("modmanager.page.previous")
+            ) { showPreviousPage() })
+        nextPage = addDrawableChild(
+            ButtonWidget(
+                110 + buttonWidth + 20,
+                height - 25,
+                buttonWidth,
+                20,
+                TranslatableText("modmanager.page.next")
+            ) { showNextPage() })
+
         GlobalScope.launch {
             val provider = ModManager.modManager.getSelectedProvider() ?: return@launch
-            when (val result = provider.getMods(Sorting.RELEVANCE, 0, 20)) {
+            if (query.isNotEmpty()) {
+                when (val result = provider.search(query, page, limit)) {
+                    is ModsResult.Error -> {
+                        errorWidget.error = result.text
+                    }
+                    is ModsResult.Success -> {
+                        errorWidget.error = null
+                        modList.setMods(result.mods)
+                        modList.scrollAmount = scrollPercentage
+                    }
+                }
+                return@launch
+            }
+            when (val result = provider.getMods(Sorting.RELEVANCE, page, limit)) {
                 is ModsResult.Error -> {
                     errorWidget.error = result.text
                 }
@@ -73,6 +114,38 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         }
         //TODO: Sorting selector
         //TODO: Paging
+    }
+
+    private fun showNextPage() {
+        this.page++
+        if (this.category == null) {
+            showByRelevanceMods()
+            return
+        }
+    }
+
+    private fun showPreviousPage() {
+        this.page--
+        if (this.page < 0) {
+            page = 0
+        }
+        if (this.category == null) {
+            showByRelevanceMods()
+            return
+        }
+    }
+
+    private fun showByRelevanceMods() {
+        val provider = ModManager.modManager.getSelectedProvider() ?: return
+        when (val result = provider.getMods(Sorting.RELEVANCE, page, limit)) {
+            is ModsResult.Error -> {
+                errorWidget.error = result.text
+            }
+            is ModsResult.Success -> {
+                errorWidget.error = null
+                modList.setMods(result.mods)
+            }
+        }
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
@@ -116,7 +189,10 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     override fun tick() {
         super.tick()
+        this.scrollPercentage = modList.scrollAmount
         this.searchField.tick()
+        this.previousPage.active = page > 0
+        this.nextPage.active = this.modList.getElementCount() >= limit
     }
 
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
