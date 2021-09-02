@@ -148,8 +148,8 @@ class Modrinth : IModProvider, IModUpdateProvider {
         this.ignoreUnknownKeys = true
     }
 
-    override fun getMod(mod: Mod): ModResult {
-        val id = mod.id.replaceFirst("local-", "")
+    override fun getMod(id: String): ModResult {
+        id.replaceFirst("local-", "")
         val request = HttpRequest.newBuilder().GET()
             .setHeader("User-Agent", "ModManager " + ModManager.getVersion())
             .uri(URI.create("${baseUri}/api/v1/mod/${id}")).build()
@@ -177,10 +177,10 @@ class Modrinth : IModProvider, IModUpdateProvider {
                 Mod(
                     id = result.id.replaceFirst("local-", ""),
                     slug = result.slug,
-                    author = mod.author,
+                    author = null,
                     name = result.title,
-                    shortDescription = mod.shortDescription,
-                    iconUrl = mod.iconUrl,
+                    shortDescription = result.description,
+                    iconUrl = result.iconUrl,
                     description = result.body,
                     license = result.license.name,
                     categories = categoriesList

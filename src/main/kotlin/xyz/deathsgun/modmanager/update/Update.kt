@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-package xyz.deathsgun.modmanager.providers.modrinth.models
+package xyz.deathsgun.modmanager.update
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import xyz.deathsgun.modmanager.api.mod.Version
 
-@Serializable
-data class DetailedMod(
-    val id: String,
-    val slug: String,
-    val title: String,
-    val description: String,
-    val body: String,
-    val license: License,
-    val categories: List<String>,
-    @SerialName("icon_url")
-    val iconUrl: String?
-) {
-    @Serializable
-    data class License(val name: String)
-}
+data class Update(val modId: String, val fabricId: String, val version: Version)

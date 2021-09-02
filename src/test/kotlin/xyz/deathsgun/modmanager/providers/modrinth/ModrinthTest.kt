@@ -95,7 +95,7 @@ internal class ModrinthTest {
             assertTrue(it.id.isNotEmpty())
             assertTrue(it.slug.isNotEmpty())
             assertTrue(it.name.isNotEmpty())
-            assertTrue(it.author.isNotEmpty())
+            assertNotNull(it.author)
             assertNotNull(it.iconUrl)
             assertTrue(it.shortDescription.isNotEmpty())
             assertTrue(it.categories.isNotEmpty())
@@ -115,7 +115,7 @@ internal class ModrinthTest {
             }
             fail(testMod.text.key)
         }
-        val result = modrinth.getMod((testMod as ModsResult.Success).mods[0])
+        val result = modrinth.getMod((testMod as ModsResult.Success).mods[0].id)
         if (result is ModResult.Error) {
             result.cause?.let {
                 fail(result.text.key, it)
@@ -126,13 +126,13 @@ internal class ModrinthTest {
         assertTrue(mod.id.isNotEmpty())
         assertTrue(mod.slug.isNotEmpty())
         assertTrue(mod.name.isNotEmpty())
-        assertTrue(mod.author.isNotEmpty())
+        assertNull(mod.author)
         assertNotNull(mod.iconUrl)
         assertTrue(mod.shortDescription.isNotEmpty())
         assertTrue(mod.categories.isNotEmpty())
-        assertNotEquals(mod.description, null)
+        assertNotNull(mod.description)
         assertTrue(mod.description!!.isNotEmpty())
-        assertNotEquals(mod.license, null)
+        assertNotNull(mod.license)
         assertTrue(mod.license!!.isNotEmpty())
     }
 

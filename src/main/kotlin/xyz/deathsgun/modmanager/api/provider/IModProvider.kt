@@ -73,8 +73,8 @@ interface IModProvider {
     /**
      * Returns a more detailed representation of the mod
      *
-     * @param mod the [Mod] which is used to receive
+     * @param id the [Mod] id which is used to receive
      * @return a more detailed representation of [Mod]
      */
-    fun getMod(mod: Mod): ModResult
+    fun getMod(id: String): ModResult
 }

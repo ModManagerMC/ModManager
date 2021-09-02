@@ -46,11 +46,8 @@ class ModManager : ClientModInitializer {
 
         @JvmStatic
         fun getVersion(): String {
-            return try {
-                FabricLoader.getInstance().allMods.first { it.metadata.id.equals("modmanager") }.metadata.version.friendlyString
-            } catch (ignored: NoSuchElementException) {
-                "1.1.0+1.17.1-alpha"
-            }
+            return FabricLoader.getInstance().allMods.find { it.metadata.id.equals("modmanager") }
+                ?.metadata?.version?.friendlyString ?: "1.1.0+1.17.1-alpha"
         }
 
         @JvmStatic

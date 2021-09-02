@@ -28,25 +28,24 @@ import net.minecraft.text.TranslatableText
 import org.lwjgl.glfw.GLFW
 import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.gui.list.IListScreen
+import xyz.deathsgun.modmanager.api.http.CategoriesResult
 import xyz.deathsgun.modmanager.api.http.ModsResult
-import xyz.deathsgun.modmanager.api.mod.Category
 import xyz.deathsgun.modmanager.api.provider.Sorting
-import xyz.deathsgun.modmanager.gui.widget.ErrorWidget
-import xyz.deathsgun.modmanager.gui.widget.ModListEntry
-import xyz.deathsgun.modmanager.gui.widget.ModListWidget
+import xyz.deathsgun.modmanager.gui.widget.*
 
 class ModsOverviewScreen(private val previousScreen: Screen) : Screen(TranslatableText("modmanager.title.overview")),
     IListScreen {
 
     private var query: String = ""
     private var selectedMod: ModListEntry? = null
+    private var selectedCategory: CategoryListEntry? = null
     private var page: Int = 0
     private var limit: Int = 20
     private var scrollPercentage: Double = 0.0
-    private var category: Category? = null
     private lateinit var searchField: TextFieldWidget
     private lateinit var errorWidget: ErrorWidget
     private lateinit var modList: ModListWidget
+    private lateinit var categoryList: CategoryListWidget
     private lateinit var nextPage: ButtonWidget
     private lateinit var previousPage: ButtonWidget
 
@@ -64,15 +63,31 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             )
         )
         searchField.setChangedListener { this.query = it }
-        errorWidget = ErrorWidget(client!!, 110, 35, width - 20, height - 150)
-        modList = addSelectableChild(ModListWidget(client!!, width - 10 - 110, height, 35, height - 30, 36, this))
-        modList.setLeftPos(110)
 
-        val buttonWidth = (width - 110 - 10 - 20) / 2
+        categoryList = addSelectableChild(
+            CategoryListWidget(
+                client!!,
+                100,
+                height,
+                35,
+                height - 30,
+                client!!.textRenderer.fontHeight + 4,
+                this
+            )
+        )
+        categoryList.setLeftPos(10)
+
+        errorWidget = ErrorWidget(client!!, 115, 35, width - 20, height - 150)
+
+        modList = addSelectableChild(ModListWidget(client!!, width - 10 - 115, height, 35, height - 30, 36, this))
+        modList.setLeftPos(115)
+
+
+        val buttonWidth = (width - 115 - 10 - 20) / 2
 
         previousPage = addDrawableChild(
             ButtonWidget(
-                110,
+                115,
                 height - 25,
                 buttonWidth,
                 20,
@@ -80,7 +95,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             ) { showPreviousPage() })
         nextPage = addDrawableChild(
             ButtonWidget(
-                110 + buttonWidth + 20,
+                115 + buttonWidth + 20,
                 height - 25,
                 buttonWidth,
                 20,
@@ -89,6 +104,29 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
         GlobalScope.launch {
             val provider = ModManager.modManager.getSelectedProvider() ?: return@launch
+            when (val result = provider.getCategories()) {
+                is CategoriesResult.Error -> {
+                    errorWidget.error = result.text
+                }
+                is CategoriesResult.Success -> {
+                    errorWidget.error = null
+                    categoryList.setCategories(result.categories)
+                    modList.scrollAmount = scrollPercentage
+                }
+            }
+            if (selectedCategory != null) {
+                when (val result = provider.getMods(selectedCategory!!.category, page, limit)) {
+                    is ModsResult.Error -> {
+                        errorWidget.error = result.text
+                    }
+                    is ModsResult.Success -> {
+                        errorWidget.error = null
+                        modList.setMods(result.mods)
+                        modList.scrollAmount = scrollPercentage
+                    }
+                }
+                return@launch
+            }
             if (query.isNotEmpty()) {
                 when (val result = provider.search(query, page, limit)) {
                     is ModsResult.Error -> {
@@ -102,26 +140,21 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 }
                 return@launch
             }
-            when (val result = provider.getMods(Sorting.RELEVANCE, page, limit)) {
-                is ModsResult.Error -> {
-                    errorWidget.error = result.text
-                }
-                is ModsResult.Success -> {
-                    errorWidget.error = null
-                    modList.setMods(result.mods)
-                }
-            }
+            showModsByRelevance()
         }
+        modList.init()
+        categoryList.init()
         //TODO: Sorting selector
         //TODO: Paging
     }
 
     private fun showNextPage() {
         this.page++
-        if (this.category == null) {
-            showByRelevanceMods()
+        if (selectedCategory == null) {
+            showModsByRelevance()
             return
         }
+        showModsByCategory()
     }
 
     private fun showPreviousPage() {
@@ -129,15 +162,29 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         if (this.page < 0) {
             page = 0
         }
-        if (this.category == null) {
-            showByRelevanceMods()
+        if (selectedCategory == null) {
+            showModsByRelevance()
             return
+        }
+        showModsByCategory()
+    }
+
+    private fun showModsByRelevance() {
+        val provider = ModManager.modManager.getSelectedProvider() ?: return
+        when (val result = provider.getMods(Sorting.RELEVANCE, page, limit)) {
+            is ModsResult.Error -> {
+                errorWidget.error = result.text
+            }
+            is ModsResult.Success -> {
+                errorWidget.error = null
+                modList.setMods(result.mods)
+            }
         }
     }
 
-    private fun showByRelevanceMods() {
+    private fun showModsByCategory() {
         val provider = ModManager.modManager.getSelectedProvider() ?: return
-        when (val result = provider.getMods(Sorting.RELEVANCE, page, limit)) {
+        when (val result = provider.getMods(selectedCategory!!.category, page, limit)) {
             is ModsResult.Error -> {
                 errorWidget.error = result.text
             }
@@ -181,10 +228,13 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             selectedMod = entry as ModListEntry
             return
         }
-    }
-
-    override fun <E> getEntry(widget: Any): E? {
-        return null
+        if (widget is CategoryListWidget) {
+            if (entry == null) {
+                return
+            }
+            selectedCategory = entry as CategoryListEntry
+            showModsByCategory()
+        }
     }
 
     override fun tick() {
@@ -201,6 +251,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         if (this.errorWidget.error == null) {
             this.modList.render(matrices, mouseX, mouseY, delta)
         }
+        this.categoryList.render(matrices, mouseX, mouseY, delta)
         this.searchField.render(matrices, mouseX, mouseY, delta)
         super.render(matrices, mouseX, mouseY, delta)
     }
