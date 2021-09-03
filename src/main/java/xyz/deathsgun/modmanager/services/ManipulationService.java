@@ -48,6 +48,10 @@ public class ManipulationService extends Thread {
             for (ManipulationTask task : scheduledTasks) {
                 task.executeTask();
             }
+            try {
+                sleep(250); // I know this is dirty but until the Kotlin version comes out it's ok
+            } catch (InterruptedException ignored) {
+            }
         }
     }
 
