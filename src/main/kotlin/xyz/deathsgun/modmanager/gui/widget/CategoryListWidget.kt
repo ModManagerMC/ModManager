@@ -41,6 +41,10 @@ class CategoryListWidget(
         }
     }
 
+    fun setSelectedByIndex(index: Int) {
+        setSelected(getEntry(index))
+    }
+
     fun clear() {
         clearEntries()
     }

@@ -120,16 +120,8 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 }
             }
             if (selectedCategory != null) {
-                when (val result = provider.getMods(selectedCategory!!.category, page, limit)) {
-                    is ModsResult.Error -> {
-                        errorWidget.error = result.text
-                    }
-                    is ModsResult.Success -> {
-                        errorWidget.error = null
-                        modList.setMods(result.mods)
-                        modList.scrollAmount = scrollPercentage
-                    }
-                }
+                showModsByCategory()
+                modList.scrollAmount = scrollPercentage
                 return@launch
             }
             if (query.isNotEmpty()) {
@@ -145,7 +137,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 }
                 return@launch
             }
-            showModsByRelevance()
+            categoryList.setSelectedByIndex(0)
         }
         modList.init()
         categoryList.init()
