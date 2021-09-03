@@ -1,15 +1,13 @@
 Bugs fixed:
 
-- Fixed crash when opening ModMenu [#13](https://github.com/DeathsGun/ModManager/issues/13)
-- Fixed update error on Windows because of file locks [#17](https://github.com/DeathsGun/ModManager/issues/13)
-- Search only when enter key was hit for improved performance [#7](https://github.com/DeathsGun/ModManager/issues/7)
-- Fixed crash when ModManager loses connection while opening a more detailed
-  view [#16](https://github.com/DeathsGun/ModManager/issues/16)
-- Fixed icons being mixed up [#22](https://github.com/DeathsGun/ModManager/issues/22)
-- Fixed unknown mods showing up [#18](https://github.com/DeathsGun/ModManager/issues/18)
+- Fix CPU overload when using ModManager [#48](https://github.com/DeathsGun/ModManager/issues/48)
+- Fix forge artifacts being downloaded [#37](https://github.com/DeathsGun/ModManager/pull/37)
+- Fix NullPointerException while updating a mod [#34](https://github.com/DeathsGun/ModManager/issues/34)
 
 Improvements:
 
-- Added Turkish translation (Special thanks to kuzeeeyk) [#21](https://github.com/DeathsGun/ModManager/pull/21)
-- Only show "Updatable mods" category when there are updatable
-  mods [#10](https://github.com/DeathsGun/ModManager/issues/10)
+- Improved Turkish translation (Special thanks to kuzeeeyk) [#31](https://github.com/DeathsGun/ModManager/pull/39)
+- Added Chinese translation (Special thanks to MineCommanderCN) [#36](https://github.com/DeathsGun/ModManager/pull/36)
+- Added Korean translation (Special thanks to arlytical#1) [#32](https://github.com/DeathsGun/ModManager/pull/32)
+- Added Russian translation (Special thanks to Felix14-v2) [#31](https://github.com/DeathsGun/ModManager/pull/31)
+- New loading icon [#40](https://github.com/DeathsGun/ModManager/pull/40)
