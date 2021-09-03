@@ -22,4 +22,6 @@ interface IModUpdateProvider {
 
     fun getVersionsForMod(id: String): VersionResult
 
+    fun getName(): String
+
 }

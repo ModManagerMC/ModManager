@@ -41,6 +41,9 @@ class ModManager : ClientModInitializer {
     val updateProvider: HashMap<String, IModUpdateProvider> = HashMap()
 
     companion object {
+        @JvmField
+        var shownUpdateNotification: Boolean = false
+
         @JvmStatic
         lateinit var modManager: ModManager
 

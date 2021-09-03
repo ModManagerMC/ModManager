@@ -25,7 +25,7 @@
   },
   "custom": {
     "modmanager": {
-      "Modrinth": "6kq7BzRK"
+      "modrinth": "6kq7BzRK"
     }
   },
   "mixins": [

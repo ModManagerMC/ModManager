@@ -1,8 +1,8 @@
 {
-    "modmanager.badge.installed": "已安装",
-    "modmanager.badge.outdated": "可更新",
-    "modmanager.categories": "分类",
-    "modmanager.categories.updatable": "可更新",
+  "modmanager.badge.installed": "已安装",
+  "modmanager.badge.outdated": "可更新",
+  "modmanager.categories": "分类",
+  "modmanager.category.updatable": "可更新",
   "modmanager.category.technology": "科技",
   "modmanager.category.adventure": "冒险",
   "modmanager.category.magic": "魔法",

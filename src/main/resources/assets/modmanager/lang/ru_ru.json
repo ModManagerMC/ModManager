@@ -2,7 +2,7 @@
   "modmanager.badge.installed": "Установлен",
   "modmanager.badge.outdated": "Устарел",
   "modmanager.categories": "Категории",
-  "modmanager.categories.updatable": "Доступны обновления",
+  "modmanager.category.updatable": "Доступны обновления",
   "modmanager.category.technology": "Технологии",
   "modmanager.category.adventure": "Приключения",
   "modmanager.category.magic": "Магия",

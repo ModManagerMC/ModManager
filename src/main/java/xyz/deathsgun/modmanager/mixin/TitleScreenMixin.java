@@ -35,18 +35,16 @@ import java.util.Objects;
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
 
-    private boolean hasRun = false;
-
     protected TitleScreenMixin(Text title) {
         super(title);
     }
 
     @Inject(at = @At("TAIL"), method = "render")
     public void onRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (hasRun) {
+        if (ModManager.shownUpdateNotification) {
             return;
         }
-        hasRun = true;
+        ModManager.shownUpdateNotification = true;
         ArrayList<Update> updates = ModManager.modManager.getUpdate().getUpdates();
         if (updates.isEmpty()) {
             return;

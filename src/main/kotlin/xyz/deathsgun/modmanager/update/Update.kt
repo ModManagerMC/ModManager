@@ -16,6 +16,7 @@
 
 package xyz.deathsgun.modmanager.update
 
+import xyz.deathsgun.modmanager.api.mod.Mod
 import xyz.deathsgun.modmanager.api.mod.Version
 
-data class Update(val modId: String, val fabricId: String, val version: Version)
+data class Update(val mod: Mod, val fabricId: String, val version: Version)

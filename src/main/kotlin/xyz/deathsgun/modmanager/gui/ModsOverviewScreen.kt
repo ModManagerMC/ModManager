@@ -30,6 +30,7 @@ import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.gui.list.IListScreen
 import xyz.deathsgun.modmanager.api.http.CategoriesResult
 import xyz.deathsgun.modmanager.api.http.ModsResult
+import xyz.deathsgun.modmanager.api.mod.Category
 import xyz.deathsgun.modmanager.api.provider.Sorting
 import xyz.deathsgun.modmanager.gui.widget.*
 
@@ -110,7 +111,11 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 }
                 is CategoriesResult.Success -> {
                     errorWidget.error = null
-                    categoryList.setCategories(result.categories)
+                    categoryList.clear()
+                    if (ModManager.modManager.update.updates.isNotEmpty()) {
+                        categoryList.add(Category("updatable", TranslatableText("modmanager.category.updatable")))
+                    }
+                    categoryList.addCategories(result.categories)
                     modList.scrollAmount = scrollPercentage
                 }
             }
@@ -182,8 +187,19 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun showModsByCategory() {
+        selectedCategory ?: return
         val provider = ModManager.modManager.getSelectedProvider() ?: return
+        if (selectedCategory!!.id == "updatable") {
+            GlobalScope.launch {
+                modList.clear()
+                ModManager.modManager.update.updates.forEach {
+                    modList.add(it.mod)
+                }
+            }
+            return
+        }
         when (val result = provider.getMods(selectedCategory!!.category, page, limit)) {
             is ModsResult.Error -> {
                 errorWidget.error = result.text
@@ -232,6 +248,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             if (entry == null) {
                 return
             }
+            page = 0
             selectedCategory = entry as CategoryListEntry
             showModsByCategory()
         }

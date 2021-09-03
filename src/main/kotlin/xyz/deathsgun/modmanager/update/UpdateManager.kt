@@ -28,6 +28,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata
 import net.fabricmc.loader.util.version.VersionDeserializer
 import org.apache.logging.log4j.LogManager
 import xyz.deathsgun.modmanager.ModManager
+import xyz.deathsgun.modmanager.api.http.ModResult
 import xyz.deathsgun.modmanager.api.http.ModsResult
 import xyz.deathsgun.modmanager.api.http.VersionResult
 import xyz.deathsgun.modmanager.api.mod.Mod
@@ -90,7 +91,11 @@ class UpdateManager {
             }
             logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
             ModManager.modManager.setModState(metadata.id, metadata.id, ModState.OUTDATED)
-            this.updates.add(Update(metadata.id, metadata.id, version))
+            when (val modResult = provider.getMod(metadata.id)) {
+                is ModResult.Success -> {
+                    this.updates.add(Update(modResult.mod, metadata.id, version))
+                }
+            }
             return
         }
 
@@ -124,7 +129,11 @@ class UpdateManager {
         }
         logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
         ModManager.modManager.setModState(metadata.id, mod.id, ModState.OUTDATED)
-        this.updates.add(Update(mod.id, metadata.id, version))
+        when (val modResult = provider.getMod(mod.id)) {
+            is ModResult.Success -> {
+                this.updates.add(Update(modResult.mod, metadata.id, version))
+            }
+        }
     }
 
     private fun checkForUpdates(metadata: ModMetadata, ids: Map<String, String>) {
@@ -160,11 +169,15 @@ class UpdateManager {
         }
         logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
         ModManager.modManager.setModState(metadata.id, id, ModState.OUTDATED)
-        this.updates.add(Update(id, metadata.id, version))
+        when (val modResult = ModManager.modManager.provider[provider.getName()]?.getMod(id)) {
+            is ModResult.Success -> {
+                this.updates.add(Update(modResult.mod, metadata.id, version))
+            }
+        }
     }
 
     fun getUpdateForMod(mod: Mod): Update? {
-        return this.updates.find { it.modId == mod.id || it.fabricId == mod.slug }
+        return this.updates.find { it.mod.id == mod.id || it.fabricId == mod.slug }
     }
 
     private fun findLatestCompatible(installedVersion: String, versions: List<Version>): Version? {

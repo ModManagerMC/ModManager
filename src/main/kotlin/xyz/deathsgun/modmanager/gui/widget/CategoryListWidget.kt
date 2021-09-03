@@ -35,10 +35,17 @@ class CategoryListWidget(
 
     }
 
-    fun setCategories(categories: List<Category>) {
-        clearEntries()
+    fun addCategories(categories: List<Category>) {
         categories.forEach {
             addEntry(CategoryListEntry(this, it))
         }
+    }
+
+    fun clear() {
+        clearEntries()
+    }
+
+    fun add(category: Category) {
+        addEntry(CategoryListEntry(this, category))
     }
 }

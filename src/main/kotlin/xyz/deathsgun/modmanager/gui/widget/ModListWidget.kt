@@ -42,4 +42,12 @@ class ModListWidget(
         }
     }
 
+    fun clear() {
+        this.clearEntries()
+    }
+
+    fun add(mod: Mod) {
+        this.addEntry(ModListEntry(client, this, mod))
+    }
+
 }

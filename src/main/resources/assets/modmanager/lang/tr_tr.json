@@ -2,7 +2,7 @@
   "modmanager.badge.installed": "Kurulu",
   "modmanager.badge.outdated": "Eski",
   "modmanager.categories": "Kategoriler",
-  "modmanager.categories.updatable": "Güncellenebilir Modlar",
+  "modmanager.category.updatable": "Güncellenebilir Modlar",
   "modmanager.category.technology": "Teknoloji",
   "modmanager.category.adventure": "Macera",
   "modmanager.category.magic": "Sihir",

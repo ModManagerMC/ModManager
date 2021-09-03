@@ -1,8 +1,8 @@
 {
-    "modmanager.badge.installed": "Installed",
-    "modmanager.badge.outdated": "Outdated",
-    "modmanager.categories": "Categories",
-    "modmanager.categories.updatable": "Updatable Mods",
+  "modmanager.badge.installed": "Installed",
+  "modmanager.badge.outdated": "Outdated",
+  "modmanager.categories": "Categories",
+  "modmanager.category.updatable": "Updatable Mods",
   "modmanager.category.technology": "Technology",
   "modmanager.category.adventure": "Adventure",
   "modmanager.category.magic": "Magic",
