@@ -49,6 +49,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     private lateinit var categoryList: CategoryListWidget
     private lateinit var nextPage: ButtonWidget
     private lateinit var previousPage: ButtonWidget
+    private lateinit var updateAllButtons: ButtonWidget
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun init() {
@@ -103,6 +104,14 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 TranslatableText("modmanager.page.next")
             ) { showNextPage() })
 
+        updateAllButtons = addDrawableChild(ButtonWidget(
+            width - 10 - 160,
+            10,
+            160,
+            20,
+            TranslatableText("modmanager.button.updateAll")
+        ) { updateAll() })
+
         GlobalScope.launch {
             val provider = ModManager.modManager.getSelectedProvider() ?: return@launch
             when (val result = provider.getCategories()) {
@@ -145,6 +154,10 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         //TODO: Paging
     }
 
+    private fun updateAll() {
+        this.updateAllButtons.message = TranslatableText("modmanager.message.updating")
+    }
+
     private fun showNextPage() {
         this.page++
         if (selectedCategory == null) {
@@ -184,11 +197,9 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         selectedCategory ?: return
         val provider = ModManager.modManager.getSelectedProvider() ?: return
         if (selectedCategory!!.id == "updatable") {
-            GlobalScope.launch {
-                modList.clear()
-                ModManager.modManager.update.updates.forEach {
-                    modList.add(it.mod)
-                }
+            modList.clear()
+            ModManager.modManager.update.updates.forEach {
+                modList.add(it.mod)
             }
             return
         }
@@ -231,6 +242,10 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 return
             }
             if (selectedMod == entry) {
+                if (selectedCategory?.id == "updatable") {
+                    val update = ModManager.modManager.update.getUpdateForMod(selectedMod!!.mod) ?: return
+                    client?.setScreen(ModUpdateInfoScreen(this, update))
+                }
                 return // TODO: Open detail view
             }
             selectedMod = entry as ModListEntry
@@ -252,6 +267,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         this.searchField.tick()
         this.previousPage.active = page > 0
         this.nextPage.active = this.modList.getElementCount() >= limit
+        this.updateAllButtons.visible = selectedCategory?.id == "updatable" && this.modList.getElementCount() > 0
     }
 
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {

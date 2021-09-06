@@ -28,6 +28,7 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
     protected val parent: IListScreen
 ) : AlwaysSelectedEntryListWidget<E>(client, width, height, top, bottom, itemHeight) {
 
+    var renderOutline: Boolean = true
     protected var selectedId: String? = null
     private var scrolling = false
 
@@ -68,7 +69,7 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
                 val entry: Entry<E> = getEntry(index)
                 val rowWidth = this.rowWidth
                 var entryLeft: Int
-                if (isSelectedEntry(index)) {
+                if (isSelectedEntry(index) && renderOutline) {
                     entryLeft = rowLeft - 2
                     val selectionRight = x + rowWidth + 2
                     RenderSystem.disableTexture()
@@ -138,6 +139,10 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
 
     fun getElementCount(): Int {
         return super.getEntryCount()
+    }
+
+    fun getBottom(): Int {
+        return bottom
     }
 
     abstract class Entry<E : Entry<E>>(open val list: ListWidget<E>, val id: String) :

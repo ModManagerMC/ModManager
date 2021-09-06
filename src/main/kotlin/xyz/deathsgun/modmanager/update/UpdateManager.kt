@@ -93,7 +93,7 @@ class UpdateManager {
             ModManager.modManager.setModState(metadata.id, metadata.id, ModState.OUTDATED)
             when (val modResult = provider.getMod(metadata.id)) {
                 is ModResult.Success -> {
-                    this.updates.add(Update(modResult.mod, metadata.id, version))
+                    this.updates.add(Update(modResult.mod, metadata.id, metadata.version.friendlyString, version))
                 }
             }
             return
@@ -131,7 +131,7 @@ class UpdateManager {
         ModManager.modManager.setModState(metadata.id, mod.id, ModState.OUTDATED)
         when (val modResult = provider.getMod(mod.id)) {
             is ModResult.Success -> {
-                this.updates.add(Update(modResult.mod, metadata.id, version))
+                this.updates.add(Update(modResult.mod, metadata.id, metadata.version.friendlyString, version))
             }
         }
     }
@@ -171,7 +171,7 @@ class UpdateManager {
         ModManager.modManager.setModState(metadata.id, id, ModState.OUTDATED)
         when (val modResult = ModManager.modManager.provider[provider.getName()]?.getMod(id)) {
             is ModResult.Success -> {
-                this.updates.add(Update(modResult.mod, metadata.id, version))
+                this.updates.add(Update(modResult.mod, metadata.id, metadata.version.friendlyString, version))
             }
         }
     }
