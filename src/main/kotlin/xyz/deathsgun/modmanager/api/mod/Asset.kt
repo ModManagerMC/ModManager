@@ -19,5 +19,6 @@ package xyz.deathsgun.modmanager.api.mod
 data class Asset(
     val url: String,
     val filename: String,
-    val hashes: Map<String, String>
+    val hashes: Map<String, String>,
+    val primary: Boolean
 )

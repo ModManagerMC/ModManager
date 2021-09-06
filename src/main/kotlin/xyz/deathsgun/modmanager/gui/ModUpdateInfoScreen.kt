@@ -2,13 +2,19 @@ package xyz.deathsgun.modmanager.gui
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.terraformersmc.modmenu.util.DrawingUtil
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.ScreenTexts
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.*
+import org.apache.logging.log4j.LogManager
 import xyz.deathsgun.modmanager.ModManager
+import xyz.deathsgun.modmanager.api.ModUpdateResult
 import xyz.deathsgun.modmanager.api.gui.list.IListScreen
 import xyz.deathsgun.modmanager.gui.widget.DescriptionWidget
 import xyz.deathsgun.modmanager.update.Update
@@ -46,9 +52,24 @@ class ModUpdateInfoScreen(private val previousScreen: Screen, private val update
         })
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun installUpdate() {
         this.updateButtonWidget.active = false
         this.updateButtonWidget.message = TranslatableText("modmanager.message.updating")
+        GlobalScope.launch {
+            when (val result = ModManager.modManager.update.updateMod(update)) {
+                is ModUpdateResult.Error -> {
+                    this@ModUpdateInfoScreen.updateButtonWidget.active = true
+                    this@ModUpdateInfoScreen.updateButtonWidget.message = TranslatableText("modmanager.button.update")
+                    LogManager.getLogger().error(result.text.key, result.cause)
+                }
+                is ModUpdateResult.Success -> {
+                    client!!.send {
+                        MinecraftClient.getInstance().setScreen(previousScreen)
+                    }
+                }
+            }
+        }
     }
 
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {

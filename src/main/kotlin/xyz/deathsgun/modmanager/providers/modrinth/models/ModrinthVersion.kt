@@ -35,6 +35,7 @@ data class ModrinthVersion(
     data class File(
         val hashes: Map<String, String>,
         val filename: String,
-        val url: String
+        val url: String,
+        val primary: Boolean
     )
 }

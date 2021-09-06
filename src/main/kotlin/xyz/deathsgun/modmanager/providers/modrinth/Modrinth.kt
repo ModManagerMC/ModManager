@@ -210,7 +210,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             for (modVersion in modrinthVersions) {
                 val assets = ArrayList<Asset>()
                 for (file in modVersion.files) {
-                    assets.add(Asset(file.url, file.filename, file.hashes))
+                    assets.add(Asset(file.url, file.filename, file.hashes, file.primary))
                 }
                 versions.add(
                     Version(

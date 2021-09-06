@@ -26,8 +26,11 @@ import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.SemanticVersion
 import net.fabricmc.loader.api.metadata.ModMetadata
 import net.fabricmc.loader.util.version.VersionDeserializer
+import net.minecraft.text.TranslatableText
+import net.minecraft.util.Util
 import org.apache.logging.log4j.LogManager
 import xyz.deathsgun.modmanager.ModManager
+import xyz.deathsgun.modmanager.api.ModUpdateResult
 import xyz.deathsgun.modmanager.api.http.ModResult
 import xyz.deathsgun.modmanager.api.http.ModsResult
 import xyz.deathsgun.modmanager.api.http.VersionResult
@@ -36,8 +39,15 @@ import xyz.deathsgun.modmanager.api.mod.Version
 import xyz.deathsgun.modmanager.api.provider.IModUpdateProvider
 import xyz.deathsgun.modmanager.models.FabricMetadata
 import xyz.deathsgun.modmanager.state.ModState
+import java.math.BigInteger
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.nio.file.Files
 import java.nio.file.Path
+import java.security.MessageDigest
+import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 import java.util.zip.ZipFile
 import kotlin.io.path.name
@@ -47,6 +57,7 @@ class UpdateManager {
 
     private val logger = LogManager.getLogger("UpdateCheck")
     private val blockedIds = arrayOf("java", "minecraft")
+    private val http: HttpClient = HttpClient.newHttpClient()
     val updates = ArrayList<Update>()
 
     suspend fun checkUpdates() = coroutineScope {
@@ -204,6 +215,49 @@ class UpdateManager {
         return latest
     }
 
+    fun updateMod(update: Update): ModUpdateResult {
+        val oldUpdate = FabricLoader.getInstance().allMods.find { it.metadata.id == update.fabricId }
+            ?: return ModUpdateResult.Error(TranslatableText("modmanager.error.container.notFound"))
+        val oldJar = findJarByModContainer(oldUpdate.metadata)
+            ?: return ModUpdateResult.Error(TranslatableText("modmanager.error.jar.notFound"))
+        try {
+            oldJar.forceDelete()
+        } catch (e: Exception) {
+            return ModUpdateResult.Error(TranslatableText("modmanager.error.jar.failedDelete", e))
+        }
+        val asset =
+            update.version.assets.find { (it.filename.endsWith(".jar") || it.primary) && !it.filename.contains("forge") }
+                ?: return ModUpdateResult.Error(TranslatableText("modmanager.error.update.noFabricJar"))
+        val newJar = oldJar.resolveSibling(asset.filename) // Download into same directory where the old jar was
+
+        val request = HttpRequest.newBuilder(URI.create(asset.url)).GET()
+            .setHeader("User-Agent", "ModManager ${ModManager.getVersion()}").build()
+        return try {
+            val response = this.http.send(request, HttpResponse.BodyHandlers.ofFile(newJar))
+            if (response.statusCode() != 200) {
+                ModUpdateResult.Error(TranslatableText("modmanager.error.invalidStatus", response.statusCode()))
+            }
+            val expected = asset.hashes["sha512"]
+            val calculated = newJar.sha512()
+            if (calculated != expected) {
+                return ModUpdateResult.Error(
+                    TranslatableText(
+                        "modmanager.error.invalidHash",
+                        "SHA-512",
+                        expected,
+                        calculated
+                    )
+                )
+            }
+            ModManager.modManager.setModState(update.fabricId, update.mod.id, ModState.INSTALLED)
+            this.updates.removeIf { it.fabricId == update.fabricId || it.mod.id == update.mod.id }
+            ModUpdateResult.Success
+        } catch (e: Exception) {
+            ModUpdateResult.Error(TranslatableText("modmanager.error.update.unknown", e))
+        }
+
+    }
+
     private val json = Json {
         ignoreUnknownKeys = true
     }
@@ -249,4 +303,23 @@ class UpdateManager {
         }
     }
 
+    private fun Path.forceDelete() {
+        if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS) {
+            ProcessBuilder("del", "/f", this.name).directory(this.parent.toFile()).start()
+                .waitFor(200, TimeUnit.MILLISECONDS)
+            return
+        }
+        Files.deleteIfExists(this)
+    }
+
+    private fun Path.sha512(): String {
+        val md: MessageDigest = MessageDigest.getInstance("SHA-512")
+        val messageDigest = md.digest(Files.readAllBytes(this))
+        val no = BigInteger(1, messageDigest)
+        var hashtext: String = no.toString(16)
+        while (hashtext.length < 128) {
+            hashtext = "0$hashtext"
+        }
+        return hashtext
+    }
 }

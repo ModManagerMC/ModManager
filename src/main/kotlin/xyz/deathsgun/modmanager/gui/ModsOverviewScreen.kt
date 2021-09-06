@@ -154,6 +154,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         //TODO: Paging
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun updateAll() {
         this.updateAllButtons.message = TranslatableText("modmanager.message.updating")
     }
