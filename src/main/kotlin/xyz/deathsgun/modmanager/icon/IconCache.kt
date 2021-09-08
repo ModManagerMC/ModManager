@@ -25,6 +25,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.util.Identifier
+import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.LogManager
 import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.mod.Mod
@@ -33,6 +34,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.file.Files
+import java.util.stream.Collectors
 
 class IconCache {
 
@@ -105,6 +107,36 @@ class IconCache {
     }
 
     fun destroyAll() {
+        for ((mod, state) in state) {
+            if (state != IconState.LOADED) {
+                continue
+            }
+            val icon = Identifier("modmanager", "mod_icons/${mod.lowercase()}")
+            MinecraftClient.getInstance().textureManager.destroyTexture(icon)
+            this.state[mod] = IconState.DOWNLOADED
+        }
+    }
+
+    fun cleanupCache() {
+        logger.info("Starting cleanup...")
+        var files = Files.list(iconsDir)
+            .sorted { o1, o2 ->
+                o1.toFile().lastModified().compareTo(o2.toFile().lastModified())
+            }.collect(Collectors.toList())
+        if (files.isEmpty()) {
+            return
+        }
+        while (FileUtils.sizeOfDirectory(iconsDir.toFile()) >= 10000000) {
+            if (files.isEmpty()) {
+                return
+            }
+            Files.delete(files[0])
+            files = Files.list(iconsDir)
+                .sorted { o1, o2 ->
+                    o1.toFile().lastModified().compareTo(o2.toFile().lastModified())
+                }.collect(Collectors.toList())
+        }
+        logger.info("Cleanup done!")
     }
 
     private enum class IconState {

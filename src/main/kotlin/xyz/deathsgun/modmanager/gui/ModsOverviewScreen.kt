@@ -283,7 +283,6 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     }
 
     override fun onClose() {
-        super.onClose()
         ModManager.modManager.icons.destroyAll()
         client!!.setScreen(previousScreen)
     }

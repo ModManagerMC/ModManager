@@ -305,7 +305,8 @@ class UpdateManager {
 
     private fun Path.forceDelete() {
         if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS) {
-            ProcessBuilder("del", "/f", this.name).directory(this.parent.toFile()).start()
+            // Under windows this file gets locked can't be deleted by Java
+            ProcessBuilder("cmd", "/c", "del /f ${this.name}").directory(this.parent.toFile()).start()
                 .waitFor(200, TimeUnit.MILLISECONDS)
             return
         }
@@ -316,10 +317,10 @@ class UpdateManager {
         val md: MessageDigest = MessageDigest.getInstance("SHA-512")
         val messageDigest = md.digest(Files.readAllBytes(this))
         val no = BigInteger(1, messageDigest)
-        var hashtext: String = no.toString(16)
-        while (hashtext.length < 128) {
-            hashtext = "0$hashtext"
+        var hashText: String = no.toString(16)
+        while (hashText.length < 128) {
+            hashText = "0$hashText"
         }
-        return hashtext
+        return hashText
     }
 }
