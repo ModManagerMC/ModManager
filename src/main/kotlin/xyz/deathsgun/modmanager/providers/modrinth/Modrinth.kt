@@ -38,6 +38,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.time.Duration
 
 @OptIn(ExperimentalSerializationApi::class)
 class Modrinth : IModProvider, IModUpdateProvider {
@@ -46,7 +47,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
     private val categories: ArrayList<Category> = ArrayList()
     private val cache: HashMap<String, ModsResult> = HashMap()
     private val baseUri = "https://api.modrinth.com"
-    private val http = HttpClient.newHttpClient()
+    private val http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build()
 
 
     override fun getName(): String {
@@ -59,8 +60,8 @@ class Modrinth : IModProvider, IModUpdateProvider {
         }
         val request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
             .uri(URI.create("${baseUri}/api/v1/tag/category")).build()
-        val response = this.http.send(request, HttpResponse.BodyHandlers.ofString())
         return try {
+            val response = this.http.send(request, HttpResponse.BodyHandlers.ofString())
             val categories = json.decodeFromString<List<String>>(response.body())
             for (category in categories) {
                 this.categories.add(
@@ -73,7 +74,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             CategoriesResult.Success(this.categories)
         } catch (e: Exception) {
             logger.error("Error while getting categories: ", e.message)
-            CategoriesResult.Error(TranslatableText("modmanager.response.failedToParse"), e)
+            CategoriesResult.Error(TranslatableText("modmanager.error.failedToParse", e.message), e)
         }
     }
 
@@ -107,7 +108,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             }
             result
         } catch (e: Exception) {
-            ModsResult.Error(TranslatableText("modmanager.error.unknown"), e)
+            ModsResult.Error(TranslatableText("modmanager.error.unknown", e), e)
         }
     }
 
@@ -118,7 +119,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
         return try {
             getMods(builder, page, limit)
         } catch (e: Exception) {
-            ModsResult.Error(TranslatableText("modmanager.error.unknown"), e)
+            ModsResult.Error(TranslatableText("modmanager.error.unknown", e.message), e)
         }
     }
 
@@ -133,14 +134,14 @@ class Modrinth : IModProvider, IModUpdateProvider {
             .uri(builder.build()).build()
         val response = this.http.send(request, HttpResponse.BodyHandlers.ofString())
         if (response.statusCode() != 200) {
-            return ModsResult.Error(TranslatableText("modmanager.error.invalidStatus"))
+            return ModsResult.Error(TranslatableText("modmanager.error.invalidStatus", response.statusCode()))
         }
         return try {
             val result = json.decodeFromString<SearchResult>(response.body())
             ModsResult.Success(result.toList())
         } catch (e: Exception) {
             logger.error("Error while requesting mods", e.message)
-            ModsResult.Error(TranslatableText("modmanager.error.failedToParse"))
+            ModsResult.Error(TranslatableText("modmanager.error.failedToParse", e.message))
         }
     }
 
@@ -157,10 +158,10 @@ class Modrinth : IModProvider, IModUpdateProvider {
             this.http.send(request, HttpResponse.BodyHandlers.ofString())
         } catch (e: Exception) {
             logger.error("Error while getting mod", e.message)
-            return ModResult.Error(TranslatableText("modmanager.error.network"), e)
+            return ModResult.Error(TranslatableText("modmanager.error.network", e.message), e)
         }
         if (response.statusCode() != 200) {
-            return ModResult.Error(TranslatableText("modmanager.error.invalidStatus"))
+            return ModResult.Error(TranslatableText("modmanager.error.invalidStatus", response.statusCode()))
         }
         return try {
             val result = json.decodeFromString<DetailedMod>(response.body())
@@ -187,7 +188,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
                 )
             )
         } catch (e: Exception) {
-            ModResult.Error(TranslatableText("modmanager.error.failedToParse"), e)
+            ModResult.Error(TranslatableText("modmanager.error.failedToParse", e.message), e)
         }
     }
 
@@ -202,7 +203,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             return VersionResult.Error(TranslatableText("modmanager.error.network"), e)
         }
         if (response.statusCode() != 200) {
-            return VersionResult.Error(TranslatableText("modmanager.error.invalidStatus"))
+            return VersionResult.Error(TranslatableText("modmanager.error.invalidStatus", response.statusCode()))
         }
         return try {
             val modrinthVersions = json.decodeFromString<List<ModrinthVersion>>(response.body())
@@ -224,7 +225,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             }
             VersionResult.Success(versions)
         } catch (e: Exception) {
-            VersionResult.Error(TranslatableText("modmanager.error.failedToParse"), e)
+            VersionResult.Error(TranslatableText("modmanager.error.failedToParse", e.message), e)
         }
     }
 

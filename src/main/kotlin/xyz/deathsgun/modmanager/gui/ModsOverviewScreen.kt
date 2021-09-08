@@ -28,12 +28,16 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.TranslatableText
 import org.lwjgl.glfw.GLFW
 import xyz.deathsgun.modmanager.ModManager
+import xyz.deathsgun.modmanager.api.ModUpdateResult
 import xyz.deathsgun.modmanager.api.gui.list.IListScreen
 import xyz.deathsgun.modmanager.api.http.CategoriesResult
 import xyz.deathsgun.modmanager.api.http.ModsResult
 import xyz.deathsgun.modmanager.api.mod.Category
 import xyz.deathsgun.modmanager.api.provider.Sorting
-import xyz.deathsgun.modmanager.gui.widget.*
+import xyz.deathsgun.modmanager.gui.widget.CategoryListEntry
+import xyz.deathsgun.modmanager.gui.widget.CategoryListWidget
+import xyz.deathsgun.modmanager.gui.widget.ModListEntry
+import xyz.deathsgun.modmanager.gui.widget.ModListWidget
 
 class ModsOverviewScreen(private val previousScreen: Screen) : Screen(TranslatableText("modmanager.title.overview")),
     IListScreen {
@@ -45,7 +49,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     private var limit: Int = 20
     private var scrollPercentage: Double = 0.0
     private lateinit var searchField: TextFieldWidget
-    private lateinit var errorWidget: ErrorWidget
+    private var error: TranslatableText? = null
     private lateinit var modList: ModListWidget
     private lateinit var categoryList: CategoryListWidget
     private lateinit var nextPage: ButtonWidget
@@ -79,8 +83,6 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             )
         )
         categoryList.setLeftPos(10)
-
-        errorWidget = ErrorWidget(client!!, 115, 35, width - 20, height - 150)
 
         modList = addSelectableChild(ModListWidget(client!!, width - 10 - 115, height, 35, height - 30, 36, this))
         modList.setLeftPos(115)
@@ -117,10 +119,11 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             val provider = ModManager.modManager.getSelectedProvider() ?: return@launch
             when (val result = provider.getCategories()) {
                 is CategoriesResult.Error -> {
-                    errorWidget.error = result.text
+                    error = result.text
+                    return@launch
                 }
                 is CategoriesResult.Success -> {
-                    errorWidget.error = null
+                    error = null
                     categoryList.clear()
                     if (ModManager.modManager.update.updates.isNotEmpty()) {
                         categoryList.add(Category("updatable", TranslatableText("modmanager.category.updatable")))
@@ -137,10 +140,11 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             if (query.isNotEmpty()) {
                 when (val result = provider.search(query, page, limit)) {
                     is ModsResult.Error -> {
-                        errorWidget.error = result.text
+                        error = result.text
+                        return@launch
                     }
                     is ModsResult.Success -> {
-                        errorWidget.error = null
+                        error = null
                         modList.setMods(result.mods)
                         modList.scrollAmount = scrollPercentage
                     }
@@ -157,7 +161,23 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun updateAll() {
-        this.updateAllButtons.message = TranslatableText("modmanager.message.updating")
+        this.updateAllButtons.active = false
+        this.updateAllButtons.message = TranslatableText("modmanager.status.updating")
+        GlobalScope.launch {
+            val updates = ModManager.modManager.update.updates
+            for (update in ArrayList(updates)) {
+                when (val result = ModManager.modManager.update.updateMod(update)) {
+                    is ModUpdateResult.Error -> error = result.text
+                }
+            }
+            if (error == null) {
+                updateAllButtons.active = true
+                updateAllButtons.message = TranslatableText("modmanager.button.update")
+                modList.clear()
+                updateAllButtons.visible = false
+                return@launch
+            }
+        }
     }
 
     private fun showNextPage() {
@@ -185,10 +205,10 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         val provider = ModManager.modManager.getSelectedProvider() ?: return
         when (val result = provider.getMods(Sorting.RELEVANCE, page, limit)) {
             is ModsResult.Error -> {
-                errorWidget.error = result.text
+                error = result.text
             }
             is ModsResult.Success -> {
-                errorWidget.error = null
+                error = null
                 modList.setMods(result.mods)
             }
         }
@@ -207,10 +227,10 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         }
         when (val result = provider.getMods(selectedCategory!!.category, page, limit)) {
             is ModsResult.Error -> {
-                errorWidget.error = result.text
+                error = result.text
             }
             is ModsResult.Success -> {
-                errorWidget.error = null
+                error = null
                 modList.setMods(result.mods)
             }
         }
@@ -221,11 +241,11 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             val provider = ModManager.modManager.getSelectedProvider() ?: return true
             return when (val result = provider.search(this.query, 0, 20)) {
                 is ModsResult.Error -> {
-                    this.errorWidget.error = result.text
+                    this.error = result.text
                     true
                 }
                 is ModsResult.Success -> {
-                    this.errorWidget.error = null
+                    this.error = null
                     this.modList.setMods(result.mods)
                     true
                 }
@@ -274,11 +294,16 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         this.renderBackground(matrices)
-        this.errorWidget.render(matrices, mouseX, mouseY, delta)
-        if (this.errorWidget.error == null) {
+        if (this.error != null) {
+            textRenderer.draw(matrices, TranslatableText("modmanager.error.title"), 10F, 35F, 0xFFFFFF)
+            val lines = textRenderer.wrapLines(error!!, width - 20)
+            for (line in lines) {
+                textRenderer.draw(matrices, line, 10F, 47F, 0xFFFFFF)
+            }
+        } else {
+            this.categoryList.render(matrices, mouseX, mouseY, delta)
             this.modList.render(matrices, mouseX, mouseY, delta)
         }
-        this.categoryList.render(matrices, mouseX, mouseY, delta)
         this.searchField.render(matrices, mouseX, mouseY, delta)
         super.render(matrices, mouseX, mouseY, delta)
     }

@@ -47,6 +47,7 @@ import java.net.http.HttpResponse
 import java.nio.file.Files
 import java.nio.file.Path
 import java.security.MessageDigest
+import java.time.Duration
 import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 import java.util.zip.ZipFile
@@ -57,7 +58,7 @@ class UpdateManager {
 
     private val logger = LogManager.getLogger("UpdateCheck")
     private val blockedIds = arrayOf("java", "minecraft")
-    private val http: HttpClient = HttpClient.newHttpClient()
+    private val http: HttpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build()
     val updates = ArrayList<Update>()
 
     suspend fun checkUpdates() = coroutineScope {
