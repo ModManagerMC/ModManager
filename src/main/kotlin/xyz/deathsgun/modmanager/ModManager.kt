@@ -35,6 +35,7 @@ class ModManager : ClientModInitializer {
 
     private val states = ArrayList<SavedState>()
     lateinit var config: Config
+    var changed: Boolean = false
     val update: UpdateManager = UpdateManager()
     val icons: IconCache = IconCache()
     val provider: HashMap<String, IModProvider> = HashMap()

@@ -251,6 +251,7 @@ class UpdateManager {
             }
             ModManager.modManager.setModState(update.fabricId, update.mod.id, ModState.INSTALLED)
             this.updates.removeIf { it.fabricId == update.fabricId || it.mod.id == update.mod.id }
+            ModManager.modManager.changed = true
             ModUpdateResult.Success
         } catch (e: Exception) {
             ModUpdateResult.Error(TranslatableText("modmanager.error.update.unknown", e))

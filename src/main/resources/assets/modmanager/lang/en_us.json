@@ -19,6 +19,8 @@
   "modmanager.category.food": "Food",
   "modmanager.category.equipment": "Equipment",
   "modmanager.category.misc": "Miscellaneous",
+  "modmanager.changes.title": "§e§lChanges detected§r",
+  "modmanager.changes.message": "Changes will take effect after a relaunch.\nQuit Minecraft now?",
   "modmanager.details.author": "By %s",
   "modmanager.details.versioning": "From %s to %s",
   "modmanager.message.goBackAndTryAgain": "Go Back & Try Again",

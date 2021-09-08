@@ -22,15 +22,7 @@ import xyz.deathsgun.modmanager.api.http.ModsResult
 import xyz.deathsgun.modmanager.api.mod.Category
 import xyz.deathsgun.modmanager.api.mod.Mod
 
-interface IModProvider {
-
-    /**
-     * Name of the provider. This will be shown
-     * in the GUI
-     *
-     * @return returns a user-friendly name of the mod provider implementation
-     */
-    fun getName(): String
+interface IModProvider : IModUpdateProvider {
 
     /**
      * Returns a list of all possible mod categories also with an translatable text

@@ -20,6 +20,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.minecraft.client.gui.Element
+import net.minecraft.client.gui.screen.ConfirmScreen
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.TextFieldWidget
@@ -284,6 +285,22 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     override fun onClose() {
         ModManager.modManager.icons.destroyAll()
-        client!!.setScreen(previousScreen)
+        if (!ModManager.modManager.changed) {
+            client!!.setScreen(previousScreen)
+            return
+        }
+        client!!.setScreen(
+            ConfirmScreen(
+                {
+                    if (it) {
+                        client!!.scheduleStop()
+                        return@ConfirmScreen
+                    }
+                    client!!.setScreen(previousScreen)
+                },
+                TranslatableText("modmanager.changes.title"),
+                TranslatableText("modmanager.changes.message")
+            )
+        )
     }
 }

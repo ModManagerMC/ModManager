@@ -20,8 +20,19 @@ import xyz.deathsgun.modmanager.api.http.VersionResult
 
 interface IModUpdateProvider {
 
-    fun getVersionsForMod(id: String): VersionResult
-
+    /**
+     * Name of the provider. This will be shown
+     * in the GUI
+     *
+     * @return returns a user-friendly name of the mod provider implementation
+     */
     fun getName(): String
+
+    /**
+     * Gets a list all versions that can be downloaded for the specified [id]
+     * @return a returns a [VersionResult] which can be an [VersionResult.Error] or [VersionResult.Success]
+     * which contains a list of [xyz.deathsgun.modmanager.api.mod.Version]
+     */
+    fun getVersionsForMod(id: String): VersionResult
 
 }
