@@ -33,7 +33,7 @@ class DescriptionWidget(
     bottom: Int,
     itemHeight: Int,
     parent: IListScreen,
-    val text: String
+    var text: String
 ) : ListWidget<DescriptionWidget.Entry>(client, width, height, top, bottom, itemHeight, parent) {
 
     private val textRenderer = MinecraftClient.getInstance().textRenderer

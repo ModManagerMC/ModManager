@@ -114,6 +114,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             20,
             TranslatableText("modmanager.button.updateAll")
         ) { updateAll() })
+        updateAllButtons.visible = false
 
         GlobalScope.launch {
             val provider = ModManager.modManager.getSelectedProvider() ?: return@launch
@@ -123,7 +124,6 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                     return@launch
                 }
                 is CategoriesResult.Success -> {
-                    error = null
                     categoryList.clear()
                     if (ModManager.modManager.update.updates.isNotEmpty()) {
                         categoryList.add(Category("updatable", TranslatableText("modmanager.category.updatable")))
@@ -268,7 +268,8 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                     val update = ModManager.modManager.update.getUpdateForMod(selectedMod!!.mod) ?: return
                     client?.setScreen(ModUpdateInfoScreen(this, update))
                 }
-                return // TODO: Open detail view
+                client?.setScreen(ModDetailScreen(this, selectedMod!!.mod))
+                return
             }
             selectedMod = entry as ModListEntry
             return
@@ -285,6 +286,9 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     override fun tick() {
         super.tick()
+        if (error != null) {
+            client!!.setScreen(ErrorScreen(previousScreen, this, error!!))
+        }
         this.scrollPercentage = modList.scrollAmount
         this.searchField.tick()
         this.previousPage.active = page > 0
@@ -294,16 +298,8 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         this.renderBackground(matrices)
-        if (this.error != null) {
-            textRenderer.draw(matrices, TranslatableText("modmanager.error.title"), 10F, 35F, 0xFFFFFF)
-            val lines = textRenderer.wrapLines(error!!, width - 20)
-            for (line in lines) {
-                textRenderer.draw(matrices, line, 10F, 47F, 0xFFFFFF)
-            }
-        } else {
-            this.categoryList.render(matrices, mouseX, mouseY, delta)
-            this.modList.render(matrices, mouseX, mouseY, delta)
-        }
+        this.categoryList.render(matrices, mouseX, mouseY, delta)
+        this.modList.render(matrices, mouseX, mouseY, delta)
         this.searchField.render(matrices, mouseX, mouseY, delta)
         super.render(matrices, mouseX, mouseY, delta)
     }

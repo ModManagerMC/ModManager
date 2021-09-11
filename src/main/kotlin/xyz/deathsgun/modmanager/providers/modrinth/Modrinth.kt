@@ -64,6 +64,9 @@ class Modrinth : IModProvider, IModUpdateProvider {
             val response = this.http.send(request, HttpResponse.BodyHandlers.ofString())
             val categories = json.decodeFromString<List<String>>(response.body())
             for (category in categories) {
+                if (category == "fabric") { // Fabric is not really a category
+                    continue
+                }
                 this.categories.add(
                     Category(
                         category,
@@ -73,7 +76,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             }
             CategoriesResult.Success(this.categories)
         } catch (e: Exception) {
-            logger.error("Error while getting categories: ", e.message)
+            logger.error("Error while getting categories: {}", e.message)
             CategoriesResult.Error(TranslatableText("modmanager.error.failedToParse", e.message), e)
         }
     }
@@ -140,7 +143,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             val result = json.decodeFromString<SearchResult>(response.body())
             ModsResult.Success(result.toList())
         } catch (e: Exception) {
-            logger.error("Error while requesting mods", e.message)
+            logger.error("Error while requesting mods {}", e.message)
             ModsResult.Error(TranslatableText("modmanager.error.failedToParse", e.message))
         }
     }
@@ -157,7 +160,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
         val response = try {
             this.http.send(request, HttpResponse.BodyHandlers.ofString())
         } catch (e: Exception) {
-            logger.error("Error while getting mod", e.message)
+            logger.error("Error while getting mod {}", e.message)
             return ModResult.Error(TranslatableText("modmanager.error.network", e.message), e)
         }
         if (response.statusCode() != 200) {
@@ -199,7 +202,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
         val response = try {
             this.http.send(request, HttpResponse.BodyHandlers.ofString())
         } catch (e: Exception) {
-            logger.error("Error while getting mod", e.message)
+            logger.error("Error while getting mod {}", e.message)
             return VersionResult.Error(TranslatableText("modmanager.error.network"), e)
         }
         if (response.statusCode() != 200) {

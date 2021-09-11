@@ -19,11 +19,11 @@ package xyz.deathsgun.modmanager.api.mod
 data class Mod(
     val id: String,
     val slug: String,
-    val author: String?,
+    var author: String?,
     val name: String,
-    val shortDescription: String,
+    var shortDescription: String,
     val iconUrl: String?,
-    val description: String?,
+    var description: String?,
     val license: String?,
     val categories: List<Category>,
 )
