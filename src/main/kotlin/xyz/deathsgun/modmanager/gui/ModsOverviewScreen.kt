@@ -28,7 +28,6 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.TranslatableText
 import org.lwjgl.glfw.GLFW
 import xyz.deathsgun.modmanager.ModManager
-import xyz.deathsgun.modmanager.api.ModUpdateResult
 import xyz.deathsgun.modmanager.api.gui.list.IListScreen
 import xyz.deathsgun.modmanager.api.http.CategoriesResult
 import xyz.deathsgun.modmanager.api.http.ModsResult
@@ -54,7 +53,6 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     private lateinit var categoryList: CategoryListWidget
     private lateinit var nextPage: ButtonWidget
     private lateinit var previousPage: ButtonWidget
-    private lateinit var updateAllButtons: ButtonWidget
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun init() {
@@ -107,15 +105,6 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 TranslatableText("modmanager.page.next")
             ) { showNextPage() })
 
-        updateAllButtons = addDrawableChild(ButtonWidget(
-            width - 10 - 160,
-            10,
-            160,
-            20,
-            TranslatableText("modmanager.button.updateAll")
-        ) { updateAll() })
-        updateAllButtons.visible = false
-
         GlobalScope.launch {
             val provider = ModManager.modManager.getSelectedProvider() ?: return@launch
             when (val result = provider.getCategories()) {
@@ -134,21 +123,12 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             }
             if (selectedCategory != null) {
                 showModsByCategory()
+                categoryList.setSelected(selectedCategory)
                 modList.scrollAmount = scrollPercentage
                 return@launch
             }
             if (query.isNotEmpty()) {
-                when (val result = provider.search(query, page, limit)) {
-                    is ModsResult.Error -> {
-                        error = result.text
-                        return@launch
-                    }
-                    is ModsResult.Success -> {
-                        error = null
-                        modList.setMods(result.mods)
-                        modList.scrollAmount = scrollPercentage
-                    }
-                }
+                showModsBySearch()
                 return@launch
             }
             categoryList.setSelectedByIndex(0)
@@ -156,32 +136,15 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         modList.init()
         categoryList.init()
         //TODO: Sorting selector
-        //TODO: Paging
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun updateAll() {
-        this.updateAllButtons.active = false
-        this.updateAllButtons.message = TranslatableText("modmanager.status.updating")
-        GlobalScope.launch {
-            val updates = ModManager.modManager.update.updates
-            for (update in ArrayList(updates)) {
-                when (val result = ModManager.modManager.update.updateMod(update)) {
-                    is ModUpdateResult.Error -> error = result.text
-                }
-            }
-            if (error == null) {
-                updateAllButtons.active = true
-                updateAllButtons.message = TranslatableText("modmanager.button.update")
-                modList.clear()
-                updateAllButtons.visible = false
-                return@launch
-            }
-        }
     }
 
     private fun showNextPage() {
         this.page++
+        modList.scrollAmount = 0.0
+        if (query.isNotBlank()) {
+            showModsBySearch()
+            return
+        }
         if (selectedCategory == null) {
             showModsByRelevance()
             return
@@ -191,8 +154,13 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     private fun showPreviousPage() {
         this.page--
+        modList.scrollAmount = 0.0
         if (this.page < 0) {
             page = 0
+        }
+        if (query.isNotBlank()) {
+            showModsBySearch()
+            return
         }
         if (selectedCategory == null) {
             showModsByRelevance()
@@ -214,7 +182,6 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun showModsByCategory() {
         selectedCategory ?: return
         val provider = ModManager.modManager.getSelectedProvider() ?: return
@@ -238,20 +205,25 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (this.searchField.isFocused && keyCode == GLFW.GLFW_KEY_ENTER) {
-            val provider = ModManager.modManager.getSelectedProvider() ?: return true
-            return when (val result = provider.search(this.query, 0, 20)) {
-                is ModsResult.Error -> {
-                    this.error = result.text
-                    true
-                }
-                is ModsResult.Success -> {
-                    this.error = null
-                    this.modList.setMods(result.mods)
-                    true
-                }
-            }
+            page = 0
+            this.modList.scrollAmount = 0.0
+            showModsBySearch()
+            return true
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
+    }
+
+    private fun showModsBySearch() {
+        val provider = ModManager.modManager.getSelectedProvider() ?: return
+        when (val result = provider.search(this.query, page, limit)) {
+            is ModsResult.Error -> {
+                this.error = result.text
+            }
+            is ModsResult.Success -> {
+                this.error = null
+                this.modList.setMods(result.mods)
+            }
+        }
     }
 
     override fun getFocused(): Element? {
@@ -267,11 +239,13 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 if (selectedCategory?.id == "updatable") {
                     val update = ModManager.modManager.update.getUpdateForMod(selectedMod!!.mod) ?: return
                     client?.setScreen(ModUpdateInfoScreen(this, update))
+                    return
                 }
                 client?.setScreen(ModDetailScreen(this, selectedMod!!.mod))
                 return
             }
             selectedMod = entry as ModListEntry
+            query = ""
             return
         }
         if (widget is CategoryListWidget) {
@@ -280,6 +254,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             }
             page = 0
             selectedCategory = entry as CategoryListEntry
+            query = ""
             showModsByCategory()
         }
     }
@@ -293,7 +268,6 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         this.searchField.tick()
         this.previousPage.active = page > 0
         this.nextPage.active = this.modList.getElementCount() >= limit
-        this.updateAllButtons.visible = selectedCategory?.id == "updatable" && this.modList.getElementCount() > 0
     }
 
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {

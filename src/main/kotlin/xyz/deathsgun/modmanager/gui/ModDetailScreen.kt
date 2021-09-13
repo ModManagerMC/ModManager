@@ -24,14 +24,17 @@ import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.*
 import xyz.deathsgun.modmanager.ModManager
+import xyz.deathsgun.modmanager.api.ModRemoveResult
 import xyz.deathsgun.modmanager.api.gui.list.IListScreen
 import xyz.deathsgun.modmanager.api.http.ModResult
 import xyz.deathsgun.modmanager.api.mod.Mod
 import xyz.deathsgun.modmanager.gui.widget.DescriptionWidget
+import xyz.deathsgun.modmanager.state.ModState
 
 
 class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen(LiteralText(mod.name)), IListScreen {
 
+    private lateinit var actionButton: ButtonWidget
     private lateinit var descriptionWidget: DescriptionWidget
 
     init {
@@ -70,7 +73,55 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
         addDrawableChild(ButtonWidget(buttonX, height - 28, 150, 20, ScreenTexts.BACK) {
             client!!.setScreen(previousScreen)
         })
+        this.actionButton = addDrawableChild(
+            ButtonWidget(
+                this.width - buttonX - 150,
+                this.height - 28,
+                150,
+                20,
+                TranslatableText("modmanager.button.install")
+            ) {
+                when (ModManager.modManager.getModState(mod.id)) {
+                    ModState.DOWNLOADABLE -> {
+                        client!!.setScreen(
+                            ModProgressScreen(
+                                mod,
+                                ModProgressScreen.Action.INSTALL,
+                                previousScreen,
+                                this
+                            )
+                        )
+                    }
+                    ModState.OUTDATED -> {
+                        client!!.setScreen(
+                            ModProgressScreen(
+                                mod,
+                                ModProgressScreen.Action.UPDATE,
+                                previousScreen,
+                                this
+                            )
+                        )
+                    }
+                    ModState.INSTALLED -> {
+                        removeMod()
+                    }
+                }
+            })
+    }
 
+    private fun removeMod() {
+        when (val result = ModManager.modManager.update.removeMod(mod)) {
+            is ModRemoveResult.Success -> client!!.setScreen(previousScreen)
+            is ModRemoveResult.Error -> client!!.setScreen(ErrorScreen(previousScreen, this, result.text))
+        }
+    }
+
+    override fun tick() {
+        actionButton.message = when (ModManager.modManager.getModState(mod.id)) {
+            ModState.INSTALLED -> TranslatableText("modmanager.button.remove")
+            ModState.DOWNLOADABLE -> TranslatableText("modmanager.button.install")
+            ModState.OUTDATED -> TranslatableText("modmanager.button.update")
+        }
     }
 
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {

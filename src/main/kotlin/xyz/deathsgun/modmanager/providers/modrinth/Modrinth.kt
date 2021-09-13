@@ -111,7 +111,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             }
             result
         } catch (e: Exception) {
-            ModsResult.Error(TranslatableText("modmanager.error.unknown", e), e)
+            ModsResult.Error(TranslatableText("modmanager.error.unknown", e.message), e)
         }
     }
 
@@ -203,7 +203,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
             this.http.send(request, HttpResponse.BodyHandlers.ofString())
         } catch (e: Exception) {
             logger.error("Error while getting mod {}", e.message)
-            return VersionResult.Error(TranslatableText("modmanager.error.network"), e)
+            return VersionResult.Error(TranslatableText("modmanager.error.network", e.message), e)
         }
         if (response.statusCode() != 200) {
             return VersionResult.Error(TranslatableText("modmanager.error.invalidStatus", response.statusCode()))
