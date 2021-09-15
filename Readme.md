@@ -13,8 +13,11 @@ Features:
 
 Search view:
 ![](screenshots/search.png)
+![](screenshots/mod-overview.png)
 Updatable mods list:
-![](screenshots/update-required.png)
+![](screenshots/updatable-mods.png)
+Mod Update:
+![](screenshots/mod-update.png)
 
 ### Credits
 
