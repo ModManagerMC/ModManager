@@ -16,17 +16,29 @@
   "license": "APL-2.0",
   "environment": "client",
   "entrypoints": {
-	"client": [
-	  "xyz.deathsgun.modmanager.ModManager"
-	]
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "xyz.deathsgun.modmanager.ModManager"
+      }
+    ],
+    "modmenu": [
+      "xyz.deathsgun.modmanager.ModMenuEntrypoint"
+    ]
+  },
+  "custom": {
+    "modmanager": {
+      "modrinth": "6kq7BzRK"
+    }
   },
   "mixins": [
-	"modmanager.mixins.json"
+    "modmanager.mixins.json"
   ],
   "depends": {
-	"fabricloader": ">=0.11.3",
-	"modmenu": ">=${modmenu_version}",
-	"minecraft": "1.17.x",
-	"java": ">=16"
+    "fabricloader": ">=0.11.3",
+    "modmenu": ">=${modmenu_version}",
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}",
+    "minecraft": "1.17.x",
+    "java": ">=16"
   }
 }

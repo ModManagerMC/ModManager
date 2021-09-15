@@ -27,13 +27,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.deathsgun.modmanager.ModManager;
+import xyz.deathsgun.modmanager.update.Update;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 @Mixin(TitleScreen.class)
-public abstract class TitleScreenMixin extends Screen {
-
-    private boolean hasRun = false;
+public class TitleScreenMixin extends Screen {
 
     protected TitleScreenMixin(Text title) {
         super(title);
@@ -41,16 +41,17 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(at = @At("TAIL"), method = "render")
     public void onRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (hasRun) {
+        if (ModManager.shownUpdateNotification) {
             return;
         }
-        hasRun = true;
-        if (!ModManager.getUpdateChecker().updatesAvailable()) {
+        ModManager.shownUpdateNotification = true;
+        ArrayList<Update> updates = ModManager.modManager.getUpdate().getUpdates();
+        if (updates.isEmpty()) {
             return;
         }
         Objects.requireNonNull(client).getToastManager().add(new SystemToast(SystemToast.Type.TUTORIAL_HINT,
                 new TranslatableText("modmanager.toast.update.title"),
-                new TranslatableText("modmanager.toast.update.description", ModManager.getUpdateChecker().updatesAvailableCount())));
+                new TranslatableText("modmanager.toast.update.description", updates.size())));
     }
 
 }

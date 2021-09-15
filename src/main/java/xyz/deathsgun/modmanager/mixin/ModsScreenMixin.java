@@ -17,6 +17,8 @@
 package xyz.deathsgun.modmanager.mixin;
 
 import com.terraformersmc.modmenu.gui.ModsScreen;
+import com.terraformersmc.modmenu.gui.widget.ModMenuTexturedButtonWidget;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -27,9 +29,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.deathsgun.modmanager.gui.ModsOverviewScreen;
-import xyz.deathsgun.modmanager.gui.widget.ModManagerTexturedButtonWidget;
-
-import java.util.Objects;
 
 @Mixin(ModsScreen.class)
 public class ModsScreenMixin extends Screen {
@@ -45,10 +44,9 @@ public class ModsScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     public void onInit(CallbackInfo ci) {
         int searchBoxWidth = this.paneWidth - 32 - 22;
-        this.addDrawableChild(new ModManagerTexturedButtonWidget(this.paneWidth / 2 + searchBoxWidth / 2 + 14,
+        this.addDrawableChild(new ModMenuTexturedButtonWidget(this.paneWidth / 2 + searchBoxWidth / 2 + 14,
                 22, 20, 20, 0, 0, MODMANAGER_BUTTON_LOCATION, 32, 64, button -> {
-            Objects.requireNonNull(this.client).setScreen(new ModsOverviewScreen(this));
+            MinecraftClient.getInstance().setScreen(new ModsOverviewScreen(this));
         }, new TranslatableText("modmanager.button.open")));
     }
-
 }
