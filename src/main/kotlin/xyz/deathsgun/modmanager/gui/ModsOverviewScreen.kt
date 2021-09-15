@@ -132,8 +132,13 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 }
             }
             if (selectedCategory != null) {
-                showModsByCategory()
+                if (selectedCategory!!.id == "updatable" && ModManager.modManager.update.updates.isEmpty()) {
+                    categoryList.setSelectedByIndex(0)
+                    showModsByCategory()
+                    return@launch
+                }
                 categoryList.setSelected(selectedCategory)
+                showModsByCategory()
                 modList.scrollAmount = scrollPercentage
                 return@launch
             }
@@ -257,6 +262,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             if (entry == null) {
                 return
             }
+            modList.scrollAmount = 0.0
             page = 0
             selectedCategory = entry as CategoryListEntry
             query = ""

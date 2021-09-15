@@ -25,6 +25,7 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import xyz.deathsgun.modmanager.api.mod.VersionType
+import java.io.FileNotFoundException
 import java.nio.charset.Charset
 import java.nio.file.Files
 
@@ -39,10 +40,13 @@ data class Config(
         fun loadConfig(): Config {
             return try {
                 val file = FabricLoader.getInstance().configDir.resolve("modmanager.json")
+                Files.createDirectories(file.parent)
                 val data = Files.readString(file, Charset.forName("UTF-8"))
                 Json.decodeFromString(data)
             } catch (e: Exception) {
-                e.printStackTrace()
+                if (e !is FileNotFoundException) {
+                    e.printStackTrace()
+                }
                 saveConfig(Config("modrinth", UpdateChannel.STABLE))
             }
         }

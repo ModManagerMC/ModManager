@@ -45,6 +45,10 @@ class IconCache {
     private val state = HashMap<String, IconState>()
     private val http = HttpClient.newHttpClient()
 
+    init {
+        Files.createDirectories(iconsDir)
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     fun bindIcon(mod: Mod) {
         val icon = when (this.state[mod.id] ?: IconState.NOT_FOUND) {
