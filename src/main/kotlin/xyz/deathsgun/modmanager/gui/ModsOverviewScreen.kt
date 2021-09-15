@@ -23,6 +23,7 @@ import net.minecraft.client.gui.Element
 import net.minecraft.client.gui.screen.ConfirmScreen
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
+import net.minecraft.client.gui.widget.CyclingButtonWidget
 import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.TranslatableText
@@ -49,6 +50,8 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     private var scrollPercentage: Double = 0.0
     private lateinit var searchField: TextFieldWidget
     private var error: TranslatableText? = null
+    private var sorting: Sorting = Sorting.RELEVANCE
+    private lateinit var sortingButtonWidget: CyclingButtonWidget<Sorting>
     private lateinit var modList: ModListWidget
     private lateinit var categoryList: CategoryListWidget
     private lateinit var nextPage: ButtonWidget
@@ -68,6 +71,13 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             )
         )
         searchField.setChangedListener { this.query = it }
+
+        sortingButtonWidget = addDrawableChild(
+            CyclingButtonWidget.builder(Sorting::translations)
+                .values(Sorting.RELEVANCE, Sorting.DOWNLOADS, Sorting.NEWEST, Sorting.UPDATED)
+                .build(180, 10, 120, 20, TranslatableText("modmanager.sorting.sort"))
+                { _: CyclingButtonWidget<Any>, sorting: Sorting -> this.sorting = sorting; updateModList() }
+        )
 
         categoryList = addSelectableChild(
             CategoryListWidget(
@@ -135,21 +145,12 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         }
         modList.init()
         categoryList.init()
-        //TODO: Sorting selector
     }
 
     private fun showNextPage() {
         this.page++
         modList.scrollAmount = 0.0
-        if (query.isNotBlank()) {
-            showModsBySearch()
-            return
-        }
-        if (selectedCategory == null) {
-            showModsByRelevance()
-            return
-        }
-        showModsByCategory()
+        updateModList()
     }
 
     private fun showPreviousPage() {
@@ -158,6 +159,10 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         if (this.page < 0) {
             page = 0
         }
+        updateModList()
+    }
+
+    private fun updateModList() {
         if (query.isNotBlank()) {
             showModsBySearch()
             return
@@ -192,7 +197,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             }
             return
         }
-        when (val result = provider.getMods(selectedCategory!!.category, page, limit)) {
+        when (val result = provider.getMods(selectedCategory!!.category, sorting, page, limit)) {
             is ModsResult.Error -> {
                 error = result.text
             }
@@ -215,7 +220,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     private fun showModsBySearch() {
         val provider = ModManager.modManager.getSelectedProvider() ?: return
-        when (val result = provider.search(this.query, page, limit)) {
+        when (val result = provider.search(this.query, sorting, page, limit)) {
             is ModsResult.Error -> {
                 this.error = result.text
             }

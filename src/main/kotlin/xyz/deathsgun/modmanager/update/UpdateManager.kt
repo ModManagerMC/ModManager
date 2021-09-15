@@ -40,6 +40,7 @@ import xyz.deathsgun.modmanager.api.http.VersionResult
 import xyz.deathsgun.modmanager.api.mod.Mod
 import xyz.deathsgun.modmanager.api.mod.Version
 import xyz.deathsgun.modmanager.api.provider.IModUpdateProvider
+import xyz.deathsgun.modmanager.api.provider.Sorting
 import xyz.deathsgun.modmanager.models.FabricMetadata
 import xyz.deathsgun.modmanager.state.ModState
 import java.math.BigInteger
@@ -115,7 +116,7 @@ class UpdateManager {
             return
         }
 
-        val queryResult = provider.search(metadata.name, 0, 10)
+        val queryResult = provider.search(metadata.name, Sorting.RELEVANCE, 0, 10)
         if (queryResult is ModsResult.Error) {
             logger.warn("Error while searching for fallback id for mod {}: ", metadata.id, queryResult.cause)
             ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)

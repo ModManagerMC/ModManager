@@ -15,6 +15,14 @@
  */
 package xyz.deathsgun.modmanager.api.provider
 
+import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
+
 enum class Sorting {
     RELEVANCE, DOWNLOADS, UPDATED, NEWEST;
+
+    fun translations(): Text {
+        return TranslatableText(String.format("modmanager.sorting.%s", name.lowercase()))
+    }
+
 }

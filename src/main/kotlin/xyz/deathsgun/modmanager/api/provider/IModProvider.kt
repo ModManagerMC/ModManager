@@ -50,7 +50,7 @@ interface IModProvider : IModUpdateProvider {
      * @param limit    to not overfill the ui and for shorter loading times the amount of returned mods needs to limited
      * @return a list of sorted mods
      */
-    fun getMods(category: Category, page: Int, limit: Int): ModsResult
+    fun getMods(category: Category, sorting: Sorting, page: Int, limit: Int): ModsResult
 
     /**
      * Returns a limited number of [Mod]'s from a given search.
@@ -60,7 +60,7 @@ interface IModProvider : IModUpdateProvider {
      * @param limit the amount of mods to return
      * @return a list of mods matching the search term
      */
-    fun search(query: String, page: Int, limit: Int): ModsResult
+    fun search(query: String, sorting: Sorting, page: Int, limit: Int): ModsResult
 
     /**
      * Returns a more detailed representation of the mod

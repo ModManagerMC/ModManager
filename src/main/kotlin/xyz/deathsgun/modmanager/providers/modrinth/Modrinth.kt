@@ -45,7 +45,6 @@ class Modrinth : IModProvider, IModUpdateProvider {
 
     private val logger = LogManager.getLogger("Modrinth")
     private val categories: ArrayList<Category> = ArrayList()
-    private val cache: HashMap<String, ModsResult> = HashMap()
     private val baseUri = "https://api.modrinth.com"
     private val http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build()
 
@@ -83,19 +82,11 @@ class Modrinth : IModProvider, IModUpdateProvider {
 
     override fun getMods(sorting: Sorting, page: Int, limit: Int): ModsResult {
         val builder = URIBuilder("${baseUri}/api/v1/mod")
-        builder.addParameter("index", sorting.name.lowercase())
-        builder.addParameter("filters", "categories=\"fabric\"")
-        return getMods(builder, page, limit)
+        builder.addParameter("filters", "categories=\"fabric\" AND NOT client_side=\"unsupported\"")
+        return getMods(builder, sorting, page, limit)
     }
 
-    override fun getMods(category: Category, page: Int, limit: Int): ModsResult {
-        val key = java.lang.String.format("%s|%d|%d", category.id, page, limit)
-        if (this.cache.containsKey(key)) {
-            val cachedResult = this.cache[key]!!
-            if (cachedResult is ModsResult.Success) {
-                return cachedResult
-            }
-        }
+    override fun getMods(category: Category, sorting: Sorting, page: Int, limit: Int): ModsResult {
         val builder = URIBuilder("${baseUri}/api/v1/mod")
         builder.addParameter(
             "filters",
@@ -105,32 +96,29 @@ class Modrinth : IModProvider, IModUpdateProvider {
             )
         )
         return try {
-            val result = getMods(builder, page, limit)
-            if (result is ModsResult.Success) {
-                this.cache[key] = result
-            }
-            result
+            getMods(builder, sorting, page, limit)
         } catch (e: Exception) {
             ModsResult.Error(TranslatableText("modmanager.error.unknown", e.message), e)
         }
     }
 
-    override fun search(query: String, page: Int, limit: Int): ModsResult {
+    override fun search(query: String, sorting: Sorting, page: Int, limit: Int): ModsResult {
         val builder = URIBuilder("${baseUri}/api/v1/mod")
         builder.addParameter("query", query)
         builder.addParameter("filters", "categories=\"fabric\" AND NOT client_side=\"unsupported\"")
         return try {
-            getMods(builder, page, limit)
+            getMods(builder, sorting, page, limit)
         } catch (e: Exception) {
             ModsResult.Error(TranslatableText("modmanager.error.unknown", e.message), e)
         }
     }
 
-    private fun getMods(builder: URIBuilder, page: Int, limit: Int): ModsResult {
+    private fun getMods(builder: URIBuilder, sorting: Sorting, page: Int, limit: Int): ModsResult {
         builder.addParameter(
             "version",
             String.format("versions=%s", ModManager.getMinecraftVersion())
         )
+        builder.addParameter("index", sorting.name.lowercase())
         builder.addParameter("offset", (page * limit).toString())
         builder.addParameter("limit", limit.toString())
         val request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
