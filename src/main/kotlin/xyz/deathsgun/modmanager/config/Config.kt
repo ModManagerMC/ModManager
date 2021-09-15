@@ -22,6 +22,8 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import xyz.deathsgun.modmanager.api.mod.VersionType
 import java.nio.charset.Charset
 import java.nio.file.Files
@@ -46,7 +48,7 @@ data class Config(
         }
 
         @OptIn(ExperimentalSerializationApi::class)
-        private fun saveConfig(config: Config): Config {
+        fun saveConfig(config: Config): Config {
             try {
                 val file = FabricLoader.getInstance().configDir.resolve("modmanager.json")
                 val data = Json.encodeToString(config)
@@ -58,7 +60,11 @@ data class Config(
     }
 
     enum class UpdateChannel {
-        ALL, STABLE, UNSTABLE
+        ALL, STABLE, UNSTABLE;
+
+        fun text(): Text {
+            return TranslatableText(String.format("modmanager.channel.%s", name.lowercase()))
+        }
     }
 
     fun isReleaseAllowed(type: VersionType): Boolean {

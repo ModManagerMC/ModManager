@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package xyz.deathsgun.modmanager.api
+package xyz.deathsgun.modmanager;
 
-import net.minecraft.text.TranslatableText
+import com.terraformersmc.modmenu.api.ConfigScreenFactory;
+import com.terraformersmc.modmenu.api.ModMenuApi;
+import xyz.deathsgun.modmanager.gui.ConfigScreen;
 
-sealed class ModInstallResult {
-
-    object Success : ModInstallResult()
-    data class Error(val text: TranslatableText, val cause: Exception? = null) : ModInstallResult()
+public class ModMenuEntrypoint implements ModMenuApi {
+    @Override
+    public ConfigScreenFactory<?> getModConfigScreenFactory() {
+        return ConfigScreen::new;
+    }
 }

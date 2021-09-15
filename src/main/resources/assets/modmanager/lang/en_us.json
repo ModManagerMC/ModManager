@@ -6,6 +6,9 @@
   "modmanager.button.remove": "Remove",
   "modmanager.button.updateAll": "Update all",
   "modmanager.button.tryAgain": "Try again",
+  "modmanager.button.defaultProvider": "Default provider",
+  "modmanager.button.updateChannel": "Update channel",
+  "modmanager.button.save": "Save",
   "modmanager.categories": "Categories",
   "modmanager.category.updatable": "Updatable Mods",
   "modmanager.category.technology": "Technology",
@@ -22,6 +25,10 @@
   "modmanager.category.misc": "Miscellaneous",
   "modmanager.changes.title": "§e§lChanges detected§r",
   "modmanager.changes.message": "Changes will take effect after a relaunch.\nQuit Minecraft now?",
+  "modmanager.channel.info": "Switch between beta and stable versions",
+  "modmanager.channel.all": "All",
+  "modmanager.channel.stable": "Stable",
+  "modmanager.channel.unstable": "Unstable",
   "modmanager.details.author": "By %s",
   "modmanager.details.versioning": "From %s to %s",
   "modmanager.error.title": "§b§4Error:§r",
@@ -44,6 +51,7 @@
   "modmanager.search": "Search...",
   "modmanager.page.next": "Next Page",
   "modmanager.page.previous": "Previous Page",
+  "modmanager.provider.info": "Allows you to change the default provider for browsing",
   "modmanager.toast.update.title": "Updates Available!",
   "modmanager.toast.update.description": "%d mods can be updated"
 }

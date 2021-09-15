@@ -21,6 +21,9 @@
         "adapter": "kotlin",
         "value": "xyz.deathsgun.modmanager.ModManager"
       }
+    ],
+    "modmenu": [
+      "xyz.deathsgun.modmanager.ModMenuEntrypoint"
     ]
   },
   "custom": {
