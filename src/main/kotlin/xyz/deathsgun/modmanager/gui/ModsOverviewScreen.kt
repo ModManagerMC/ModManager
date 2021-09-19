@@ -75,7 +75,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         sortingButtonWidget = addDrawableChild(
             CyclingButtonWidget.builder(Sorting::translations)
                 .values(Sorting.RELEVANCE, Sorting.DOWNLOADS, Sorting.NEWEST, Sorting.UPDATED)
-                .build(180, 10, 120, 20, TranslatableText("modmanager.sorting.sort"))
+                .build(180, 10, 180, 20, TranslatableText("modmanager.sorting.sort"))
                 { _: CyclingButtonWidget<Any>, sorting: Sorting -> this.sorting = sorting; updateModList() }
         )
 

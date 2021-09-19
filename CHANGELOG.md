@@ -1,6 +1,6 @@
 Bugs fixed:
 
-- NullPointerException [#42]
+- NullPointerException [#42](https://github.com/DeathsGun/ModManager/issues/42)
 
 Improvements:
 
