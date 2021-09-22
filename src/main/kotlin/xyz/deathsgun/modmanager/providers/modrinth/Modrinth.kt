@@ -200,6 +200,9 @@ class Modrinth : IModProvider, IModUpdateProvider {
             val modrinthVersions = json.decodeFromString<List<ModrinthVersion>>(response.body())
             val versions = ArrayList<Version>()
             for (modVersion in modrinthVersions) {
+                if (!modVersion.loaders.contains("fabric")) {
+                    continue
+                }
                 val assets = ArrayList<Asset>()
                 for (file in modVersion.files) {
                     assets.add(Asset(file.url, file.filename, file.hashes, file.primary))
