@@ -21,6 +21,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FabricMetadata(
     val id: String,
+    val name: String,
     val custom: Custom = Custom(emptyMap())
 ) {
     @Serializable

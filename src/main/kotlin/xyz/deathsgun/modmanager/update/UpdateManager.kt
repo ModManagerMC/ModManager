@@ -27,7 +27,6 @@ import net.fabricmc.loader.api.SemanticVersion
 import net.fabricmc.loader.api.metadata.ModMetadata
 import net.fabricmc.loader.util.version.VersionDeserializer
 import net.minecraft.text.TranslatableText
-import net.minecraft.util.Util
 import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.LogManager
 import xyz.deathsgun.modmanager.ModManager
@@ -52,9 +51,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.security.MessageDigest
 import java.time.Duration
-import java.util.concurrent.TimeUnit
 import java.util.zip.ZipFile
-import kotlin.io.path.name
+import kotlin.io.path.absolutePathString
 
 
 class UpdateManager {
@@ -87,6 +85,7 @@ class UpdateManager {
     }
 
     private fun checkForUpdatesManually(metadata: ModMetadata) {
+        ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)
         val defaultProvider = ModManager.modManager.config.defaultProvider
         val provider = ModManager.modManager.provider[defaultProvider]
         if (provider == null) {
@@ -159,6 +158,7 @@ class UpdateManager {
     }
 
     private fun checkForUpdates(metadata: ModMetadata, ids: Map<String, String>) {
+        ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)
         var provider: IModUpdateProvider? = null
         var id: String? = null
         for ((provId, modId) in ids) {
@@ -293,7 +293,7 @@ class UpdateManager {
             ?: return ModUpdateResult.Error(TranslatableText("modmanager.error.jar.notFound"))
         logger.info("Updating {}", update.mod.name)
         try {
-            oldJar.forceDelete()
+            oldJar.delete()
         } catch (e: Exception) {
             return ModUpdateResult.Error(TranslatableText("modmanager.error.jar.failedDelete", e))
         }
@@ -337,7 +337,9 @@ class UpdateManager {
                 val meta = json.decodeFromString<FabricMetadata>(data)
                 jarFile.close()
                 if (meta.id == mod.id || meta.id == mod.slug || meta.id == mod.slug.replace("-", "") ||
-                    meta.custom.modmanager[ModManager.modManager.config.defaultProvider] == mod.id
+                    meta.custom.modmanager[ModManager.modManager.config.defaultProvider] == mod.id ||
+                    meta.id.replace("_", "-") == mod.id ||
+                    meta.name.equals(mod.name, true)
                 ) {
                     return jar.toPath()
                 }
@@ -360,7 +362,7 @@ class UpdateManager {
         return ids
     }
 
-    private fun getCheckableMods(): List<ModMetadata> {
+    fun getCheckableMods(): List<ModMetadata> {
         return FabricLoader.getInstance().allMods.map { it.metadata }.filter {
             !it.id.startsWith("fabric") &&
                     !CustomValueUtil.getBoolean("fabric-loom:generated", it).orElse(false) &&
@@ -368,14 +370,13 @@ class UpdateManager {
         }
     }
 
-    private fun Path.forceDelete() {
-        if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS) {
-            // Under windows this file gets locked can't be deleted by Java
-            ProcessBuilder("cmd", "/c", "del /f ${this.name}").directory(this.parent.toFile()).start()
-                .waitFor(200, TimeUnit.MILLISECONDS)
-            return
+    private fun Path.delete() {
+        try {
+            Files.delete(this)
+        } catch (e: Exception) {
+            logger.info("Error while deleting {} trying on exit again", this.absolutePathString())
+            this.toFile().deleteOnExit()
         }
-        Files.deleteIfExists(this)
     }
 
     private fun Path.sha512(): String {
@@ -393,7 +394,7 @@ class UpdateManager {
         val jar = findJarByMod(mod)
             ?: return ModRemoveResult.Error(TranslatableText("modmanager.error.jar.notFound"))
         return try {
-            jar.forceDelete()
+            jar.delete()
             ModManager.modManager.setModState(mod.slug, mod.id, ModState.DOWNLOADABLE)
             ModRemoveResult.Success
         } catch (e: Exception) {
