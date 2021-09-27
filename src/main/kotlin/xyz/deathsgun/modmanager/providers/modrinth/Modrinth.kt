@@ -39,6 +39,8 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Duration
+import java.time.Instant
+import java.time.ZoneOffset
 
 @OptIn(ExperimentalSerializationApi::class)
 class Modrinth : IModProvider, IModUpdateProvider {
@@ -211,6 +213,10 @@ class Modrinth : IModProvider, IModUpdateProvider {
                     Version(
                         modVersion.version,
                         modVersion.changelog,
+                        // 2021-09-03T10:56:59.402790Z
+                        Instant.parse(modVersion.releaseDate).atOffset(
+                            ZoneOffset.UTC
+                        ).toLocalDate(),
                         getVersionType(modVersion.type),
                         modVersion.gameVersions,
                         assets

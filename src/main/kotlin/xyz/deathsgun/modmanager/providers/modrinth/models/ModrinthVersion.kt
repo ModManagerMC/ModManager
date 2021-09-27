@@ -24,6 +24,8 @@ data class ModrinthVersion(
     @SerialName("version_number")
     val version: String,
     val changelog: String,
+    @SerialName("date_published")
+    val releaseDate: String,
     @SerialName("version_type")
     val type: String,
     @SerialName("game_versions")

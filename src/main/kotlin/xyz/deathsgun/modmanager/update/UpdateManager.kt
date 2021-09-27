@@ -136,7 +136,7 @@ class UpdateManager {
         result = updateProvider.getVersionsForMod(mod.id)
         val versions = when (result) {
             is VersionResult.Error -> {
-                logger.error("Error while getting versions for mod {}", metadata.id)
+                logger.error("Error while getting versions for mod {}", metadata.id, result.cause)
                 ModManager.modManager.setModState(metadata.id, mod.id, ModState.INSTALLED)
                 return
             }
@@ -177,7 +177,7 @@ class UpdateManager {
         }
         val versions = when (val result = provider.getVersionsForMod(id)) {
             is VersionResult.Error -> {
-                logger.error("Error while getting versions for mod {}", metadata.id)
+                logger.error("Error while getting versions for mod {}", metadata.id, result.cause)
                 ModManager.modManager.setModState(metadata.id, id, ModState.INSTALLED)
                 return
             }
@@ -261,24 +261,37 @@ class UpdateManager {
     private fun findLatestCompatible(installedVersion: String, versions: List<Version>): Version? {
         var latest: Version? = null
         var latestVersion: SemanticVersion? = null
+        var installed: Version? = null
         val installVersion =
-            VersionDeserializer.deserializeSemantic(installedVersion.split("+")[0]) // Remove additional info from version
+            VersionDeserializer.deserializeSemantic(installedVersion)
         for (version in versions) {
+            if (version.version == installedVersion) {
+                installed = version
+            }
             if (!version.gameVersions.contains(ModManager.getMinecraftVersion()) ||
                 !ModManager.modManager.config.isReleaseAllowed(version.type)
             ) {
                 continue
             }
             val ver = try {
-                VersionDeserializer.deserializeSemantic(version.version.split("+")[0]) // Remove additional info from version
+                VersionDeserializer.deserializeSemantic(version.version) // Remove additional info from version
             } catch (e: Exception) {
+                if (latestVersion == null || version.releaseDate > latest?.releaseDate) {
+                    logger.info("Setting version {} via release date", version.version)
+                    latest = version
+                    latestVersion = null
+                    continue
+                }
                 logger.warn("Skipping error producing version {}", version.version)
                 continue
             }
-            if (latestVersion == null || ver > latestVersion) {
+            if (latestVersion == null || ver > latestVersion || version.releaseDate > latest?.releaseDate) {
                 latest = version
                 latestVersion = ver
             }
+        }
+        if (installed != null && installed.releaseDate > latest?.releaseDate) {
+            return null
         }
         if (latestVersion?.compareTo(installVersion) == 0) {
             return null
