@@ -42,11 +42,11 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    
+
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-    testImplementation "org.jetbrains.kotlin:kotlin-test:1.5.21"
+    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.5.31'
 }
 
 processResources {

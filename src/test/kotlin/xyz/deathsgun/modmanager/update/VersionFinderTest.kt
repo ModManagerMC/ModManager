@@ -17,7 +17,6 @@
 package xyz.deathsgun.modmanager.update
 
 import net.fabricmc.loader.api.VersionParsingException
-import org.apache.logging.log4j.LogManager
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.fail
@@ -30,11 +29,17 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
+/**
+ * Tests the [VersionFinder] implementation
+ */
 internal class VersionFinderTest {
 
-    private val logger = LogManager.getLogger()
     private val provider: IModUpdateProvider = DummyModrinthVersionProvider()
 
+    /**
+     * Tests the fallback for versions which are not following
+     * the SemVer scheme. These mods are resolved by their release date.
+     */
     @TestFactory
     fun findUpdateByFallback() = listOf(
         Scenario(
@@ -76,20 +81,44 @@ internal class VersionFinderTest {
         }
     }
 
+    /**
+     * Tests some version scenarios in which the [VersionFinder]
+     * should definitely return null.
+     */
     @TestFactory
     fun findUpdateByVersionError() = listOf(
+        /**
+         * This scenario will fail because mc1.17.1-0.7.1
+         * can not be parsed by the parser as it starts with mc.
+         */
         Scenario(
             "lithium",
-            "mc1.17.1-0.7.4",
+            "none",
             "mc1.17.1-0.7.1",
             Config.UpdateChannel.STABLE,
             "1.17"
         ),
+        /**
+         * This scenario will fail because fabric-5.3.3-BETA+6027c282
+         * can not be parsed by the parser as it starts with fabric.
+         */
         Scenario(
             "terra",
-            "5.4.1-BETA+40e95073",
+            "none",
             "fabric-5.3.3-BETA+6027c282",
             Config.UpdateChannel.ALL,
+            "1.17"
+        ),
+        /**
+         * No update for this scenario should be found.
+         * When an update should be found this would be an
+         * error as 2.0.13 is the latest
+         */
+        Scenario(
+            "modmenu",
+            "none",
+            "2.0.13",
+            Config.UpdateChannel.STABLE,
             "1.17"
         )
     ).map { scenario ->
@@ -112,19 +141,15 @@ internal class VersionFinderTest {
         }
     }
 
+    /**
+     * This tests all mods which are following the semantic version scheme.
+     */
     @TestFactory
     fun findUpdateByVersion() = listOf(
         Scenario(
             "modmanager",
             "1.0.2+1.17-alpha",
             "1.0.0-alpha",
-            Config.UpdateChannel.ALL,
-            "1.17"
-        ),
-        Scenario(
-            "terra",
-            "5.4.1-BETA+40e95073",
-            "5.3.3-BETA+6027c282", // actually fabric-5.3.3-BETA+6027c282
             Config.UpdateChannel.ALL,
             "1.17"
         ),

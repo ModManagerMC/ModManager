@@ -31,6 +31,10 @@ import java.io.InputStreamReader
 import java.time.Instant
 import java.time.ZoneOffset
 
+/**
+ * Dummy which provided the version data
+ * for [xyz.deathsgun.modmanager.update.VersionFinderTest]
+ */
 internal class DummyModrinthVersionProvider : IModUpdateProvider {
 
     private val json = Json {
@@ -41,6 +45,10 @@ internal class DummyModrinthVersionProvider : IModUpdateProvider {
         return "Modrinth"
     }
 
+    /**
+     * Reads the provided id from /version/id.json
+     * @param id the mod slug from Modrinth
+     */
     @OptIn(ExperimentalSerializationApi::class)
     override fun getVersionsForMod(id: String): VersionResult {
         return try {

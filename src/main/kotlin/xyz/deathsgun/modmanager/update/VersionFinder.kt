@@ -54,11 +54,7 @@ object VersionFinder {
         var latestVer: SemanticVersion? = null
         val installedVer = VersionDeserializer.deserializeSemantic(installedVersion)
         for (version in versions) {
-            val parsedVersion = try {
-                VersionDeserializer.deserializeSemantic(version.version)
-            } catch (e: VersionParsingException) {
-                continue
-            }
+            val parsedVersion = VersionDeserializer.deserializeSemantic(version.version)
             if (latestVersion == null) {
                 latestVersion = version
                 latestVer = parsedVersion
@@ -69,7 +65,7 @@ object VersionFinder {
                 latestVer = parsedVersion
             }
         }
-        if (installedVersion == latestVersion?.version || installedVer >= latestVer) {
+        if (installedVersion == latestVersion?.version || (latestVer != null && installedVer >= latestVer)) {
             return null
         }
         return latestVersion
