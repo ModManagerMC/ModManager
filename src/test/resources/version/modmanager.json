@@ -1,0 +1,110 @@
+[
+  {
+	"id": "CdhVgHal",
+	"mod_id": "6kq7BzRK",
+	"author_id": "VUdG1FR5",
+	"featured": false,
+	"name": "1.0.2+1.17-alpha",
+	"version_number": "1.0.2+1.17-alpha",
+	"changelog": "Bugs fixed:\n\n- Fix CPU overload when using ModManager [#48](https://github.com/DeathsGun/ModManager/issues/48)\n- Fix forge artifacts being downloaded [#37](https://github.com/DeathsGun/ModManager/pull/37)\n- Fix NullPointerException while updating a mod [#34](https://github.com/DeathsGun/ModManager/issues/34)\n\nImprovements:\n\n- New loading icon [#40](https://github.com/DeathsGun/ModManager/pull/40)\n- Improved Turkish translation (Special thanks to kuzeeeyk) [#39](https://github.com/DeathsGun/ModManager/pull/39)\n- Added Chinese translation (Special thanks to MineCommanderCN) [#36](https://github.com/DeathsGun/ModManager/pull/36)\n- Added Korean translation (Special thanks to arlytical#1) [#32](https://github.com/DeathsGun/ModManager/pull/32)\n- Added Russian translation (Special thanks to Felix14-v2) [#31](https://github.com/DeathsGun/ModManager/pull/31)\n\n",
+	"changelog_url": null,
+	"date_published": "2021-09-03T10:56:59.402790Z",
+	"downloads": 474,
+	"version_type": "alpha",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "24661776bab56c8e77abaac3c66219e01742de2a0e9433945bfd1a6d284b1dd41e891f1d9c62f30c8f34688525e2c784e84e8720bde9355b2d7efa5e4fb53d2d",
+		  "sha1": "c1b802582903dadf56c1965bc5c6a31716250848"
+		},
+		"url": "https://cdn.modrinth.com//data/6kq7BzRK/versions/1.0.2+1.17-alpha/modmanager-1.0.2+1.17-alpha.jar",
+		"filename": "modmanager-1.0.2+1.17-alpha.jar",
+		"primary": true
+	  }
+	],
+	"dependencies": [
+	  {
+		"version_id": "E4QBMVtO",
+		"dependency_type": "required"
+	  }
+	],
+	"game_versions": [
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "gGSLHqJK",
+	"mod_id": "6kq7BzRK",
+	"author_id": "VUdG1FR5",
+	"featured": false,
+	"name": "1.0.1+1.17-alpha",
+	"version_number": "1.0.1+1.17-alpha",
+	"changelog": "Bugs fixed:\n\n- Fixed crash when opening ModMenu [#13](https://github.com/DeathsGun/ModManager/issues/13)\n- Fixed update error on Windows because of file locks [#17](https://github.com/DeathsGun/ModManager/issues/13)\n- Search only when enter key was hit for improved performance [#7](https://github.com/DeathsGun/ModManager/issues/7)\n- Fixed crash when ModManager loses connection while opening a more detailed\n  view [#16](https://github.com/DeathsGun/ModManager/issues/16)\n- Fixed icons being mixed up [#22](https://github.com/DeathsGun/ModManager/issues/22)\n- Fixed unknown mods showing up [#18](https://github.com/DeathsGun/ModManager/issues/18)\n\nImprovements:\n\n- Added Turkish translation (Special thanks to kuzeeeyk) [#21](https://github.com/DeathsGun/ModManager/pull/21)\n- Only show \"Updatable mods\" category when there are updatable\n  mods [#10](https://github.com/DeathsGun/ModManager/issues/10)\n",
+	"changelog_url": null,
+	"date_published": "2021-08-24T17:26:03.297706Z",
+	"downloads": 225,
+	"version_type": "alpha",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "0228ab2ac3cc3120512041d01b31925f03e764e5",
+		  "sha512": "7ec3293ac8f43adf12e02e60f3ce1c1a6410fb21674bf8ab50184d4e32cf34535b428f642b429515c7119328d49d0c852817cb00f7c109cc1135963313c9d474"
+		},
+		"url": "https://cdn.modrinth.com/data/6kq7BzRK/versions/1.0.1+1.17-alpha/modmanager-1.0.1+1.17-alpha.jar",
+		"filename": "modmanager-1.0.1+1.17-alpha.jar",
+		"primary": true
+	  }
+	],
+	"dependencies": [
+	  {
+		"version_id": "E4QBMVtO",
+		"dependency_type": "required"
+	  }
+	],
+	"game_versions": [
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "2J1ys6qf",
+	"mod_id": "6kq7BzRK",
+	"author_id": "VUdG1FR5",
+	"featured": false,
+	"name": "1.0.0-alpha",
+	"version_number": "1.0.0-alpha",
+	"changelog": "This project has reached the alpha stage.\nI think the mod has reached a point in which it can be called an alpha.\n\nWhat can do now?\n* Browse through Modrinth\n* Install, remove and update mods\n* Notify about updates\n* Show you an overview of mods that need an update ",
+	"changelog_url": null,
+	"date_published": "2021-08-23T17:00:19.010541Z",
+	"downloads": 55,
+	"version_type": "alpha",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "e57fddfc3d2d7789f6b260e345ba5a469b0de343692535d742762336afaf10d0f753aa537384d48b7aa16a5c6a4d71adff36b22f26f6248862f19f94dfbcd5ce",
+		  "sha1": "a646cc8a6ef18ad2bf8a771776780e87d35e79a1"
+		},
+		"url": "https://cdn.modrinth.com/data/6kq7BzRK/versions/1.0.0-alpha/modmanager-1.0.0-alpha.jar",
+		"filename": "modmanager-1.0.0-alpha.jar",
+		"primary": true
+	  }
+	],
+	"dependencies": [
+	  {
+		"version_id": "E4QBMVtO",
+		"dependency_type": "required"
+	  }
+	],
+	"game_versions": [
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  }
+]

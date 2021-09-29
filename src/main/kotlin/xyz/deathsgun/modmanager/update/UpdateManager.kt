@@ -23,9 +23,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.loader.api.SemanticVersion
 import net.fabricmc.loader.api.metadata.ModMetadata
-import net.fabricmc.loader.util.version.VersionDeserializer
 import net.minecraft.text.TranslatableText
 import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.LogManager
@@ -99,7 +97,12 @@ class UpdateManager {
         }
         var result = updateProvider.getVersionsForMod(metadata.id)
         if (result is VersionResult.Success) {
-            val version = findLatestCompatible(metadata.version.friendlyString, result.versions)
+            val version = VersionFinder.findUpdate(
+                metadata.version.friendlyString,
+                ModManager.getMinecraftVersion(),
+                ModManager.modManager.config.updateChannel,
+                result.versions
+            )
             if (version == null) {
                 logger.info("No update for {} found!", metadata.id)
                 ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)
@@ -142,7 +145,12 @@ class UpdateManager {
             }
             is VersionResult.Success -> result.versions
         }
-        val version = findLatestCompatible(metadata.version.friendlyString, versions)
+        val version = VersionFinder.findUpdate(
+            metadata.version.friendlyString,
+            ModManager.getMinecraftVersion(),
+            ModManager.modManager.config.updateChannel,
+            versions
+        )
         if (version == null) {
             logger.info("No update for {} found!", metadata.id)
             ModManager.modManager.setModState(metadata.id, mod.id, ModState.INSTALLED)
@@ -183,7 +191,12 @@ class UpdateManager {
             }
             is VersionResult.Success -> result.versions
         }
-        val version = findLatestCompatible(metadata.version.friendlyString, versions)
+        val version = VersionFinder.findUpdate(
+            metadata.version.friendlyString,
+            ModManager.getMinecraftVersion(),
+            ModManager.modManager.config.updateChannel,
+            versions
+        )
         if (version == null) {
             logger.info("No update for {} found!", metadata.id)
             ModManager.modManager.setModState(metadata.id, id, ModState.INSTALLED)
@@ -212,7 +225,12 @@ class UpdateManager {
                 is VersionResult.Error -> return ModInstallResult.Error(result.text, result.cause)
                 is VersionResult.Success -> result.versions
             }
-            val version = findLatestCompatible("0.0.0.0", versions)
+            val version = VersionFinder.findUpdate(
+                "0.0.0.0",
+                ModManager.getMinecraftVersion(),
+                ModManager.modManager.config.updateChannel,
+                versions
+            )
                 ?: return ModInstallResult.Error(TranslatableText("modmanager.error.noCompatibleModVersionFound"))
 
             val dir = FabricLoader.getInstance().gameDir.resolve("mods")
@@ -256,47 +274,6 @@ class UpdateManager {
         } catch (e: Exception) {
             ModUpdateResult.Error(TranslatableText("modmanager.error.unknown.update", e))
         }
-    }
-
-    private fun findLatestCompatible(installedVersion: String, versions: List<Version>): Version? {
-        var latest: Version? = null
-        var latestVersion: SemanticVersion? = null
-        var installed: Version? = null
-        val installVersion =
-            VersionDeserializer.deserializeSemantic(installedVersion)
-        for (version in versions) {
-            if (version.version == installedVersion) {
-                installed = version
-            }
-            if (!version.gameVersions.contains(ModManager.getMinecraftVersion()) ||
-                !ModManager.modManager.config.isReleaseAllowed(version.type)
-            ) {
-                continue
-            }
-            val ver = try {
-                VersionDeserializer.deserializeSemantic(version.version) // Remove additional info from version
-            } catch (e: Exception) {
-                if (latestVersion == null || version.releaseDate > latest?.releaseDate) {
-                    logger.info("Setting version {} via release date", version.version)
-                    latest = version
-                    latestVersion = null
-                    continue
-                }
-                logger.warn("Skipping error producing version {}", version.version)
-                continue
-            }
-            if (latestVersion == null || ver > latestVersion || version.releaseDate > latest?.releaseDate) {
-                latest = version
-                latestVersion = ver
-            }
-        }
-        if (installed != null && installed.releaseDate > latest?.releaseDate) {
-            return null
-        }
-        if (latestVersion?.compareTo(installVersion) == 0) {
-            return null
-        }
-        return latest
     }
 
     fun updateMod(update: Update): ModUpdateResult {

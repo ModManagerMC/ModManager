@@ -56,7 +56,7 @@ class ModManager : ClientModInitializer {
 
         @JvmStatic
         fun getMinecraftVersion(): String {
-            return MinecraftClient.getInstance()?.game?.version?.releaseTarget ?: "1.17.1"
+            return MinecraftClient.getInstance()?.game?.version?.name ?: "1.17.1"
         }
     }
 

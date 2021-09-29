@@ -25,4 +25,10 @@ data class Version(
     val type: VersionType,
     val gameVersions: List<String>,
     val assets: List<Asset>
-)
+) : Comparable<Version> {
+    override fun compareTo(other: Version): Int {
+        return Comparator.comparing { v: Version -> v.version }
+            .thenComparing { v -> v.releaseDate }.compare(this, other)
+    }
+
+}

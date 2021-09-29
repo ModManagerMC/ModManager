@@ -1,0 +1,1412 @@
+[
+  {
+	"id": "PN4NcBa1",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.21 for 1.16.5",
+	"version_number": "1.16.21",
+	"changelog": "- Fixed immediate crash when using Java 1.8",
+	"changelog_url": null,
+	"date_published": "2021-09-27T01:53:22.474594Z",
+	"downloads": 39,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "cfdd10585e96d53321d4d84d44d7505b4130527747da05f4c407cb3b072ff2a25ec819df12d7840810bc9ca6d2497a7bc847525a3f15dad08204caa2c68c9844",
+		  "sha1": "96c9741127516103b273fac5fac7e5b179f64270"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.21/modmenu-1.16.21.jar",
+		"filename": "modmenu-1.16.21.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "jZQ0G78K",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.1.1 for 21w38a",
+	"version_number": "2.1.1",
+	"changelog": "- Removed deprecated Mod Menu API, mods must use `com.terraformersmc.modmenu.api.ModMenuApi` now\n- Removed deprecated custom value loading, mods must use the `modmenu` container custom value now",
+	"changelog_url": null,
+	"date_published": "2021-09-26T01:50:56.813057Z",
+	"downloads": 23,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "0053e0a958e2d26b00739b830c015708a12be298",
+		  "sha512": "c665b46f6b9f703a95fbf4f3b7c385851e212ba9f69b3335d98e8e3594b6b14d2b631db6092b8ef5fb5601a86cbb06c99f70961b068bc0204e014a7c848aa150"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.1.1/modmenu-2.1.1.jar",
+		"filename": "modmenu-2.1.1.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "21w37a",
+	  "21w38a"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "WKj0jgYj",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.13 for 1.17",
+	"version_number": "2.0.13",
+	"changelog": "- Updated English (en_PT) translation\n- Updated Mongo (lol_US) translation",
+	"changelog_url": null,
+	"date_published": "2021-09-26T01:50:10.779807Z",
+	"downloads": 277,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "f8cab8735f0ad6c63da5154594397861daae0964",
+		  "sha512": "3bc8647db8f82f141d7f9309ac3f27014f1c915445d3ee68f805f7b659b988c92bc5e68b9dc16a68b370723ac6575e5c8439b1f2f607289f4f303998a293cb10"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.13/modmenu-2.0.13.jar",
+		"filename": "modmenu-2.0.13.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "JOqf8AZn",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.20 for 1.16.5",
+	"version_number": "1.16.20",
+	"changelog": "- Updated English (en_PT) translation\n- Updated Mongo (lol_US) translation",
+	"changelog_url": null,
+	"date_published": "2021-09-26T01:49:48.667423Z",
+	"downloads": 14,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "fae574348ba6a371e7e35e7010fb952b91a85ffa",
+		  "sha512": "2fd7fb090d5430a3c92636933b3dfc8c3fe1cc916109db7f71aed1000ba36f5e713947deefd4232e5dec7038b989b049573ccf004f18647aa96b7cb7d4fe8805"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.20/modmenu-1.16.20.jar",
+		"filename": "modmenu-1.16.20.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "LVxVja5i",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.1.0 for 21w37a",
+	"version_number": "2.1.0",
+	"changelog": "No Changelog Available",
+	"changelog_url": null,
+	"date_published": "2021-09-21T14:48:05.867840Z",
+	"downloads": 50,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "7dfaa4b25877a1892ac30e3609b6d0633c03166310140ad1e4d2c1fe4fb420e4d74591afac7cf0d1a558fbf258f49be7a864a96820ba1da58439fc2b50a7309f",
+		  "sha1": "bfee5982424e18bc68f6927b5658ba6557b155de"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/2.1.0/modmenu-2.1.0.jar",
+		"filename": "modmenu-2.1.0.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "21w37a",
+	  "21w38a"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "9xECQHnM",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.12 for 1.17",
+	"version_number": "2.0.12",
+	"changelog": "- Fixed Minecraft crash caused by broken mod config screens\n- Updated German translation",
+	"changelog_url": null,
+	"date_published": "2021-09-21T02:22:22.768837Z",
+	"downloads": 414,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "5d7f921acd3712b7db606e273fbfe73bee532b63858be844e7d3659b71cc533d8580d2c28dc264df8ac1382452873ec3d1b11e3411377c1aa5bccc1c9fab332c",
+		  "sha1": "01e02fd25f30a1078ca2fccd9064839a5dd181e8"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/2.0.12/modmenu-2.0.12.jar",
+		"filename": "modmenu-2.0.12.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "aH8qgnVM",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.19 for 1.16.5",
+	"version_number": "1.16.19",
+	"changelog": "- Fixed Minecraft crash caused by broken mod config screens\n- Updated German translation",
+	"changelog_url": null,
+	"date_published": "2021-09-21T02:20:59.248250Z",
+	"downloads": 68,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "7be89f7fcaefd034244820fcbd7266805de10724",
+		  "sha512": "9d39c100c031d86492fab9cdd658278658134cb9a596c342be242f22cca9256cd985dd50eb17e34d801b8496d4b29ec8e1b45ae24253a94403469ee8d6acd833"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/1.16.19/modmenu-1.16.19.jar",
+		"filename": "modmenu-1.16.19.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "FMqdptUn",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.11 for 1.17",
+	"version_number": "2.0.11",
+	"changelog": "- Updated Russian translation\n- Updated Russian translation\n- Updated Bulgarian translation\n- Updated English (en_PT) translation\n- Updated English (en_UD) translation\n- Updated English (en_WS) translation\n- Updated Italian translation",
+	"changelog_url": null,
+	"date_published": "2021-09-17T16:10:25.681935Z",
+	"downloads": 379,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "f7ff368917b4c4d6b5655de2a46584cba09e95c80cd6c70f1cd61589f999e2872be26ff3820b038dbf1b27fa79c09928b27fa492ff3d416daf536745121e2a6d",
+		  "sha1": "93f5281f5f446cb43724c2c2bb0fe75e5b47c069"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/2.0.11/modmenu-2.0.11.jar",
+		"filename": "modmenu-2.0.11.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "VaZTuVan",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.18 for 1.16.5",
+	"version_number": "1.16.18",
+	"changelog": "- Updated Russian translation\n- Updated Bulgarian translation\n- Updated English (en_PT) translation\n- Updated English (en_UD) translation\n- Updated English (en_WS) translation\n- Updated Italian translation\n- Updated Russian translation",
+	"changelog_url": null,
+	"date_published": "2021-09-17T16:02:07.470359Z",
+	"downloads": 51,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "c68bde6d376e3387c8afcc2d4c26b43ca761dba9",
+		  "sha512": "27c1b62d44db781021f1b4a3e326a0eee302ec6fe8bc24680e86bf3cd6e43a6dc80b24187485cec9f8d79d7841f8e082b2d5e69d0228c00cd0036d772a37b4a2"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/1.16.18/modmenu-1.16.18.jar",
+		"filename": "modmenu-1.16.18.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "XtL1i60M",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.10 for 1.17",
+	"version_number": "2.0.10",
+	"changelog": "- Fixed Java icon loosing background color when selected",
+	"changelog_url": null,
+	"date_published": "2021-09-06T11:46:18.682245Z",
+	"downloads": 922,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "66b4fc25284a8078060a259313f3814ff289374d",
+		  "sha512": "9c65fbafe8eabc1949d050f76cb0cf05b9a1fcdb98e4f738609ce19434c7960c1fcb1d2a5390b8f7df74c06346963b19fef9683b0f2b1fcb0e508cd7dd204a5f"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/2.0.10/modmenu-2.0.10.jar",
+		"filename": "modmenu-2.0.10.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "DOitjZ89",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.17 for 1.16.5",
+	"version_number": "1.16.17",
+	"changelog": "- Updated Portuguese (Brazil) translation",
+	"changelog_url": null,
+	"date_published": "2021-09-06T11:45:40.107879Z",
+	"downloads": 117,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "848365e77db8871bdfafe3e20fc879aa1cab75c3e75f429c2196dad83aee67e7e2c55242cf1c13470dbaf8256163a73f65c2a92d08b151f630ad5d4679147d55",
+		  "sha1": "0106a8f8fd5d49dc9358880da35605746f71cdde"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/1.16.17/modmenu-1.16.17.jar",
+		"filename": "modmenu-1.16.17.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "tlM0eBmY",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.9 for 1.17",
+	"version_number": "2.0.9",
+	"changelog": "- Fixed a crash when optional dependencies were used in mod config screens",
+	"changelog_url": null,
+	"date_published": "2021-09-02T07:41:19.101417Z",
+	"downloads": 470,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "db2c640258ec56e9403a1089a27e6982b27fdb93",
+		  "sha512": "775905aaac1f7737e1747188792359cab577d4fb0fb30095430eb96e3c453403f18fc18e8f2e172a0fc2eb67b2149adf346b95e91953afe11fafbabd320ca740"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/2.0.9/modmenu-2.0.9.jar",
+		"filename": "modmenu-2.0.9.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "Wr4GfZdy",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.16 for 1.16.5",
+	"version_number": "1.16.16",
+	"changelog": "- Fixed a crash when optional dependencies were used in mod config screens",
+	"changelog_url": null,
+	"date_published": "2021-09-02T07:39:28.064909Z",
+	"downloads": 67,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "d0c8a302fc432d882dc4cedc918bdc85fc64ad84",
+		  "sha512": "326f920e83dc02368ff2126c11fcf86329d1ab129469625fdabc8dbab191553298e832e50a668707c95ab7a7c1a9129d50c83326defeae6cdb424733444ce130"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/1.16.16/modmenu-1.16.16.jar",
+		"filename": "modmenu-1.16.16.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "GOPQZTVp",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.15 for 1.16.5",
+	"version_number": "1.16.15",
+	"changelog": "- Updated Portuguese (Brazil) translation",
+	"changelog_url": null,
+	"date_published": "2021-09-01T18:08:13.789812Z",
+	"downloads": 11,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "c778d3d32523fcebea70614f14bc0950afec6a06",
+		  "sha512": "7a9d99de0ce679111c243c983a2d4e7c38fa1ed12f563534163abea83936b60e3d5f4b3de2c9bc9e78e7916bcddbffa3f69e1b0877c81ee2083f28cbab7f346a"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/1.16.15/modmenu-1.16.15.jar",
+		"filename": "modmenu-1.16.15.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "JyL5b75a",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.8 for 1.17",
+	"version_number": "2.0.8",
+	"changelog": "- Updated Portuguese (Brazil) translation\n- Updated Swedish translation",
+	"changelog_url": null,
+	"date_published": "2021-09-01T18:07:59.639490Z",
+	"downloads": 62,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "205d5aac4f64a5e1a70534ef7c08806596ede109",
+		  "sha512": "05f5ef82bf43e5087a6a481a027588fdda281d7c0168d340e672f689797a9316d4d805f60e999f1ef2e40048b5cdd1e4b1d48ce81d87d5a21bb94a94d5befc46"
+		},
+		"url": "https://cdn.modrinth.com//data/mOgUt4GM/versions/2.0.8/modmenu-2.0.8.jar",
+		"filename": "modmenu-2.0.8.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "G8sCBZ1X",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.7 for 1.17",
+	"version_number": "2.0.7",
+	"changelog": "- Updated ɥsᴉꞁᵷuƎ translation\n- Updated LOLCAT translation\n- Updated Portuguese (Brazil) translation\n- Updated Swedish translation",
+	"changelog_url": null,
+	"date_published": "2021-08-30T23:41:16.288205Z",
+	"downloads": 195,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "5425b82d434a69de9e0ca539d92c7ed7bfef7146",
+		  "sha512": "bb065e91fdde821b1bd7d8190ba7cd5ad35f22438ac6f3ba213a54f7e1ccf2b11599ae457d839eadec37da72ce0fd8c43194f4401936b4839dd7a65293c3dc40"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.7/modmenu-2.0.7.jar",
+		"filename": "modmenu-2.0.7.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "4Ar2wg0k",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.14 for 1.16.5",
+	"version_number": "1.16.14",
+	"changelog": "- Updated ɥsᴉꞁᵷuƎ translation\n- Updated LOLCAT translation\n- Updated Portuguese (Brazil) translation\n- Updated Swedish translation",
+	"changelog_url": null,
+	"date_published": "2021-08-30T23:40:57.517439Z",
+	"downloads": 25,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "e0c23845500c81dfd6ffce29fb0c0bd199413b0b16c0e96b167076e8d26b7d77cd049d94243bbefa416319d590acc5f7cd441553e7dd4e0c350d6db7441adc63",
+		  "sha1": "c909bd99670715573163f47e5b62025cd8ed8ca4"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.14/modmenu-1.16.14.jar",
+		"filename": "modmenu-1.16.14.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "bojzkt4w",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.6 for 1.17",
+	"version_number": "2.0.6",
+	"changelog": "- Added mod list hotkeys: SPACE to open/close a list of child mods, LEFT to select the parent or close the list, RIGHT to open the list or select the first child",
+	"changelog_url": null,
+	"date_published": "2021-08-27T21:00:07.614860Z",
+	"downloads": 404,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "254cb07f4e14f0f3a60c000a92ec1bd578c61172",
+		  "sha512": "bc473a6307bde7bd9dbcc3c5717a11cedfb6105b8f0134e823529af75cb2b1bf72713494b0bd7f3861ef4462ed1a38bae82462db6d22753ff28763a0cfb7350c"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.6/modmenu-2.0.6.jar",
+		"filename": "modmenu-2.0.6.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "c6uDXZX8",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.13 for 1.16.5",
+	"version_number": "1.16.13",
+	"changelog": "- Added mod list hotkeys: SPACE to open/close a list of child mods, LEFT to select the parent or close the list, RIGHT to open the list or select the first child",
+	"changelog_url": null,
+	"date_published": "2021-08-27T20:59:37.008093Z",
+	"downloads": 61,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "ab20c871f3b0ba25a89c636ee10ffcaaf8a8271c",
+		  "sha512": "443ae53b897e6fb77e66570b215d54125ca6c3bb6a95270748456a26434fb3821adc8bd610175e74a590dac6597466ea1ab823998c4ed8015c73c75b0af88349"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.13/modmenu-1.16.13.jar",
+		"filename": "modmenu-1.16.13.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "E4QBMVtO",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.5 for 1.17",
+	"version_number": "2.0.5",
+	"changelog": "- Fixed a crash when mods declare themselves as their own parent\n- Updated Italian translation\n- Added Classical Chinese Language translation\n- Updated German translation\n- Updated French translation\n- Updated Turkish translation\n- Updated Persian translation",
+	"changelog_url": null,
+	"date_published": "2021-08-19T12:01:27.204434Z",
+	"downloads": 871,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "6a74b40142425a6ba3fa75272e7e9bf2604c132a",
+		  "sha512": "136eee2b29b4209680a98a32c301e78ba5f10e539d576c006721a25eae1143d1f95420e4a29af18172a4463e17936ab37638ba2bc35e0081e0b374e24dcd1b08"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.5/modmenu-2.0.5.jar",
+		"filename": "modmenu-2.0.5.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "u955lyFM",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.12 for 1.16.5",
+	"version_number": "1.16.12",
+	"changelog": "- Fixed a crash when mods declare themselves as their own parent\n- Updated German translation\n- Updated French translation\n- Updated Turkish translation\n- Updated Persian translation",
+	"changelog_url": null,
+	"date_published": "2021-08-19T12:01:14.906512Z",
+	"downloads": 124,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "98c6fb528c6f64c0148a62a11ba971efdf4b2f3e",
+		  "sha512": "53a998ab9e803d5b06cb0b7b8b387af67933fb647ecd2910d242b54479393ef05c450f7376977e96d86f6bb75c205667630b250d43b21a4f368337de0946fccd"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.12/modmenu-1.16.12.jar",
+		"filename": "modmenu-1.16.12.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "oQr5VO7q",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.4 for 1.17",
+	"version_number": "2.0.4",
+	"changelog": "- Fixed sounds resuming when exiting Mod Menu with ESC while paused\n- Update Polish Translation",
+	"changelog_url": null,
+	"date_published": "2021-07-25T07:44:38.772570Z",
+	"downloads": 2247,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "fa26fc594dea1370adc376667bf64c8f45b0d8d6",
+		  "sha512": "65ea03ce8e5863840007e37128bd6e15c0c632b67eae10ef5fb722e355ae82e512b52b8d15fb254a4509b5879d0b431fa74f99f1d0773c4bbff58df98b6dea3d"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.4/modmenu-2.0.4.jar",
+		"filename": "modmenu-2.0.4.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "NyFB1gry",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.11 for 1.16.5",
+	"version_number": "1.16.11",
+	"changelog": "- Fixed sounds resuming when exiting Mod Menu with ESC while paused\n- Update Polish Translation",
+	"changelog_url": null,
+	"date_published": "2021-07-25T07:44:17.812465Z",
+	"downloads": 410,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "215bd4c1126e82e247c05f83d9cef70439424bcdcf2b23dcd5e9d12b4c8a2c1a6c124d820dbb3831c64b1d66958f2fd8f31c6111a23ba8815259e8b0649eb11d",
+		  "sha1": "bafd3da269de96601f47cf96fa028255ee4aafaa"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.11/modmenu-1.16.11.jar",
+		"filename": "modmenu-1.16.11.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "a8bewBQT",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.3 for 1.17",
+	"version_number": "2.0.3",
+	"changelog": "No Changelog Available",
+	"changelog_url": null,
+	"date_published": "2021-07-20T00:38:02.587253Z",
+	"downloads": 638,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "4af7c6bb26ee80bd816ebe9068b16902cafb946d",
+		  "sha512": "27984e37c91a90232c77af795d6a58a36b7b3c276aab9d03f456deb49b38c982f88ced3dd6ec2e70a6852c0d247f833ba36e75c8d9ed59fff4d54d1c15c90ede"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.3/modmenu-2.0.3.jar",
+		"filename": "modmenu-2.0.3.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "bHODZExo",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.10 for 1.16.5",
+	"version_number": "1.16.10",
+	"changelog": "- Added Korean Translation",
+	"changelog_url": null,
+	"date_published": "2021-07-20T00:33:33.033376Z",
+	"downloads": 93,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "07861d3eea9bbee3cece379b3f9169329078ffd0533aecb9f6a1bf3d026cecc55f1dd2bba7def13724c186fbbb228a2d4bb33a5b60b663dccea216dd53b455d0",
+		  "sha1": "49ae9c7668df07fc576fcd74299c81ffa417ec76"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.10/modmenu-1.16.10.jar",
+		"filename": "modmenu-1.16.10.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "mzVbb1XI",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.2 for 1.17",
+	"version_number": "2.0.2",
+	"changelog": "- Update Persian Translation\n- Allow for more \"dynamic\" provider factories through the API\n- Added Korean Translation\n- Fixed some rendering issues from the 21w14a port\n- Update Russian Translation\n- Updated Catalan translation\n- Handle errors in API implementations more gracefully\n- Updated Simplified Chinese Translation\n- Updated to 21w14a\n- Re-ported Mod Menu v1.16.7 to Minecraft Snapshot 20w06a (from Minecraft 1.16.5)",
+	"changelog_url": null,
+	"date_published": "2021-06-12T03:29:55.681242Z",
+	"downloads": 2122,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "2d66d55e114ee19877ffd3ad6ac901a3290b6b4f0e9000c7a3a8f0a5f401ea3a29bccafea7ea06a7d604057d6be9319f24752e456796624b2e36d0bcce062504",
+		  "sha1": "e6ebbc3115c74dd601129099acc792e214783966"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.2/modmenu-2.0.2.jar",
+		"filename": "modmenu-2.0.2.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "wRE7Emzz",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.0-beta.7 for 1.17-pre1",
+	"version_number": "2.0.0-beta.7",
+	"changelog": "- Update Persian Translation\n- Allow for more \"dynamic\" provider factories through the API\n- Added Korean Translation\n- Fixed some rendering issues from the 21w14a port\n- Update Russian Translation\n- Updated Catalan translation\n- Handle errors in API implementations more gracefully\n- Updated Simplified Chinese Translation\n- Updated to 21w14a\n- Re-ported Mod Menu v1.16.7 to Minecraft Snapshot 20w06a (from Minecraft 1.16.5)",
+	"changelog_url": null,
+	"date_published": "2021-05-31T18:14:39.483247Z",
+	"downloads": 191,
+	"version_type": "beta",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "d08ccef96f514813b577d1d1d246af546619cc8d8a21f058d5f920bb52477f98f2228ff80f1332891a96e7228812cc85dcca5217af0adacc8a8839780028eff1",
+		  "sha1": "a3b26ff7bb57b226dcf500f6dbe42162d658e850"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.0-beta.7/modmenu-2.0.0-beta.7.jar",
+		"filename": "modmenu-2.0.0-beta.7.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17-pre1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "EDbIonje",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.0-beta.5 for 1.17-pre1",
+	"version_number": "2.0.0-beta.5",
+	"changelog": "No Changelog Available",
+	"changelog_url": null,
+	"date_published": "2021-05-29T07:04:58.631931Z",
+	"downloads": 35,
+	"version_type": "beta",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "92c2c785c0b06cff93203e2280abc794d62c959c",
+		  "sha512": "917b08fdca974897ee46ffda2dea111211119f040137b7ba2314cce7e12a243ea182c547b89980efb6744b79898582f0d06824f53307c6c477f057b0415d532f"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.0-beta.5/modmenu-2.0.0-beta.5.jar",
+		"filename": "modmenu-2.0.0-beta.5.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17-pre1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "Gz5wa6j2",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.10.6 for 1.15.2",
+	"version_number": "1.10.6",
+	"changelog": "- Fix crash with default API getId implementation resulting in NPE",
+	"changelog_url": null,
+	"date_published": "2021-04-10T19:39:37.333394Z",
+	"downloads": 202,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "197062aefc991c5151ac143343bd2082535ca2f6",
+		  "sha512": "58628244c8e2a22dc89eb091db3d5a12852130e97f97d979e55d1a3f083ad5db89806dfd50bf8b4fbfa9c67c74f09205d33439b80a8a179701151de8b9bd7a5b"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.10.6/modmenu-1.10.6.jar",
+		"filename": "modmenu-1.10.6.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.15.2"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "RIf7gcLA",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.0-beta.4 for 21w14a",
+	"version_number": "2.0.0-beta.4",
+	"changelog": "- Update Persian Translation\n- Allow for more \"dynamic\" provider factories through the API\n- Added Korean Translation\n- Fixed some rendering issues from the 21w14a port",
+	"changelog_url": null,
+	"date_published": "2021-04-10T08:18:47.063082Z",
+	"downloads": 49,
+	"version_type": "beta",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "544b546c1b2568dd0b093e50d5f62831b9e5064d",
+		  "sha512": "914f3b947feebb48f71c49af6599d8dd111b8e9e86323b9611e4a6377e7addd807e22b5990a2fc9294df3f95629ae2db01bb907b5b3826d4c35bde4229b93c1a"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.0-beta.4/modmenu-2.0.0-beta.4.jar",
+		"filename": "modmenu-2.0.0-beta.4.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "21w14a"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "pqlMITZQ",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.0-beta.3 for 21w14a",
+	"version_number": "2.0.0-beta.3",
+	"changelog": "- Update Russian Translation\n- Updated Catalan translation\n- Handle errors in API implementations more gracefully\n- Updated Simplified Chinese Translation\n- Updated to 21w14a",
+	"changelog_url": null,
+	"date_published": "2021-04-08T02:20:56.992170Z",
+	"downloads": 10,
+	"version_type": "beta",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "c90741f8ddfe2d1f5e563aa017ee0814544278272bd60414c8d9cbe8a67066147be7eb44bfcf08a8ddec9e29051fcc7521ea5e903405f88726016ac67f696065",
+		  "sha1": "483ebf02440cbca5926433f6caecd175f64f04d7"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.0-beta.3/modmenu-2.0.0-beta.3.jar",
+		"filename": "modmenu-2.0.0-beta.3.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "21w14a"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "bPE0GIoY",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.9 for 1.16.5",
+	"version_number": "1.16.9",
+	"changelog": "- Allow for more \"dynamic\" provider factories through the API\n- Updated Persian Translation\n- Updated Catalan translation\n- Updated Russian Translation",
+	"changelog_url": null,
+	"date_published": "2021-04-08T01:59:50.513004Z",
+	"downloads": 1868,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "513e4e6355ac5ba2192222482eb0bd8d2d8edeb7",
+		  "sha512": "fe5d944e2925a608babf73890e6423ee655872048ed122f0336c4c697024440e19146d04dda4c448a317273fb70578a393cf04e7cb6a33e85bc7ec7807b1fd15"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.9/modmenu-1.16.9.jar",
+		"filename": "modmenu-1.16.9.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "wb5nbuL5",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.8 for 1.16.5",
+	"version_number": "1.16.8",
+	"changelog": "- Handle errors in API implementations more gracefully\n- Updated Simplified Chinese Translation",
+	"changelog_url": null,
+	"date_published": "2021-02-20T23:28:08.977665Z",
+	"downloads": 916,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "9d5fbe5ce7b1a7a26f4a4c12321809b9a0c6e9099a3f74ff7ad4f49c96f13885c4695938c516b39f529b51823f0ea5038f67ddbf4ed3ec69432f09c20f7d875b",
+		  "sha1": "d59e0064d42213462379f63d3aa0e72151439aac"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.8/modmenu-1.16.8.jar",
+		"filename": "modmenu-1.16.8.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "6YvLIUDN",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v2.0.0-beta.2 for 21w06a",
+	"version_number": "2.0.0-beta.2",
+	"changelog": "- Re-ported Mod Menu v1.16.7 to Minecraft Snapshot 21w06a (from Minecraft 1.16.5)",
+	"changelog_url": null,
+	"date_published": "2021-02-11T02:59:39.111229Z",
+	"downloads": 69,
+	"version_type": "beta",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "595beb5853cb1ac7cb0ea4ae83d120dafdd0adfc",
+		  "sha512": "37851b3fa8e460e79dce63dd0a65d7a8f6fedeaff0d9985e46cc733309b16ceddeb81817951f3c0ab038b50fe441a370f882b3520f1971282024810356a3b898"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/2.0.0-beta.2/modmenu-2.0.0-beta.2.jar",
+		"filename": "modmenu-2.0.0-beta.2.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "21w06a"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "pxj9L3Vy",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.10.5 for 1.15.2",
+	"version_number": "1.10.5",
+	"changelog": "- Added a default implementation to getModId to allow for backwards compatible mods",
+	"changelog_url": null,
+	"date_published": "2021-02-11T01:34:19.762546Z",
+	"downloads": 18,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "62df0e2478d6248b1117ef0ef97d24dc3e48e99b31dfe019e4af93001da213f455bff64320451550d13037083862ae488bce7245f7d7c30132a2c4585740a052",
+		  "sha1": "3f059cb8b9c237ae1393730c29a2706284404dd4"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.10.5/modmenu-1.10.5.jar",
+		"filename": "modmenu-1.10.5.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.15.2"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "Mnl0OeFI",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.7 for 1.16.5",
+	"version_number": "1.16.7",
+	"changelog": "- Include fabric-api-base\n- Added translations for Wiki and Crowdin link keys",
+	"changelog_url": null,
+	"date_published": "2021-02-11T00:59:39.572339Z",
+	"downloads": 229,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "63da238680e21e125ce85ebebc82c06677e8548f",
+		  "sha512": "c20c276036ed10f6c49b8c1d0a43839d8f6ce372155ce9b45e255d8bac24f540b39d22b9b7f11f2d2429eaa430d79474a73f4b472e63c7d9248592d4a0b6795e"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.7/modmenu-1.16.7.jar",
+		"filename": "modmenu-1.16.7.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "PqgXyy3N",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.6 for 1.16.5",
+	"version_number": "1.16.6",
+	"changelog": "- Mark Better Mod Button as incompatible\n- Handle errors from other mods' config factories more gracefully, will now just log and remove the mod's config button.",
+	"changelog_url": null,
+	"date_published": "2021-02-05T22:22:58.469004Z",
+	"downloads": 131,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "8da9d6db8ff527c926dad773d1f115fa7f770ad1d44bca128fe844f2d3302e491cf1e7bdedda82c350420e5ab3ca3b3c143c9fafa07c5085fde3b7e5dd05e358",
+		  "sha1": "cd1b7d594e17cdfcb9313fd1af7f9a1f3d216701"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.6/modmenu-1.16.6.jar",
+		"filename": "modmenu-1.16.6.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "TleLdS1A",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.5 for 1.16.5",
+	"version_number": "1.16.5",
+	"changelog": "- Added additional link key translations for common links",
+	"changelog_url": null,
+	"date_published": "2021-02-03T17:37:00.869777Z",
+	"downloads": 97,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "412db6dd04056379c6df0997bf3570a01816dd2d",
+		  "sha512": "19efda14091e729e994344c88bda708b9dc4db1fa7a58deaf6a276ea8877f68048e6fb8a2155be4e32760822d5b78102e0c3e6bf216216f3bb613adae6fbe16f"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.5/modmenu-1.16.5.jar",
+		"filename": "modmenu-1.16.5.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "kBofQyu4",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.4 for 1.16.5",
+	"version_number": "1.16.4",
+	"changelog": "- Moved the licensing information above credits\n- Changed the order of the config buttons\n- Updated Finnish translation",
+	"changelog_url": null,
+	"date_published": "2021-02-03T00:30:43.903288Z",
+	"downloads": 35,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "c62b8b2e1f39c611219639f791592a4b964db770",
+		  "sha512": "c250843a0e64cdfb3be7b60781cdb9935d75549f7a8200dcfaa6dc95734b731c9506892d9356462fb06f20f16da81b556065378910924f98dc59eea6de1035c5"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.4/modmenu-1.16.4.jar",
+		"filename": "modmenu-1.16.4.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "79rtoAM6",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.3 for 1.16.5",
+	"version_number": "1.16.3",
+	"changelog": "- Fixed incorrect error being logged when a mod defines an invalid icon\n- Fixed an error being logged when no icon is at the default path",
+	"changelog_url": null,
+	"date_published": "2021-02-02T06:00:47.911634Z",
+	"downloads": 24,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "8f330a0437ce6840b5c1292338944a313c420cee009b7308b128f4f9f2cec9bd42c5f3484a7f1f07c8ba8fd649784e6353146733ed019d0f247b7c4b13f80bbc",
+		  "sha1": "a069de2a17a6a4a9d2712c5045ade3b8ac0c2711"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.3/modmenu-1.16.3.jar",
+		"filename": "modmenu-1.16.3.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "7QWIhei3",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.2 for 1.16.5",
+	"version_number": "1.16.2",
+	"changelog": "- Fixed icons for mods that were using the default icon path\n- Added the old button textures to the Programmer Art resource pack\n- Update Catalan translation\n- Updated Turkish translation",
+	"changelog_url": null,
+	"date_published": "2021-02-02T02:55:07.428315Z",
+	"downloads": 15,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "88dd61ffdcf974ca8fd8f5234507f383497979f91f5e4349e729fca4deb7fef3c5c558d37b40ff0af7404b4ae66c418ebcf17d7d86470ba8bb1be000aa477c58",
+		  "sha1": "214413d0f21514355e49e399be268b8f00536570"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.2/modmenu-1.16.2.jar",
+		"filename": "modmenu-1.16.2.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "zC13OZD9",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.1 for 1.16.5",
+	"version_number": "1.16.1",
+	"changelog": "- Updated Estonian translation\n- Fixed a bug with the mod count\n- Added mod id tooltip for fake mods",
+	"changelog_url": null,
+	"date_published": "2021-02-01T16:43:37.225565Z",
+	"downloads": 18,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "f6135e7d451e7b530931f401e2281d6515f35324",
+		  "sha512": "101e5b0b6f53cd3d48ddc4df6f560fde2a0e1024a3e1441cae36feda8566508d58d40d74e672d41f216536296add5689042521336b654eccb4c61ac3894532a7"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.1/modmenu-1.16.1.jar",
+		"filename": "modmenu-1.16.1.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "O90fUm3q",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.16.0 for 1.16.5",
+	"version_number": "1.16.0",
+	"changelog": "- Fixed two of the Mods button style names being wrong\n- Added an API for getting the Mods button text",
+	"changelog_url": null,
+	"date_published": "2021-02-01T07:43:32.314913Z",
+	"downloads": 24,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "ff8d7b2889aa69af06d73bfc2b679db80cb78190",
+		  "sha512": "99a3f39e463e53da878a34e37a6084caa5cfefd1df9f973989815195af26548bceeb351a30585e27e77413e27e7ede95bd653549b633663004b5904658fb3f38"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.16.0/modmenu-1.16.0.jar",
+		"filename": "modmenu-1.16.0.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "DgzrfgAZ",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.15.0 for 1.16.5",
+	"version_number": "1.15.0",
+	"changelog": "- Major internal refactors\n- Added links, contributors, and license information\n- Added an options screen for Mod Menu\n- Added a compact list mode option\n- Added an options to change Mods button style to: Below Realms (Default), Shrink Realms, Replace Realms, and Fabric Icon\n- Added an option to hide mod badges\n- Added an option to move where the mod count is displayed (on button, on title screen, both, neither)\n- Added options to specify whether or not to count libraries, children, and hidden mods in the mod count\n- Added options to hide mod links, credits, or license info\n- Added options to disable the modification of the title screen and/or game menu screen\n- Changed the hardcoded icon for \"java\n- Probably more that got forgotten about in this massive update",
+	"changelog_url": null,
+	"date_published": "2021-02-01T06:38:14.029901Z",
+	"downloads": 87,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "9c09902f887f3f742082835b8dd05a7f648786c5",
+		  "sha512": "0a89c3513294091c639f9ed4c64252f9b469d252993e86163222687db2455d331984341c954eca84037ba06f38227de37406912fd77f342feb23bdc96048c6f6"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.15.0/modmenu-1.15.0.jar",
+		"filename": "modmenu-1.15.0.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.4",
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "M3KFXLhq",
+	"mod_id": "mOgUt4GM",
+	"author_id": "Dc7EYhxG",
+	"featured": false,
+	"name": "Mod Menu v1.14.15 for 1.16.5",
+	"version_number": "1.14.15",
+	"changelog": "",
+	"changelog_url": null,
+	"date_published": "2021-01-23T23:55:25.659110Z",
+	"downloads": 125,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "5e213c8cebfed2785f7d4f5f84af121f488e51ce",
+		  "sha512": "c53c4e17a9008f7f3c99b081ae9da14716c62456975e4c7eefc09641f517a788a974fbce6e6924c366f5b5781ae1825b469e2a10b43e1f03a7e3898dd8571c37"
+		},
+		"url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/1.14.15/modmenu-1.14.15.jar",
+		"filename": "modmenu-1.14.15.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  }
+]

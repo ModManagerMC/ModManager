@@ -69,15 +69,15 @@ data class Config(
         fun text(): Text {
             return TranslatableText(String.format("modmanager.channel.%s", name.lowercase()))
         }
-    }
 
-    fun isReleaseAllowed(type: VersionType): Boolean {
-        if (updateChannel == UpdateChannel.ALL) {
-            return true
+        fun isReleaseAllowed(type: VersionType): Boolean {
+            if (this == ALL) {
+                return true
+            }
+            if (this == STABLE && type == VersionType.RELEASE) {
+                return true
+            }
+            return this == UNSTABLE
         }
-        if (updateChannel == UpdateChannel.STABLE && type == VersionType.RELEASE) {
-            return true
-        }
-        return updateChannel == UpdateChannel.UNSTABLE
     }
 }

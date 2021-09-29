@@ -20,7 +20,7 @@ plugins {
     id "fabric-loom" version "0.9-SNAPSHOT"
     id "com.modrinth.minotaur" version "1.2.1"
     id "org.jetbrains.kotlin.jvm" version "1.5.30"
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.30'
+    id "org.jetbrains.kotlin.plugin.serialization" version "1.5.30"
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
@@ -42,10 +42,13 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    
+    implementation "com.vdurmont:semver4j:3.1.0"
 
-    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.5.21'
+    testImplementation "org.jetbrains.kotlin:kotlin-test:1.5.21"
 }
 
 processResources {
