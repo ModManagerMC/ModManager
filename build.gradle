@@ -45,8 +45,6 @@ dependencies {
     
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-    
-    implementation "com.vdurmont:semver4j:3.1.0"
 
     testImplementation "org.jetbrains.kotlin:kotlin-test:1.5.21"
 }
