@@ -104,5 +104,6 @@ task publishModrinth(type: TaskModrinthUpload) {
     addGameVersion(project.minecraft_version)
     addLoader("fabric")
     addDependency("E4QBMVtO", Dependency.DependencyType.REQUIRED)
+    addDependency("1qsZV7U7", Dependency.DependencyType.REQUIRED)
     changelog = file("CHANGELOG.md").getText("UTF-8")
 }

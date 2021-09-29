@@ -1,6 +1,8 @@
 Bugs fixed:
 
 - NullPointerException [#42](https://github.com/DeathsGun/ModManager/issues/42)
+- NullPointerException [#61](https://github.com/DeathsGun/ModManager/issues/64)
+- Forge versions shown as update [#56](https://github.com/DeathsGun/ModManager/issues/56)
 
 Improvements:
 
