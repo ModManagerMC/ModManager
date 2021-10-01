@@ -23,9 +23,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.loader.api.SemanticVersion
 import net.fabricmc.loader.api.metadata.ModMetadata
-import net.fabricmc.loader.util.version.VersionDeserializer
 import net.minecraft.text.TranslatableText
 import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.LogManager
@@ -99,7 +97,12 @@ class UpdateManager {
         }
         var result = updateProvider.getVersionsForMod(metadata.id)
         if (result is VersionResult.Success) {
-            val version = findLatestCompatible(metadata.version.friendlyString, result.versions)
+            val version = VersionFinder.findUpdate(
+                metadata.version.friendlyString,
+                ModManager.getMinecraftVersion(),
+                ModManager.modManager.config.updateChannel,
+                result.versions
+            )
             if (version == null) {
                 logger.info("No update for {} found!", metadata.id)
                 ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)
@@ -117,7 +120,12 @@ class UpdateManager {
 
         val queryResult = provider.search(metadata.name, Sorting.RELEVANCE, 0, 10)
         if (queryResult is ModsResult.Error) {
-            logger.warn("Error while searching for fallback id for mod {}: ", metadata.id, queryResult.cause)
+            logger.warn(
+                "Error while searching for fallback id for mod {}: {}",
+                metadata.id,
+                queryResult.text.key,
+                queryResult.cause
+            )
             ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)
             return
         }
@@ -136,13 +144,18 @@ class UpdateManager {
         result = updateProvider.getVersionsForMod(mod.id)
         val versions = when (result) {
             is VersionResult.Error -> {
-                logger.error("Error while getting versions for mod {}", metadata.id)
+                logger.error("Error while getting versions for mod {}", metadata.id, result.cause)
                 ModManager.modManager.setModState(metadata.id, mod.id, ModState.INSTALLED)
                 return
             }
             is VersionResult.Success -> result.versions
         }
-        val version = findLatestCompatible(metadata.version.friendlyString, versions)
+        val version = VersionFinder.findUpdate(
+            metadata.version.friendlyString,
+            ModManager.getMinecraftVersion(),
+            ModManager.modManager.config.updateChannel,
+            versions
+        )
         if (version == null) {
             logger.info("No update for {} found!", metadata.id)
             ModManager.modManager.setModState(metadata.id, mod.id, ModState.INSTALLED)
@@ -177,13 +190,18 @@ class UpdateManager {
         }
         val versions = when (val result = provider.getVersionsForMod(id)) {
             is VersionResult.Error -> {
-                logger.error("Error while getting versions for mod {}", metadata.id)
+                logger.error("Error while getting versions for mod {}", metadata.id, result.cause)
                 ModManager.modManager.setModState(metadata.id, id, ModState.INSTALLED)
                 return
             }
             is VersionResult.Success -> result.versions
         }
-        val version = findLatestCompatible(metadata.version.friendlyString, versions)
+        val version = VersionFinder.findUpdate(
+            metadata.version.friendlyString,
+            ModManager.getMinecraftVersion(),
+            ModManager.modManager.config.updateChannel,
+            versions
+        )
         if (version == null) {
             logger.info("No update for {} found!", metadata.id)
             ModManager.modManager.setModState(metadata.id, id, ModState.INSTALLED)
@@ -212,7 +230,12 @@ class UpdateManager {
                 is VersionResult.Error -> return ModInstallResult.Error(result.text, result.cause)
                 is VersionResult.Success -> result.versions
             }
-            val version = findLatestCompatible("0.0.0.0", versions)
+            val version = VersionFinder.findUpdate(
+                "0.0.0.0",
+                ModManager.getMinecraftVersion(),
+                ModManager.modManager.config.updateChannel,
+                versions
+            )
                 ?: return ModInstallResult.Error(TranslatableText("modmanager.error.noCompatibleModVersionFound"))
 
             val dir = FabricLoader.getInstance().gameDir.resolve("mods")
@@ -256,34 +279,6 @@ class UpdateManager {
         } catch (e: Exception) {
             ModUpdateResult.Error(TranslatableText("modmanager.error.unknown.update", e))
         }
-    }
-
-    private fun findLatestCompatible(installedVersion: String, versions: List<Version>): Version? {
-        var latest: Version? = null
-        var latestVersion: SemanticVersion? = null
-        val installVersion =
-            VersionDeserializer.deserializeSemantic(installedVersion.split("+")[0]) // Remove additional info from version
-        for (version in versions) {
-            if (!version.gameVersions.contains(ModManager.getMinecraftVersion()) ||
-                !ModManager.modManager.config.isReleaseAllowed(version.type)
-            ) {
-                continue
-            }
-            val ver = try {
-                VersionDeserializer.deserializeSemantic(version.version.split("+")[0]) // Remove additional info from version
-            } catch (e: Exception) {
-                logger.warn("Skipping error producing version {}", version.version)
-                continue
-            }
-            if (latestVersion == null || ver > latestVersion) {
-                latest = version
-                latestVersion = ver
-            }
-        }
-        if (latestVersion?.compareTo(installVersion) == 0) {
-            return null
-        }
-        return latest
     }
 
     fun updateMod(update: Update): ModUpdateResult {

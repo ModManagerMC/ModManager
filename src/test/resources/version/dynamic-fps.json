@@ -1,0 +1,246 @@
+[
+  {
+	"id": "RgJGw0dO",
+	"mod_id": "LQ3K71Q1",
+	"author_id": "HLI9Dbyv",
+	"featured": false,
+	"name": "v2.0.5",
+	"version_number": "v2.0.5",
+	"changelog": "- Worked around reload screen fadeout not working (#35—thanks, altrisi!)\n- File size reduced by ~300 KB (#30—thanks, wafflecoffee!)\n- Localization updates: Russian (#28), Chinese (#34)",
+	"changelog_url": null,
+	"date_published": "2021-08-08T21:03:25.103818Z",
+	"downloads": 2929,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "84135f5da20608c732ac90439dd7929dcf61cc6471667e5c8842466ec0cbfdf3199d8dc2cdb2088b5ba76cde55c5df015989b00376d6be65c4b8a1c1d3b13be7",
+		  "sha1": "07eab9095517baedb1ba8426310e7fa66fd9747d"
+		},
+		"url": "https://cdn.modrinth.com/data/LQ3K71Q1/versions/v2.0.5/dynamic-fps-2.0.5.jar",
+		"filename": "dynamic-fps-2.0.5.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17.1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "oIZUkvvs",
+	"mod_id": "LQ3K71Q1",
+	"author_id": "HLI9Dbyv",
+	"featured": false,
+	"name": "2.0.4",
+	"version_number": "v2.0.4",
+	"changelog": "- Added an option to run garbage collection whenever the window loses focus.",
+	"changelog_url": null,
+	"date_published": "2021-06-29T12:56:14.536461Z",
+	"downloads": 1300,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "a172c61df0a4deffa669d19f7dd83282b2ea0210",
+		  "sha512": "539617d9f1b32fc4ef3859ec6c7cf934de20552b0f3255b8881213c8496fbcb7d646375fd5558cf173d8ce7db9e97add9f2f49b3dd05ee181f6334d14b9c666f"
+		},
+		"url": "https://cdn.modrinth.com/data/LQ3K71Q1/versions/v2.0.4/dynamic-fps-2.0.4.jar",
+		"filename": "dynamic-fps-2.0.4.jar",
+		"primary": true
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.17",
+	  "1.17.1-pre1"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "muZxaaxq",
+	"mod_id": "LQ3K71Q1",
+	"author_id": "HLI9Dbyv",
+	"featured": false,
+	"name": "2.0.2",
+	"version_number": "v2.0.2",
+	"changelog": "- Updated Russian Localization ([#22—Felix14-v2](https://github.com/juliand665/Dynamic-FPS/pull/22))",
+	"changelog_url": null,
+	"date_published": "2021-05-08T14:35:25.087402Z",
+	"downloads": 1524,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "1b080f859e529dbe87a0b5d7c71adfbb6bca5db4",
+		  "sha512": "b3a8a9e008a3cf6c585c3ddd016374f6e202e8f321259c7c2cd014936884d4658ad5ef0de685e0cee92d51840c12ef8a5438efc2a7e7ffaf4dfe3745dad293d5"
+		},
+		"url": "https://cdn.modrinth.com/data/LQ3K71Q1/versions/2.0.2/dynamic-fps-2.0.2.jar",
+		"filename": "dynamic-fps-2.0.2.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.5",
+	  "21w03a",
+	  "21w05a",
+	  "21w05b",
+	  "21w06a",
+	  "21w07a",
+	  "21w08a",
+	  "21w08b",
+	  "21w10a",
+	  "21w11a",
+	  "21w13a",
+	  "21w14a",
+	  "21w15a",
+	  "21w16a",
+	  "21w17a",
+	  "21w18a"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "XlBOTUIQ",
+	"mod_id": "LQ3K71Q1",
+	"author_id": "HLI9Dbyv",
+	"featured": false,
+	"name": "Localization",
+	"version_number": "v2.0.1",
+	"changelog": "",
+	"changelog_url": null,
+	"date_published": "2021-01-21T04:25:08.291787Z",
+	"downloads": 772,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha512": "923eb8206fea45bfc455bb195d71ab3eddf986e1cc2cc48fa9543e7601b34c0e184ad463f4c119622218559a7872ea4e3ebc6815c2dc172f41d1cabe1171ffa2",
+		  "sha1": "672904fc5332f7064db872635549b63a10444f59"
+		},
+		"url": "https://cdn.modrinth.com/data/LQ3K71Q1/versions/v2.0.1/dynamic-fps-2.0.1.jar",
+		"filename": "dynamic-fps-2.0.1.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.2",
+	  "1.16.3",
+	  "1.16.3-rc1",
+	  "1.16.4",
+	  "1.16.4-pre1",
+	  "1.16.4-pre2",
+	  "1.16.4-rc1",
+	  "1.16.5",
+	  "1.16.5-rc1",
+	  "20w45a",
+	  "20w46a",
+	  "20w48a",
+	  "20w49a",
+	  "20w51a",
+	  "21w03a"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "gVvtLF6M",
+	"mod_id": "LQ3K71Q1",
+	"author_id": "HLI9Dbyv",
+	"featured": false,
+	"name": "Configurability",
+	"version_number": "v2.0.0",
+	"changelog": "",
+	"changelog_url": null,
+	"date_published": "2021-01-19T16:53:49.879150Z",
+	"downloads": 28,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "972a09c66b164dd77e97524e06fc16904a859863",
+		  "sha512": "38e85da3025c9b47905781fae0f4ae10a2437e97716c3fa60bb04510c57154e14e3cbd17a6ee5a8b375ee66621010a0110f9784709abd3a7fbdbbb5220be0be7"
+		},
+		"url": "https://cdn.modrinth.com/data/LQ3K71Q1/versions/v2.0.0/dynamic-fps-2.0.0.jar",
+		"filename": "dynamic-fps-2.0.0.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.2",
+	  "1.16.3",
+	  "1.16.3-rc1",
+	  "1.16.4",
+	  "1.16.4-pre1",
+	  "1.16.4-pre2",
+	  "1.16.4-rc1",
+	  "1.16.5",
+	  "1.16.5-rc1",
+	  "20w45a",
+	  "20w46a",
+	  "20w48a",
+	  "20w49a",
+	  "20w51a"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  },
+  {
+	"id": "kurPEwi6",
+	"mod_id": "LQ3K71Q1",
+	"author_id": "HLI9Dbyv",
+	"featured": false,
+	"name": "Localization",
+	"version_number": "v1.2.1",
+	"changelog": "",
+	"changelog_url": "https://cdn.modrinth.com/data/LQ3K71Q1/versions/v1.2.1/changelog.md",
+	"date_published": "2021-01-07T18:37:47.131931Z",
+	"downloads": 17,
+	"version_type": "release",
+	"files": [
+	  {
+		"hashes": {
+		  "sha1": "2103fd47a4ee86087e908df34eacdcb0bc271d09"
+		},
+		"url": "https://cdn.modrinth.com/data/LQ3K71Q1/versions/v1.2.1/dynamic-fps-1.2.1.jar",
+		"filename": "dynamic-fps-1.2.1.jar",
+		"primary": false
+	  }
+	],
+	"dependencies": [],
+	"game_versions": [
+	  "1.16.2",
+	  "1.16.2-pre1",
+	  "1.16.2-pre2",
+	  "1.16.2-pre3",
+	  "1.16.2-rc1",
+	  "1.16.2-rc2",
+	  "1.16.3",
+	  "1.16.3-rc1",
+	  "1.16.4",
+	  "1.16.4-pre1",
+	  "1.16.4-pre2",
+	  "1.16.4-rc1",
+	  "20w45a",
+	  "20w46a",
+	  "20w48a",
+	  "20w49a",
+	  "20w51a"
+	],
+	"loaders": [
+	  "fabric"
+	]
+  }
+]

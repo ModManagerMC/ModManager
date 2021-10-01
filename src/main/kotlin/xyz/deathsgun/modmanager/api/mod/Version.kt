@@ -16,9 +16,12 @@
 
 package xyz.deathsgun.modmanager.api.mod
 
+import java.time.LocalDate
+
 data class Version(
     val version: String,
     val changelog: String,
+    val releaseDate: LocalDate,
     val type: VersionType,
     val gameVersions: List<String>,
     val assets: List<Asset>
