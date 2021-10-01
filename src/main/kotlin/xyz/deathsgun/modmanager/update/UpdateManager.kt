@@ -357,12 +357,21 @@ class UpdateManager {
         return ids
     }
 
-    fun getCheckableMods(): List<ModMetadata> {
+    private fun getCheckableMods(): List<ModMetadata> {
         return FabricLoader.getInstance().allMods.map { it.metadata }.filter {
             !it.id.startsWith("fabric") &&
                     !CustomValueUtil.getBoolean("fabric-loom:generated", it).orElse(false) &&
+                    !hasDisabledUpdates(it) &&
                     !blockedIds.contains(it.id)
         }
+    }
+
+    private fun hasDisabledUpdates(meta: ModMetadata): Boolean {
+        if (!meta.containsCustomValue("modmanager")) {
+            return false
+        }
+        val modmenu = meta.getCustomValue("modmanager").asObject
+        return modmenu.containsKey("disable-checking") && modmenu.get("disable-checking").asBoolean
     }
 
     private fun Path.delete() {
