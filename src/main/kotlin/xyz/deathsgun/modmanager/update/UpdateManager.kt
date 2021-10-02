@@ -254,7 +254,7 @@ class UpdateManager {
                 version.assets.find { (it.filename.endsWith(".jar") || it.primary) && !it.filename.contains("forge") }
                     ?: return ModUpdateResult.Error(TranslatableText("modmanager.error.update.noFabricJar"))
             val jar = dir.resolve(asset.filename) // Download into same directory where the old jar was
-            val request = HttpRequest.newBuilder(URI.create(asset.url)).GET()
+            val request = HttpRequest.newBuilder(URI.create(encodeURI(asset.url))).GET()
                 .setHeader("User-Agent", "ModManager ${ModManager.getVersion()}").build()
             val response = this.http.send(request, HttpResponse.BodyHandlers.ofFile(jar))
             if (response.statusCode() != 200) {
@@ -277,6 +277,7 @@ class UpdateManager {
             ModManager.modManager.changed = true
             ModUpdateResult.Success
         } catch (e: Exception) {
+            e.printStackTrace()
             ModUpdateResult.Error(TranslatableText("modmanager.error.unknown.update", e))
         }
     }
@@ -405,4 +406,9 @@ class UpdateManager {
             return ModRemoveResult.Error(TranslatableText("modmanager.error.jar.failedDelete", e))
         }
     }
+
+    private fun encodeURI(url: String): String {
+        return URI("dummy", url, null).rawSchemeSpecificPart
+    }
+
 }
