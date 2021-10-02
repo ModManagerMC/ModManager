@@ -271,12 +271,13 @@ class UpdateManager {
             val expected = asset.hashes["sha512"]
             val calculated = jar.sha512()
             if (calculated != expected) {
+                logger.error("The SHA-512 hashes do not match expected {} but got {}", expected, calculated)
+                jar.delete()
+                logger.error("Deleting {}", jar.absolutePathString())
                 return ModUpdateResult.Error(
                     TranslatableText(
                         "modmanager.error.invalidHash",
-                        "SHA-512",
-                        expected,
-                        calculated
+                        "SHA-512"
                     )
                 )
             }
@@ -416,7 +417,7 @@ class UpdateManager {
     }
 
     private fun encodeURI(url: String): String {
-        return URI("dummy", url, null).rawSchemeSpecificPart
+        return URI("dummy", url.replace("\t", ""), null).rawSchemeSpecificPart
     }
 
 }
