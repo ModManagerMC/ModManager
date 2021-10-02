@@ -250,9 +250,17 @@ class UpdateManager {
 
     private fun installVersion(mod: Mod, version: Version, dir: Path, fabricId: String = mod.slug): ModUpdateResult {
         return try {
-            val asset =
-                version.assets.find { (it.filename.endsWith(".jar") || it.primary) && !it.filename.contains("forge") }
+            val assets = version.assets.filter {
+                (it.filename.endsWith(".jar") || it.primary) && !it.filename.contains("forge")
+            }
+            if (assets.isEmpty()) {
+                return ModUpdateResult.Error(TranslatableText("modmanager.error.update.noFabricJar"))
+            }
+            var asset = assets[0]
+            if (assets.size > 1) {
+                asset = assets.find { it.filename.contains(ModManager.getMinecraftVersion(), true) }
                     ?: return ModUpdateResult.Error(TranslatableText("modmanager.error.update.noFabricJar"))
+            }
             val jar = dir.resolve(asset.filename) // Download into same directory where the old jar was
             val request = HttpRequest.newBuilder(URI.create(asset.url)).GET()
                 .setHeader("User-Agent", "ModManager ${ModManager.getVersion()}").build()
