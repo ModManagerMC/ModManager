@@ -41,6 +41,7 @@
   "modmanager.error.failedToParse": "Failed to parse response:\n %s",
   "modmanager.error.noCompatibleModVersionFound": "No compatible version found for your current channel!\nTry changing the channel in the Mod Manager settings!",
   "modmanager.error.jar.notFound": "Error jar file not found. Is it part of another mod?",
+  "modmanager.error.invalidHash": "Error the downloaded file is probably broken as the %s hashes don't match\nTry checking your network or contact the mod author",
   "modmanager.status.installing": "Installing %s...",
   "modmanager.status.install.success": "Successfully installed %s!\nDo you want to go back?",
   "modmanager.status.updating": "Updating %s...",
