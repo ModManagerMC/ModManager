@@ -25,7 +25,6 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import xyz.deathsgun.modmanager.api.mod.VersionType
-import java.io.FileNotFoundException
 import java.nio.charset.Charset
 import java.nio.file.Files
 
@@ -44,7 +43,7 @@ data class Config(
                 val data = Files.readString(file, Charset.forName("UTF-8"))
                 Json.decodeFromString(data)
             } catch (e: Exception) {
-                if (e !is FileNotFoundException) {
+                if (e !is NoSuchFileException) {
                     e.printStackTrace()
                 }
                 saveConfig(Config("modrinth", UpdateChannel.STABLE))
