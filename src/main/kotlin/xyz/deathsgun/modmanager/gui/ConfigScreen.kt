@@ -42,7 +42,7 @@ class ConfigScreen(private val previousScreen: Screen) : Screen(LiteralText("Con
         defaultProvider.active = ModManager.modManager.provider.size > 1
 
         updateChannel = addDrawableChild(CyclingButtonWidget.builder<Config.UpdateChannel> { it.text() }
-            .values(Config.UpdateChannel.values().toList())
+            .values(listOf(Config.UpdateChannel.ALL, Config.UpdateChannel.STABLE))
             .initially(config.updateChannel)
             .build(width - 220, 60, 200, 20, TranslatableText("modmanager.button.updateChannel"))
             { _: CyclingButtonWidget<Any>, channel: Config.UpdateChannel -> config.updateChannel = channel })

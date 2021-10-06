@@ -46,7 +46,7 @@ data class Config(
                 if (e !is NoSuchFileException) {
                     e.printStackTrace()
                 }
-                saveConfig(Config("modrinth", UpdateChannel.STABLE))
+                saveConfig(Config("modrinth", UpdateChannel.ALL))
             }
         }
 
