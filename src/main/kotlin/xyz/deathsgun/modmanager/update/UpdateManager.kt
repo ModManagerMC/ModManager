@@ -47,6 +47,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardOpenOption
 import java.security.MessageDigest
 import java.time.Duration
 import java.util.zip.ZipFile
@@ -388,8 +389,8 @@ class UpdateManager {
         try {
             Files.delete(this)
         } catch (e: Exception) {
-            logger.info("Error while deleting {} trying on exit again", this.absolutePathString())
-            this.toFile().deleteOnExit()
+            logger.info("Error while deleting {} trying on restart again", this.absolutePathString())
+            Files.writeString(this, "MODMANAGER", StandardOpenOption.WRITE)
         }
     }
 
@@ -418,6 +419,24 @@ class UpdateManager {
 
     private fun encodeURI(url: String): String {
         return URI("dummy", url.replace("\t", ""), null).rawSchemeSpecificPart
+    }
+
+    fun fullyDeleteMods() {
+        val jars =
+            FileUtils.listFiles(FabricLoader.getInstance().gameDir.resolve("mods").toFile(), arrayOf("jar"), true)
+        for (jar in jars) {
+            val content = try {
+                Files.readString(jar.toPath())
+            } catch (e: Exception) {
+                logger.info("Failed to read file ignoring it: {}", e.message)
+                ""
+            }
+            if (content != "MODMANGER") {
+                continue
+            }
+            logger.info("Deleting {}", jar.absolutePath)
+            jar.delete()
+        }
     }
 
 }
