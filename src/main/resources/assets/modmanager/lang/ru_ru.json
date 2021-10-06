@@ -20,6 +20,7 @@
     "modmanager.category.cursed": "Проклятые",
     "modmanager.category.worldgen": "Генерация мира",
     "modmanager.category.storage": "Инвентарь",
+    "modmanager.category.search": "Поиск",
     "modmanager.category.food": "Еда",
     "modmanager.category.equipment": "Экипировка",
     "modmanager.category.misc": "Разное",
@@ -53,5 +54,7 @@
     "modmanager.page.previous": "Предыдущая страница",
     "modmanager.provider.info": "Позволяет изменить источник по умолчанию для просмотра",
     "modmanager.toast.update.title": "Доступны обновления!",
-    "modmanager.toast.update.description": "Можно обновить модов: %d"
-  }
+    "modmanager.toast.update.description": "Можно обновить модов: %d",
+    "modmanager.error.jar.notFound": "Error jar file not found. Is it part of another mod?",
+    "modmanager.error.invalidHash": "Error the downloaded file is probably broken as the %s hashes don't match\nTry checking your network or contact the mod author"
+}

@@ -53,5 +53,8 @@
   "modmanager.page.previous": "上一页",
   "modmanager.provider.info": "允许你更改检索时的默认模组来源",
   "modmanager.toast.update.title": "检测到更新！",
-  "modmanager.toast.update.description": "%d个模组可更新"
+  "modmanager.toast.update.description": "%d个模组可更新",
+  "modmanager.category.search": "搜索",
+  "modmanager.error.jar.notFound": "Error jar file not found. Is it part of another mod?",
+  "modmanager.error.invalidHash": "Error the downloaded file is probably broken as the %s hashes don't match\nTry checking your network or contact the mod author"
 }

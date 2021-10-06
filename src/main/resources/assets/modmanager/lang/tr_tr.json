@@ -20,6 +20,7 @@
   "modmanager.category.cursed": "Lanetli",
   "modmanager.category.worldgen": "Dünya Oluşumu",
   "modmanager.category.storage": "Depolama",
+  "modmanager.category.search": "Ara",
   "modmanager.category.food": "Yiyecek",
   "modmanager.category.equipment": "Ekipman",
   "modmanager.category.misc": "Çeşitli",
@@ -53,5 +54,7 @@
   "modmanager.page.previous": "Önceki Sayfa",
   "modmanager.provider.info": "Arama yapmak için varsayılan sağlayıcını değiştirmeni sağlar",
   "modmanager.toast.update.title": "Güncellemeler Mevcut!",
-  "modmanager.toast.update.description": "%d mod güncellenebilir durumda"
+  "modmanager.toast.update.description": "%d mod güncellenebilir durumda",
+  "modmanager.error.jar.notFound": "Error jar file not found. Is it part of another mod?",
+  "modmanager.error.invalidHash": "Error the downloaded file is probably broken as the %s hashes don't match\nTry checking your network or contact the mod author"
 }
