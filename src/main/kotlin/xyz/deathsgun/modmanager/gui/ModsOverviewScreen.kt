@@ -194,6 +194,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     private fun showModsByCategory() {
         selectedCategory ?: return
+        query = ""
         val provider = ModManager.modManager.getSelectedProvider() ?: return
         if (selectedCategory!!.id == "updatable") {
             modList.clear()
@@ -246,7 +247,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 return
             }
             if (selectedMod == entry) {
-                if (selectedCategory?.id == "updatable") {
+                if (selectedCategory?.id == "updatable" && query.isEmpty()) {
                     val update = ModManager.modManager.update.getUpdateForMod(selectedMod!!.mod) ?: return
                     client?.setScreen(ModUpdateInfoScreen(this, update))
                     return
@@ -255,7 +256,6 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 return
             }
             selectedMod = entry as ModListEntry
-            query = ""
             return
         }
         if (widget is CategoryListWidget) {
