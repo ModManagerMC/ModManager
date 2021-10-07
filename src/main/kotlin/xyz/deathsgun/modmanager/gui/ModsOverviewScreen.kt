@@ -82,7 +82,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         categoryList = addSelectableChild(
             CategoryListWidget(
                 client!!,
-                100,
+                120,
                 height,
                 35,
                 height - 30,
@@ -93,14 +93,14 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         categoryList.setLeftPos(10)
 
         modList = addSelectableChild(ModListWidget(client!!, width - 10 - 115, height, 35, height - 30, 36, this))
-        modList.setLeftPos(115)
+        modList.setLeftPos(135)
 
 
-        val buttonWidth = (width - 115 - 10 - 20) / 2
+        val buttonWidth = (width - 135 - 10 - 20) / 2
 
         previousPage = addDrawableChild(
             ButtonWidget(
-                115,
+                135,
                 height - 25,
                 buttonWidth,
                 20,
@@ -108,7 +108,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             ) { showPreviousPage() })
         nextPage = addDrawableChild(
             ButtonWidget(
-                115 + buttonWidth + 20,
+                135 + buttonWidth + 20,
                 height - 25,
                 buttonWidth,
                 20,
