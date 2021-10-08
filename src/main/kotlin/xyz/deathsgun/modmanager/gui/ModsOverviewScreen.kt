@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import net.minecraft.client.gui.Element
 import net.minecraft.client.gui.screen.ConfirmScreen
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.gui.screen.ScreenTexts
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.CyclingButtonWidget
 import net.minecraft.client.gui.widget.TextFieldWidget
@@ -92,9 +93,12 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         )
         categoryList.setLeftPos(10)
 
-        modList = addSelectableChild(ModListWidget(client!!, width - 10 - 115, height, 35, height - 30, 36, this))
+        modList = addSelectableChild(ModListWidget(client!!, width - 10 - 125, height, 35, height - 30, 36, this))
         modList.setLeftPos(135)
 
+        addDrawableChild(ButtonWidget(10, height - 25, 120, 20, ScreenTexts.BACK) {
+            client?.setScreen(previousScreen)
+        })
 
         val buttonWidth = (width - 135 - 10 - 20) / 2
 
