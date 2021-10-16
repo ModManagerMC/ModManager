@@ -18,7 +18,6 @@ package xyz.deathsgun.modmanager.update
 
 import net.fabricmc.loader.api.SemanticVersion
 import net.fabricmc.loader.api.VersionParsingException
-import net.fabricmc.loader.util.version.VersionDeserializer
 import xyz.deathsgun.modmanager.api.mod.Version
 import xyz.deathsgun.modmanager.config.Config
 
@@ -52,9 +51,9 @@ object VersionFinder {
             .filter { it.gameVersions.any { it1 -> it1.startsWith(mcVersion) } }
         var latestVersion: Version? = null
         var latestVer: SemanticVersion? = null
-        val installedVer = VersionDeserializer.deserializeSemantic(installedVersion)
+        val installedVer = SemanticVersion.parse(installedVersion)
         for (version in versions) {
-            val parsedVersion = VersionDeserializer.deserializeSemantic(version.version)
+            val parsedVersion = SemanticVersion.parse(version.version)
             if (latestVersion == null) {
                 latestVersion = version
                 latestVer = parsedVersion
