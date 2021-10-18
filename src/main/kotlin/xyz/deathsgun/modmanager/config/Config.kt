@@ -31,7 +31,8 @@ import java.nio.file.Files
 @Serializable
 data class Config(
     var defaultProvider: String,
-    var updateChannel: UpdateChannel
+    var updateChannel: UpdateChannel,
+    val hidden: ArrayList<String>,
 ) {
 
     companion object {
@@ -46,7 +47,7 @@ data class Config(
                 if (e !is NoSuchFileException) {
                     e.printStackTrace()
                 }
-                saveConfig(Config("modrinth", UpdateChannel.ALL))
+                saveConfig(Config("modrinth", UpdateChannel.ALL, ArrayList()))
             }
         }
 

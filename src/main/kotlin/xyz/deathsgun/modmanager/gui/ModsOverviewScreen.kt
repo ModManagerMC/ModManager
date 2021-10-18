@@ -97,7 +97,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         modList.setLeftPos(135)
 
         addDrawableChild(ButtonWidget(10, height - 25, 120, 20, ScreenTexts.BACK) {
-            client?.setScreen(previousScreen)
+            onClose()
         })
 
         val buttonWidth = (width - 135 - 10 - 20) / 2
@@ -128,7 +128,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 }
                 is CategoriesResult.Success -> {
                     categoryList.clear()
-                    if (ModManager.modManager.update.updates.isNotEmpty()) {
+                    if (ModManager.modManager.update.hasUpdates()) {
                         categoryList.add(Category("updatable", TranslatableText("modmanager.category.updatable")))
                     }
                     categoryList.addCategories(result.categories)
@@ -203,6 +203,9 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         if (selectedCategory!!.id == "updatable") {
             modList.clear()
             ModManager.modManager.update.updates.forEach {
+                if (ModManager.modManager.config.hidden.contains(it.mod.id)) {
+                    return
+                }
                 modList.add(it.mod)
             }
             return

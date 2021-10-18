@@ -439,4 +439,8 @@ class UpdateManager {
         }
     }
 
+    fun hasUpdates(): Boolean {
+        return this.updates.any { !ModManager.modManager.config.hidden.contains(it.mod.id) }
+    }
+
 }
