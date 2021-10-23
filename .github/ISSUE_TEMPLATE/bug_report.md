@@ -3,7 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: "[BUG]"
 labels: bug
-assignees: ''
+assignees: 'DeathsGun'
 
 ---
 
@@ -29,6 +29,7 @@ If applicable, add screenshots to help explain your problem.
  - Version [e.g. 1.0.0-alpha]
 
 **Logs**
+> Log files should be posted as files via drag'n'drop
 Latest log:
 
 Crash-report (if any):
