@@ -18,8 +18,10 @@ package xyz.deathsgun.modmanager.mixin;
 
 import com.terraformersmc.modmenu.gui.ModsScreen;
 import com.terraformersmc.modmenu.gui.widget.ModMenuTexturedButtonWidget;
+import com.terraformersmc.modmenu.gui.widget.entries.ModListEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -28,14 +30,23 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.deathsgun.modmanager.ModManager;
+import xyz.deathsgun.modmanager.config.Config;
 import xyz.deathsgun.modmanager.gui.ModsOverviewScreen;
 
 @Mixin(ModsScreen.class)
-public class ModsScreenMixin extends Screen {
+public abstract class ModsScreenMixin extends Screen {
 
     private static final Identifier MODMANAGER_BUTTON_LOCATION = new Identifier("modmanager", "textures/gui/install_button.png");
     @Shadow
     private int paneWidth;
+    @Shadow
+    private int paneY;
+
+    @Shadow
+    private ModListEntry selected;
+
+    private ButtonWidget hideButton;
 
     protected ModsScreenMixin(Text title) {
         super(title);
@@ -48,5 +59,24 @@ public class ModsScreenMixin extends Screen {
                 22, 20, 20, 0, 0, MODMANAGER_BUTTON_LOCATION, 32, 64, button -> {
             MinecraftClient.getInstance().setScreen(new ModsOverviewScreen(this));
         }, new TranslatableText("modmanager.button.open")));
+
+        // TODO: Switch texture to a better one
+        this.hideButton = this.addDrawableChild(new ModMenuTexturedButtonWidget(width - 24 - 22, paneY, 20, 20, 0,
+                0, MODMANAGER_BUTTON_LOCATION, 32, 64, button -> {
+            if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {
+                ModManager.modManager.config.getHidden().remove(selected.getMod().getId());
+            } else {
+                ModManager.modManager.config.getHidden().add(selected.getMod().getId());
+            }
+            Config.Companion.saveConfig(ModManager.modManager.config);
+        }));
     }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    public void onTick(CallbackInfo ci) {
+        // TODO: Change texture depending on status
+        this.hideButton.visible = ModManager.modManager.getUpdate().getUpdates()
+                .stream().anyMatch(it -> it.getFabricId().equalsIgnoreCase(selected.mod.getId()));
+    }
+
 }

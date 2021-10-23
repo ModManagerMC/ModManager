@@ -220,6 +220,10 @@ class UpdateManager {
     fun getUpdateForMod(mod: Mod): Update? {
         return this.updates.find { it.mod.id == mod.id || it.fabricId == mod.slug }
     }
+
+    fun getWhitelistedUpdates(): List<Update> {
+        return this.updates.filter { !ModManager.modManager.config.hidden.contains(it.fabricId) }
+    }
     //endregion
 
     fun installMod(mod: Mod): ModInstallResult {

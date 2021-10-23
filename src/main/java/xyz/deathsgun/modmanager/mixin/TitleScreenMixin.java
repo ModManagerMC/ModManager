@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.update.Update;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Mixin(TitleScreen.class)
@@ -45,7 +45,7 @@ public class TitleScreenMixin extends Screen {
             return;
         }
         ModManager.shownUpdateNotification = true;
-        ArrayList<Update> updates = ModManager.modManager.getUpdate().getUpdates();
+        List<Update> updates = ModManager.modManager.getUpdate().getWhitelistedUpdates();
         if (updates.isEmpty()) {
             return;
         }

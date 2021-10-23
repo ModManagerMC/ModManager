@@ -130,7 +130,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 }
                 is CategoriesResult.Success -> {
                     categoryList.clear()
-                    if (ModManager.modManager.update.updates.isNotEmpty()) {
+                    if (ModManager.modManager.update.getWhitelistedUpdates().isNotEmpty()) {
                         categoryList.add(Category("updatable", TranslatableText("modmanager.category.updatable")))
                     }
                     categoryList.addCategories(result.categories)
@@ -204,7 +204,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         val provider = ModManager.modManager.getSelectedProvider() ?: return
         if (selectedCategory!!.id == "updatable") {
             modList.clear()
-            ModManager.modManager.update.updates.forEach {
+            ModManager.modManager.update.getWhitelistedUpdates().forEach {
                 modList.add(it.mod)
             }
             return
