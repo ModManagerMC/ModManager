@@ -55,6 +55,6 @@
   "modmanager.toast.update.title": "检测到更新！",
   "modmanager.toast.update.description": "%d个模组可更新",
   "modmanager.category.search": "搜索",
-  "modmanager.error.jar.notFound": "Error jar file not found. Is it part of another mod?",
-  "modmanager.error.invalidHash": "Error the downloaded file is probably broken as the %s hashes don't match\nTry checking your network or contact the mod author"
+  "modmanager.error.jar.notFound": "找不到错误 jar 文件. 它是另一个模组的一部分吗?",
+  "modmanager.error.invalidHash": "错误下载的文件可能已损坏，因为 %s 哈希不匹配\n请尝试检查您的网络或联系 mod 作者"
 }
