@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import net.minecraft.client.gui.Element
 import net.minecraft.client.gui.screen.ConfirmScreen
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.gui.screen.ScreenTexts
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.CyclingButtonWidget
 import net.minecraft.client.gui.widget.TextFieldWidget
@@ -38,6 +39,7 @@ import xyz.deathsgun.modmanager.gui.widget.CategoryListEntry
 import xyz.deathsgun.modmanager.gui.widget.CategoryListWidget
 import xyz.deathsgun.modmanager.gui.widget.ModListEntry
 import xyz.deathsgun.modmanager.gui.widget.ModListWidget
+import kotlin.math.min
 
 class ModsOverviewScreen(private val previousScreen: Screen) : Screen(TranslatableText("modmanager.title.overview")),
     IListScreen {
@@ -95,12 +97,16 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         modList = addSelectableChild(ModListWidget(client!!, width - 10 - 115, height, 35, height - 30, 36, this))
         modList.setLeftPos(135)
 
+        addDrawableChild(ButtonWidget(10, height - 25, 120, 20, ScreenTexts.BACK) {
+            onClose()
+        })
 
-        val buttonWidth = (width - 135 - 10 - 20) / 2
+        val middle = (width - 135) / 2
+        val buttonWidth = min((width - 135 - 20) / 2, 200)
 
         previousPage = addDrawableChild(
             ButtonWidget(
-                135,
+                middle - 5,
                 height - 25,
                 buttonWidth,
                 20,
@@ -108,7 +114,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             ) { showPreviousPage() })
         nextPage = addDrawableChild(
             ButtonWidget(
-                135 + buttonWidth + 20,
+                middle + buttonWidth + 5,
                 height - 25,
                 buttonWidth,
                 20,
