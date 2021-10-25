@@ -24,4 +24,6 @@ interface IListScreen {
 
     fun <E> updateSelectedEntry(widget: Any, entry: E?)
 
+    fun <E> updateMultipleEntries(widget: Any, entries: ArrayList<E>)
+
 }

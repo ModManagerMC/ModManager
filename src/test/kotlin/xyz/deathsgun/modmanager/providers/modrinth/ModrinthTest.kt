@@ -64,7 +64,7 @@ internal class ModrinthTest {
 
     @Test
     fun getModsByCategory() {
-        val result = modrinth.getMods(Category("misc", TranslatableText("")), Sorting.RELEVANCE, 0, 10)
+        val result = modrinth.getMods(listOf(Category("misc", TranslatableText(""))), Sorting.RELEVANCE, 0, 10)
         if (result is ModsResult.Error) {
             result.cause?.let {
                 fail(result.text.key, it)
@@ -77,7 +77,7 @@ internal class ModrinthTest {
 
     @Test
     fun getModsByQuery() {
-        val result = modrinth.search("Mod", Sorting.DOWNLOADS, 0, 10)
+        val result = modrinth.search("Mod", emptyList(), Sorting.DOWNLOADS, 0, 10)
         if (result is ModsResult.Error) {
             result.cause?.let {
                 fail(result.text.key, it)

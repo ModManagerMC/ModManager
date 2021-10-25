@@ -119,7 +119,7 @@ class UpdateManager {
             return
         }
 
-        val queryResult = provider.search(metadata.name, Sorting.RELEVANCE, 0, 10)
+        val queryResult = provider.search(metadata.name, emptyList(), Sorting.RELEVANCE, 0, 10)
         if (queryResult is ModsResult.Error) {
             logger.warn(
                 "Error while searching for fallback id for mod {}: {}",

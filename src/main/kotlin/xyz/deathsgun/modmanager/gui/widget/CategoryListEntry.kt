@@ -21,12 +21,12 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.OrderedText
 import net.minecraft.text.Text
 import net.minecraft.util.Language
-import xyz.deathsgun.modmanager.api.gui.list.ListWidget
+import xyz.deathsgun.modmanager.api.gui.list.MultiSelectListWidget
 import xyz.deathsgun.modmanager.api.mod.Category
 
 
-class CategoryListEntry(list: ListWidget<CategoryListEntry>, val category: Category) :
-    ListWidget.Entry<CategoryListEntry>(list, category.id) {
+class CategoryListEntry(list: MultiSelectListWidget<CategoryListEntry>, val category: Category) :
+    MultiSelectListWidget.Entry<CategoryListEntry>(list, category.id) {
 
     override fun render(
         matrices: MatrixStack?,

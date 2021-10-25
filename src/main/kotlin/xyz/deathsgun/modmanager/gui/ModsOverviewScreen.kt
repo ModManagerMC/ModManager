@@ -46,7 +46,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     private var query: String = ""
     private var selectedMod: ModListEntry? = null
-    private var selectedCategory: CategoryListEntry? = null
+    private var selectedCategories: ArrayList<CategoryListEntry> = ArrayList()
     private var page: Int = 0
     private var limit: Int = 20
     private var scrollPercentage: Double = 0.0
@@ -137,13 +137,13 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                     modList.scrollAmount = scrollPercentage
                 }
             }
-            if (selectedCategory != null) {
-                if (selectedCategory!!.id == "updatable" && ModManager.modManager.update.updates.isEmpty()) {
+            if (selectedCategories.isNotEmpty()) {
+                if (selectedCategories.any { it.category.id == "updatable" } && ModManager.modManager.update.updates.isEmpty()) {
                     categoryList.setSelectedByIndex(0)
                     showModsByCategory()
                     return@launch
                 }
-                categoryList.setSelected(selectedCategory)
+                categoryList.setSelected(selectedCategories)
                 showModsByCategory()
                 modList.scrollAmount = scrollPercentage
                 return@launch
@@ -152,7 +152,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 showModsBySearch()
                 return@launch
             }
-            categoryList.setSelectedByIndex(0)
+            showModsByCategory()
         }
         modList.init()
         categoryList.init()
@@ -178,38 +178,20 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             showModsBySearch()
             return
         }
-        if (selectedCategory == null) {
-            showModsByRelevance()
-            return
-        }
         showModsByCategory()
     }
 
-    private fun showModsByRelevance() {
-        val provider = ModManager.modManager.getSelectedProvider() ?: return
-        when (val result = provider.getMods(Sorting.RELEVANCE, page, limit)) {
-            is ModsResult.Error -> {
-                error = result.text
-            }
-            is ModsResult.Success -> {
-                error = null
-                modList.setMods(result.mods)
-            }
-        }
-    }
-
     private fun showModsByCategory() {
-        selectedCategory ?: return
         query = ""
         val provider = ModManager.modManager.getSelectedProvider() ?: return
-        if (selectedCategory!!.id == "updatable") {
+        if (selectedCategories.any { it.id == "updatable" }) {
             modList.clear()
             ModManager.modManager.update.updates.forEach {
                 modList.add(it.mod)
             }
             return
         }
-        when (val result = provider.getMods(selectedCategory!!.category, sorting, page, limit)) {
+        when (val result = provider.getMods(selectedCategories.map { it.category }, sorting, page, limit)) {
             is ModsResult.Error -> {
                 error = result.text
             }
@@ -232,7 +214,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
 
     private fun showModsBySearch() {
         val provider = ModManager.modManager.getSelectedProvider() ?: return
-        when (val result = provider.search(this.query, sorting, page, limit)) {
+        when (val result = provider.search(this.query, selectedCategories.map { it.category }, sorting, page, limit)) {
             is ModsResult.Error -> {
                 this.error = result.text
             }
@@ -248,32 +230,38 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     }
 
     override fun <E> updateSelectedEntry(widget: Any, entry: E?) {
-        if (widget is ModListWidget) {
-            if (entry == null) {
-                return
-            }
-            if (selectedMod == entry) {
-                if (selectedCategory?.id == "updatable" && query.isEmpty()) {
-                    val update = ModManager.modManager.update.getUpdateForMod(selectedMod!!.mod) ?: return
-                    client?.setScreen(ModUpdateInfoScreen(this, update))
-                    return
-                }
-                client?.setScreen(ModDetailScreen(this, selectedMod!!.mod))
-                return
-            }
-            selectedMod = entry as ModListEntry
+        if (widget !is ModListWidget) {
             return
         }
-        if (widget is CategoryListWidget) {
-            if (entry == null) {
+        if (entry == null) {
+            return
+        }
+        if (selectedMod == entry) {
+            if (selectedCategories.any { it.id == "updatable" } && query.isEmpty()) {
+                val update = ModManager.modManager.update.getUpdateForMod(selectedMod!!.mod) ?: return
+                client?.setScreen(ModUpdateInfoScreen(this, update))
                 return
             }
-            modList.scrollAmount = 0.0
-            page = 0
-            selectedCategory = entry as CategoryListEntry
-            query = ""
-            showModsByCategory()
+            client?.setScreen(ModDetailScreen(this, selectedMod!!.mod))
+            return
         }
+        selectedMod = entry as ModListEntry
+    }
+
+    override fun <E> updateMultipleEntries(widget: Any, entries: ArrayList<E>) {
+        if (widget !is CategoryListWidget) {
+            return
+        }
+        modList.scrollAmount = 0.0
+        page = 0
+        @Suppress("UNCHECKED_CAST")
+        selectedCategories = entries as ArrayList<CategoryListEntry>
+        if (selectedCategories.any { it.category.id == "updatable" } && selectedCategories.size > 1) {
+            selectedCategories.removeIf { it.category.id != "updatable" }
+            categoryList.setSelected(selectedCategories)
+        }
+        query = ""
+        showModsByCategory()
     }
 
     override fun tick() {
