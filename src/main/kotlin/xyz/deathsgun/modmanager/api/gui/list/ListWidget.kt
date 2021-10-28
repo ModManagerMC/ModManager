@@ -41,7 +41,7 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
     top: Int,
     var bottom: Int,
     itemHeight: Int,
-    private val parent: IListScreen
+    protected val parent: IListScreen
 ) : AlwaysSelectedEntryListWidget<E>(client, width, height, top, bottom, itemHeight) {
 
     var renderOutline: Boolean = true
@@ -141,7 +141,7 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
         super.appendNarrations(builder)
     }
 
-    fun isSelectedEntry(entry: Entry<E>): Boolean {
+    open fun isSelectedEntry(entry: Entry<E>): Boolean {
         return selectedId == entry.id
     }
 

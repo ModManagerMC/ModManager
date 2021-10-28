@@ -119,7 +119,7 @@ class UpdateManager {
             return
         }
 
-        val queryResult = provider.search(metadata.name, Sorting.RELEVANCE, 0, 10)
+        val queryResult = provider.search(metadata.name, emptyList(), Sorting.RELEVANCE, 0, 10)
         if (queryResult is ModsResult.Error) {
             logger.warn(
                 "Error while searching for fallback id for mod {}: {}",
@@ -381,8 +381,8 @@ class UpdateManager {
         if (!meta.containsCustomValue("modmanager")) {
             return false
         }
-        val modmenu = meta.getCustomValue("modmanager").asObject
-        return modmenu.containsKey("disable-checking") && modmenu.get("disable-checking").asBoolean
+        val modmanager = meta.getCustomValue("modmanager").asObject
+        return modmanager.containsKey("disable-checking") && modmanager.get("disable-checking").asBoolean
     }
 
     private fun Path.delete() {
@@ -428,7 +428,6 @@ class UpdateManager {
             val content = try {
                 Files.readString(jar.toPath())
             } catch (e: Exception) {
-                logger.info("Failed to read file ignoring it: {}", e.message)
                 ""
             }
             if (content != "MODMANGER") {

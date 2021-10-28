@@ -18,7 +18,7 @@ package xyz.deathsgun.modmanager.gui.widget
 
 import net.minecraft.client.MinecraftClient
 import xyz.deathsgun.modmanager.api.gui.list.IListScreen
-import xyz.deathsgun.modmanager.api.gui.list.ListWidget
+import xyz.deathsgun.modmanager.api.gui.list.MultiSelectListWidget
 import xyz.deathsgun.modmanager.api.mod.Category
 
 class CategoryListWidget(
@@ -29,7 +29,7 @@ class CategoryListWidget(
     bottom: Int,
     itemHeight: Int,
     parent: IListScreen
-) : ListWidget<CategoryListEntry>(client, width, height, top, bottom, itemHeight, parent) {
+) : MultiSelectListWidget<CategoryListEntry>(client, width, height, top, bottom, itemHeight, parent) {
 
     override fun init() {
 

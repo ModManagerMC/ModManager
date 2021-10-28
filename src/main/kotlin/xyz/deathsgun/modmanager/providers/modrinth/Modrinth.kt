@@ -88,14 +88,32 @@ class Modrinth : IModProvider, IModUpdateProvider {
         return getMods(builder, sorting, page, limit)
     }
 
-    override fun getMods(category: Category, sorting: Sorting, page: Int, limit: Int): ModsResult {
+    override fun getMods(categories: List<Category>, sorting: Sorting, page: Int, limit: Int): ModsResult {
         val builder = URIBuilder("${baseUri}/api/v1/mod")
         builder.addParameter(
             "filters",
-            String.format(
-                "categories=\"fabric\" AND NOT client_side=\"unsupported\" AND categories=\"%s\"",
-                category.id
-            )
+            "categories=\"fabric\" AND NOT client_side=\"unsupported\"${filterFromCategories(categories)}"
+        )
+
+        return try {
+            getMods(builder, sorting, page, limit)
+        } catch (e: Exception) {
+            ModsResult.Error(TranslatableText("modmanager.error.unknown", e.message), e)
+        }
+    }
+
+    override fun search(
+        query: String,
+        categories: List<Category>,
+        sorting: Sorting,
+        page: Int,
+        limit: Int
+    ): ModsResult {
+        val builder = URIBuilder("${baseUri}/api/v1/mod")
+        builder.addParameter("query", query)
+        builder.addParameter(
+            "filters",
+            "categories=\"fabric\" AND NOT client_side=\"unsupported\"${filterFromCategories(categories)}"
         )
         return try {
             getMods(builder, sorting, page, limit)
@@ -104,15 +122,16 @@ class Modrinth : IModProvider, IModUpdateProvider {
         }
     }
 
-    override fun search(query: String, sorting: Sorting, page: Int, limit: Int): ModsResult {
-        val builder = URIBuilder("${baseUri}/api/v1/mod")
-        builder.addParameter("query", query)
-        builder.addParameter("filters", "categories=\"fabric\" AND NOT client_side=\"unsupported\"")
-        return try {
-            getMods(builder, sorting, page, limit)
-        } catch (e: Exception) {
-            ModsResult.Error(TranslatableText("modmanager.error.unknown", e.message), e)
+    private fun filterFromCategories(categories: List<Category>): String {
+        var categoriesFilter = ""
+        for (category in categories) {
+            categoriesFilter += "AND categories=\"${category.id}\""
         }
+        categoriesFilter = categoriesFilter.replaceFirst("AND ", " AND (")
+        if (categories.isNotEmpty()) {
+            categoriesFilter += ")"
+        }
+        return categoriesFilter
     }
 
     private fun getMods(builder: URIBuilder, sorting: Sorting, page: Int, limit: Int): ModsResult {

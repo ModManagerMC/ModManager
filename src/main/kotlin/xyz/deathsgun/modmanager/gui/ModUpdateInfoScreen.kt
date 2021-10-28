@@ -142,4 +142,7 @@ class ModUpdateInfoScreen(private val previousScreen: Screen, private val update
     override fun <E> updateSelectedEntry(widget: Any, entry: E?) {
     }
 
+    override fun <E> updateMultipleEntries(widget: Any, entries: ArrayList<E>) {
+    }
+
 }
