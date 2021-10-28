@@ -256,11 +256,17 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         page = 0
         @Suppress("UNCHECKED_CAST")
         selectedCategories = entries as ArrayList<CategoryListEntry>
-        if (selectedCategories.any { it.category.id == "updatable" } && selectedCategories.size > 1) {
-            selectedCategories.removeIf { it.category.id != "updatable" }
-            categoryList.setSelected(selectedCategories)
-        }
         query = ""
+        if (selectedCategories.any { it.id == "updatable" } && selectedCategories.size > 1) {
+            val last = selectedCategories.last()
+            if (last.id == "updatable") {
+                selectedCategories.removeIf { it.category.id != "updatable" }
+            } else {
+                selectedCategories.removeIf { it.category.id == "updatable" }
+            }
+            categoryList.setSelected(selectedCategories)
+            return
+        }
         showModsByCategory()
     }
 

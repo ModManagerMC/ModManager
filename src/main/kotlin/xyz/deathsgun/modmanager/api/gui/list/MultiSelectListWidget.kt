@@ -16,18 +16,10 @@
 
 package xyz.deathsgun.modmanager.api.gui.list
 
-import com.mojang.blaze3d.systems.RenderSystem
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.MathHelper
-import java.util.*
-import kotlin.math.max
 
 /**
  * Using ModMenu's implementation because the implementation from
@@ -39,21 +31,14 @@ abstract class MultiSelectListWidget<E : MultiSelectListWidget.Entry<E>>(
     width: Int,
     height: Int,
     top: Int,
-    var bottom: Int,
+    bottom: Int,
     itemHeight: Int,
-    private val parent: IListScreen
-) : AlwaysSelectedEntryListWidget<E>(client, width, height, top, bottom, itemHeight) {
+    parent: IListScreen
+) : ListWidget<E>(client, width, height, top, bottom, itemHeight, parent) {
 
-    var renderOutline: Boolean = true
     private var selectedIds = ArrayList<String>()
-    private var scrolling = false
 
-    abstract fun init()
-
-    override fun isFocused(): Boolean {
-        return parent.getFocused() == this
-    }
-
+    @OptIn(ExperimentalSerializationApi::class)
     override fun setSelected(entry: E?) {
         super.setSelected(entry)
         if (entry == null) {
@@ -64,7 +49,11 @@ abstract class MultiSelectListWidget<E : MultiSelectListWidget.Entry<E>>(
         } else {
             selectedIds.add(entry.id)
         }
-        parent.updateMultipleEntries(this, ArrayList(children().filter { selectedIds.contains(it.id) }))
+        println(Json.encodeToString(selectedIds))
+        parent.updateMultipleEntries(
+            this,
+            ArrayList(children().filter { selectedIds.contains(it.id) }.sortedBy { selectedIds.indexOf(it.id) })
+        )
     }
 
     fun setSelected(entries: List<E>) {
@@ -86,101 +75,12 @@ abstract class MultiSelectListWidget<E : MultiSelectListWidget.Entry<E>>(
         return i
     }
 
-    override fun renderList(matrices: MatrixStack?, x: Int, y: Int, mouseX: Int, mouseY: Int, delta: Float) {
-        val itemCount = this.entryCount
-        val tessellator = Tessellator.getInstance()
-        val buffer = tessellator.buffer
-
-        for (index in 0 until itemCount) {
-            val entryTop = getRowTop(index) + 2
-            val entryBottom = getRowTop(index) + itemHeight
-            if (entryBottom >= top && entryTop <= bottom) {
-                val entryHeight = itemHeight - 4
-                val entry: Entry<E> = getEntry(index)
-                val rowWidth = this.rowWidth
-                var entryLeft: Int
-                if (isSelectedEntry(index) && renderOutline) {
-                    entryLeft = rowLeft - 2
-                    val selectionRight = x + rowWidth + 2
-                    RenderSystem.disableTexture()
-                    val color = if (this.isFocused) 1.0f else 0.5f
-                    RenderSystem.setShader { GameRenderer.getPositionShader() }
-                    RenderSystem.setShaderColor(color, color, color, 1.0f)
-                    val matrix = matrices!!.peek().model
-                    buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
-                    buffer.vertex(matrix, entryLeft.toFloat(), (entryTop + entryHeight + 2).toFloat(), 0.0f).next()
-                    buffer.vertex(matrix, selectionRight.toFloat(), (entryTop + entryHeight + 2).toFloat(), 0.0f).next()
-                    buffer.vertex(matrix, selectionRight.toFloat(), (entryTop - 2).toFloat(), 0.0f).next()
-                    buffer.vertex(matrix, entryLeft.toFloat(), (entryTop - 2).toFloat(), 0.0f).next()
-                    tessellator.draw()
-                    RenderSystem.setShader { GameRenderer.getPositionShader() }
-                    RenderSystem.setShaderColor(0.0f, 0.0f, 0.0f, 1.0f)
-                    buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
-                    buffer.vertex(matrix, (entryLeft + 1).toFloat(), (entryTop + entryHeight + 1).toFloat(), 0.0f)
-                        .next()
-                    buffer.vertex(matrix, (selectionRight - 1).toFloat(), (entryTop + entryHeight + 1).toFloat(), 0.0f)
-                        .next()
-                    buffer.vertex(matrix, (selectionRight - 1).toFloat(), (entryTop - 1).toFloat(), 0.0f).next()
-                    buffer.vertex(matrix, (entryLeft + 1).toFloat(), (entryTop - 1).toFloat(), 0.0f).next()
-                    tessellator.draw()
-                    RenderSystem.enableTexture()
-                }
-                entryLeft = this.rowLeft
-                entry.render(
-                    matrices, index, entryTop, entryLeft, rowWidth, entryHeight, mouseX, mouseY, this.isMouseOver(
-                        mouseX.toDouble(), mouseY.toDouble()
-                    ) && Objects.equals(this.getEntryAtPos(mouseX, mouseY), entry), delta
-                )
-            }
-        }
-    }
-
-    override fun getRowWidth(): Int {
-        return width - if (max(0, this.maxPosition - (bottom - top - 4)) > 0) 18 else 12
-    }
-
-    override fun getRowLeft(): Int {
-        return left + 6
-    }
-
-    override fun getScrollbarPositionX(): Int {
-        return left + width - 6
-    }
-
-    override fun getMaxPosition(): Int {
-        return super.getMaxPosition() + 4
-    }
-
-    override fun appendNarrations(builder: NarrationMessageBuilder?) {
-        super.appendNarrations(builder)
-    }
-
-    fun isSelectedEntry(entry: Entry<E>): Boolean {
+    override fun isSelectedEntry(entry: ListWidget.Entry<E>): Boolean {
         return selectedIds.contains(entry.id)
     }
 
-    fun getEntryAtPos(x: Int, y: Int): Entry<E>? {
-        val int5 = MathHelper.floor(y - top.toDouble()) - headerHeight + scrollAmount.toInt() - 4
-        val index = int5 / itemHeight
-        return if (x < this.scrollbarPositionX.toDouble() && x >= rowLeft.toDouble() && x <= (rowLeft + rowWidth).toDouble() && index >= 0
-            && int5 >= 0 && index < this.entryCount
-        ) children()[index] else null
-    }
-
-    fun getElementCount(): Int {
-        return super.getEntryCount()
-    }
-
-    public override fun remove(index: Int): E? {
-        return super.remove(index)
-    }
-
-    public override fun getEntry(index: Int): E {
-        return super.getEntry(index)
-    }
-
-    abstract class Entry<E : Entry<E>>(open val list: MultiSelectListWidget<E>, val id: String) :
-        AlwaysSelectedEntryListWidget.Entry<E>() {
+    abstract class Entry<E : Entry<E>>(list: MultiSelectListWidget<E>, id: String) :
+        ListWidget.Entry<E>(list, id) {
         @Suppress("UNCHECKED_CAST")
         override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
             list.setSelected(this as E)
