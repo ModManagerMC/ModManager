@@ -17,8 +17,6 @@
 package xyz.deathsgun.modmanager.api.gui.list
 
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import net.minecraft.client.MinecraftClient
 
 /**
@@ -49,7 +47,6 @@ abstract class MultiSelectListWidget<E : MultiSelectListWidget.Entry<E>>(
         } else {
             selectedIds.add(entry.id)
         }
-        println(Json.encodeToString(selectedIds))
         parent.updateMultipleEntries(
             this,
             ArrayList(children().filter { selectedIds.contains(it.id) }.sortedBy { selectedIds.indexOf(it.id) })
