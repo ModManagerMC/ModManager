@@ -13,17 +13,17 @@
 	"issues": "https://github.com/DeathsGun/ModManager/issues"
   },
   "icon": "assets/modmanager/icon.png",
-  "license": "APL-2.0",
+  "license": "Apache-2.0",
   "environment": "client",
   "entrypoints": {
-    "client": [
-      {
-        "adapter": "kotlin",
-        "value": "xyz.deathsgun.modmanager.ModManager"
-      }
-    ],
-    "modmenu": [
-      "xyz.deathsgun.modmanager.ModMenuEntrypoint"
+	"client": [
+	  {
+		"adapter": "kotlin",
+		"value": "xyz.deathsgun.modmanager.ModManager"
+	  }
+	],
+	"modmenu": [
+	  "xyz.deathsgun.modmanager.ModMenuEntrypoint"
     ]
   },
   "custom": {

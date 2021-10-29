@@ -57,7 +57,7 @@ import kotlin.io.path.absolutePathString
 class UpdateManager {
 
     private val logger = LogManager.getLogger("UpdateCheck")
-    private val blockedIds = arrayOf("java", "minecraft")
+    private val blockedIds = arrayOf("java", "minecraft", "fabricloader")
     private val http: HttpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build()
     val updates = ArrayList<Update>()
 
@@ -370,7 +370,7 @@ class UpdateManager {
 
     private fun getCheckableMods(): List<ModMetadata> {
         return FabricLoader.getInstance().allMods.map { it.metadata }.filter {
-            !it.id.startsWith("fabric") &&
+            !it.id.startsWith("fabric-") &&
                     !CustomValueUtil.getBoolean("fabric-loom:generated", it).orElse(false) &&
                     !hasDisabledUpdates(it) &&
                     !blockedIds.contains(it.id)
