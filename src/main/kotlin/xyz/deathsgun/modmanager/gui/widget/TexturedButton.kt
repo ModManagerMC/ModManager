@@ -19,6 +19,7 @@ package xyz.deathsgun.modmanager.gui.widget
 import com.mojang.blaze3d.systems.RenderSystem
 import com.terraformersmc.modmenu.gui.widget.ModMenuTexturedButtonWidget
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.LiteralText
 import net.minecraft.util.Identifier
 
 class TexturedButton(
@@ -31,8 +32,22 @@ class TexturedButton(
     texture: Identifier,
     private val uWidth: Int,
     private val vHeight: Int,
-    onPress: PressAction?
-) : ModMenuTexturedButtonWidget(x, y, width, height, u, v, texture, uWidth, vHeight, onPress) {
+    onPress: PressAction?,
+    tooltipSupplier: TooltipSupplier
+) : ModMenuTexturedButtonWidget(
+    x,
+    y,
+    width,
+    height,
+    u,
+    v,
+    texture,
+    uWidth,
+    vHeight,
+    onPress,
+    LiteralText.EMPTY,
+    tooltipSupplier
+) {
 
     var image: Identifier = texture
 

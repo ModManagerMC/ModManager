@@ -21,6 +21,7 @@ import com.terraformersmc.modmenu.gui.widget.ModMenuTexturedButtonWidget;
 import com.terraformersmc.modmenu.gui.widget.entries.ModListEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -33,6 +34,8 @@ import xyz.deathsgun.modmanager.ModManager;
 import xyz.deathsgun.modmanager.config.Config;
 import xyz.deathsgun.modmanager.gui.ModsOverviewScreen;
 import xyz.deathsgun.modmanager.gui.widget.TexturedButton;
+
+import java.util.Map;
 
 @Mixin(ModsScreen.class)
 public abstract class ModsScreenMixin extends Screen {
@@ -48,6 +51,9 @@ public abstract class ModsScreenMixin extends Screen {
     @Shadow
     private ModListEntry selected;
 
+    @Shadow
+    public abstract Map<String, Boolean> getModHasConfigScreen();
+
     private TexturedButton hideButton;
 
     protected ModsScreenMixin(Text title) {
@@ -60,9 +66,12 @@ public abstract class ModsScreenMixin extends Screen {
         this.addDrawableChild(new ModMenuTexturedButtonWidget(this.paneWidth / 2 + searchBoxWidth / 2 + 14,
                 22, 20, 20, 0, 0, MODMANAGER_BUTTON_LOCATION, 32, 64, button -> {
             MinecraftClient.getInstance().setScreen(new ModsOverviewScreen(this));
-        }, new TranslatableText("modmanager.button.open")));
-
-        // TODO: Switch texture to a better one
+        }, LiteralText.EMPTY, (button, matrices, mouseX, mouseY) -> {
+            if (!button.isHovered()) {
+                return;
+            }
+            this.renderTooltip(matrices, new TranslatableText("modmanager.button.open"), mouseX, mouseY);
+        }));
         this.hideButton = this.addDrawableChild(new TexturedButton(width - 24 - 22, paneY, 20, 20, 0,
                 0, MODMANAGER_HIDE_BUTTON, 32, 64, button -> {
             if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {
@@ -71,12 +80,20 @@ public abstract class ModsScreenMixin extends Screen {
                 ModManager.modManager.config.getHidden().add(selected.getMod().getId());
             }
             Config.Companion.saveConfig(ModManager.modManager.config);
-        }));
+        }, ((button, matrices, mouseX, mouseY) -> {
+            if (!hideButton.isJustHovered() || !button.isHovered()) {
+                return;
+            }
+            TranslatableText text = new TranslatableText("modmanager.button.hide");
+            if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {
+                text = new TranslatableText("modmanager.button.show");
+            }
+            this.renderTooltip(matrices, text, mouseX, mouseY);
+        })));
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void onTick(CallbackInfo ci) {
-        // TODO: Change texture depending on status
         this.hideButton.visible = ModManager.modManager.getUpdate().getUpdates()
                 .stream().anyMatch(it -> it.getFabricId().equalsIgnoreCase(selected.mod.getId()));
         if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {
@@ -84,6 +101,7 @@ public abstract class ModsScreenMixin extends Screen {
         } else {
             this.hideButton.setImage(MODMANAGER_HIDE_BUTTON);
         }
+        this.hideButton.x = getModHasConfigScreen().getOrDefault(selected.getMod().getId(), false) ? width - 24 - 22 : width - 24;
     }
 
 }
