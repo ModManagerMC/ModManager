@@ -30,23 +30,30 @@ import java.nio.file.Files
 
 @Serializable
 data class Config(
-    var defaultProvider: String,
-    var updateChannel: UpdateChannel
+    var defaultProvider: String = "modrinth",
+    var updateChannel: UpdateChannel = UpdateChannel.ALL,
+    var hidden: ArrayList<String> = ArrayList()
 ) {
 
     companion object {
+
+        private val json = Json {
+            prettyPrint = true
+            encodeDefaults = true
+        }
+
         @OptIn(ExperimentalSerializationApi::class)
         fun loadConfig(): Config {
             return try {
                 val file = FabricLoader.getInstance().configDir.resolve("modmanager.json")
                 Files.createDirectories(file.parent)
                 val data = Files.readString(file, Charset.forName("UTF-8"))
-                Json.decodeFromString(data)
+                json.decodeFromString(data)
             } catch (e: Exception) {
                 if (e !is NoSuchFileException) {
                     e.printStackTrace()
                 }
-                saveConfig(Config("modrinth", UpdateChannel.ALL))
+                saveConfig(Config())
             }
         }
 
@@ -54,7 +61,7 @@ data class Config(
         fun saveConfig(config: Config): Config {
             try {
                 val file = FabricLoader.getInstance().configDir.resolve("modmanager.json")
-                val data = Json.encodeToString(config)
+                val data = json.encodeToString(config)
                 Files.writeString(file, data, Charset.forName("UTF-8"))
             } catch (ignored: Exception) {
             }

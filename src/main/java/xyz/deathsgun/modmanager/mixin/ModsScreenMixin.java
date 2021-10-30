@@ -18,8 +18,10 @@ package xyz.deathsgun.modmanager.mixin;
 
 import com.terraformersmc.modmenu.gui.ModsScreen;
 import com.terraformersmc.modmenu.gui.widget.ModMenuTexturedButtonWidget;
+import com.terraformersmc.modmenu.gui.widget.entries.ModListEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -28,14 +30,31 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.deathsgun.modmanager.ModManager;
+import xyz.deathsgun.modmanager.config.Config;
 import xyz.deathsgun.modmanager.gui.ModsOverviewScreen;
+import xyz.deathsgun.modmanager.gui.widget.TexturedButton;
+
+import java.util.Map;
 
 @Mixin(ModsScreen.class)
-public class ModsScreenMixin extends Screen {
+public abstract class ModsScreenMixin extends Screen {
 
     private static final Identifier MODMANAGER_BUTTON_LOCATION = new Identifier("modmanager", "textures/gui/install_button.png");
+    private static final Identifier MODMANAGER_HIDE_BUTTON = new Identifier("modmanager", "textures/gui/hide_button.png");
+    private static final Identifier MODMANAGER_SHOW_BUTTON = new Identifier("modmanager", "textures/gui/show_button.png");
     @Shadow
     private int paneWidth;
+    @Shadow
+    private int paneY;
+
+    @Shadow
+    private ModListEntry selected;
+
+    @Shadow
+    public abstract Map<String, Boolean> getModHasConfigScreen();
+
+    private TexturedButton hideButton;
 
     protected ModsScreenMixin(Text title) {
         super(title);
@@ -47,6 +66,42 @@ public class ModsScreenMixin extends Screen {
         this.addDrawableChild(new ModMenuTexturedButtonWidget(this.paneWidth / 2 + searchBoxWidth / 2 + 14,
                 22, 20, 20, 0, 0, MODMANAGER_BUTTON_LOCATION, 32, 64, button -> {
             MinecraftClient.getInstance().setScreen(new ModsOverviewScreen(this));
-        }, new TranslatableText("modmanager.button.open")));
+        }, LiteralText.EMPTY, (button, matrices, mouseX, mouseY) -> {
+            if (!button.isHovered()) {
+                return;
+            }
+            this.renderTooltip(matrices, new TranslatableText("modmanager.button.open"), mouseX, mouseY);
+        }));
+        this.hideButton = this.addDrawableChild(new TexturedButton(width - 24 - 22, paneY, 20, 20, 0,
+                0, MODMANAGER_HIDE_BUTTON, 32, 64, button -> {
+            if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {
+                ModManager.modManager.config.getHidden().remove(selected.getMod().getId());
+            } else {
+                ModManager.modManager.config.getHidden().add(selected.getMod().getId());
+            }
+            Config.Companion.saveConfig(ModManager.modManager.config);
+        }, ((button, matrices, mouseX, mouseY) -> {
+            if (!hideButton.isJustHovered() || !button.isHovered()) {
+                return;
+            }
+            TranslatableText text = new TranslatableText("modmanager.button.hide");
+            if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {
+                text = new TranslatableText("modmanager.button.show");
+            }
+            this.renderTooltip(matrices, text, mouseX, mouseY);
+        })));
     }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    public void onTick(CallbackInfo ci) {
+        this.hideButton.visible = ModManager.modManager.getUpdate().getUpdates()
+                .stream().anyMatch(it -> it.getFabricId().equalsIgnoreCase(selected.mod.getId()));
+        if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {
+            this.hideButton.setImage(MODMANAGER_SHOW_BUTTON);
+        } else {
+            this.hideButton.setImage(MODMANAGER_HIDE_BUTTON);
+        }
+        this.hideButton.x = getModHasConfigScreen().getOrDefault(selected.getMod().getId(), false) ? width - 24 - 22 : width - 24;
+    }
+
 }
