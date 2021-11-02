@@ -21,6 +21,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.ModMetadata
@@ -47,7 +48,6 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption
 import java.security.MessageDigest
 import java.time.Duration
 import java.util.zip.ZipFile
@@ -59,7 +59,12 @@ class UpdateManager {
     private val logger = LogManager.getLogger("UpdateCheck")
     private val blockedIds = arrayOf("java", "minecraft", "fabricloader")
     private val http: HttpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build()
+    private val deletableMods = ArrayList<String>()
     val updates = ArrayList<Update>()
+
+    init {
+        Runtime.getRuntime().addShutdownHook(Thread(this::saveDeletableFiles))
+    }
 
     //region Update Checking
 
@@ -372,6 +377,18 @@ class UpdateManager {
         return ids
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
+    private fun saveDeletableFiles() {
+        if (deletableMods.isEmpty()) {
+            return
+        }
+        logger.info("Deleting {} mods on the next start.", deletableMods.size)
+        val configFile = FabricLoader.getInstance().configDir.resolve(".modmanager.delete.json")
+        val data = json.encodeToString(deletableMods)
+        Files.writeString(configFile, data, Charsets.UTF_8)
+    }
+
+
     private fun getCheckableMods(): List<ModMetadata> {
         return FabricLoader.getInstance().allMods.map { it.metadata }.filter {
             !it.id.startsWith("fabric-") &&
@@ -394,7 +411,7 @@ class UpdateManager {
             Files.delete(this)
         } catch (e: Exception) {
             logger.info("Error while deleting {} trying on restart again", this.absolutePathString())
-            Files.writeString(this, "MODMANAGER", StandardOpenOption.WRITE)
+            deletableMods.add(this.absolutePathString())
         }
     }
 
@@ -423,23 +440,6 @@ class UpdateManager {
 
     private fun encodeURI(url: String): String {
         return URI("dummy", url.replace("\t", ""), null).rawSchemeSpecificPart
-    }
-
-    fun fullyDeleteMods() {
-        val jars =
-            FileUtils.listFiles(FabricLoader.getInstance().gameDir.resolve("mods").toFile(), arrayOf("jar"), true)
-        for (jar in jars) {
-            val content = try {
-                Files.readString(jar.toPath())
-            } catch (e: Exception) {
-                ""
-            }
-            if (content != "MODMANGER") {
-                continue
-            }
-            logger.info("Deleting {}", jar.absolutePath)
-            jar.delete()
-        }
     }
 
 }
