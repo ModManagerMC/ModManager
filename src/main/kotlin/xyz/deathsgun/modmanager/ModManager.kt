@@ -68,7 +68,6 @@ class ModManager : ClientModInitializer {
         provider[modrinth.getName().lowercase()] = modrinth
         updateProvider[modrinth.getName().lowercase()] = modrinth
         GlobalScope.launch {
-            update.fullyDeleteMods()
             update.checkUpdates()
             icons.cleanupCache()
         }

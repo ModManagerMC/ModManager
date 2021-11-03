@@ -22,9 +22,15 @@
 		"value": "xyz.deathsgun.modmanager.ModManager"
 	  }
 	],
+	"preLaunch": [
+	  {
+		"adapter": "kotlin",
+		"value": "xyz.deathsgun.modmanager.PreLaunchHook"
+	  }
+	],
 	"modmenu": [
 	  "xyz.deathsgun.modmanager.ModMenuEntrypoint"
-    ]
+	]
   },
   "custom": {
     "modmanager": {
