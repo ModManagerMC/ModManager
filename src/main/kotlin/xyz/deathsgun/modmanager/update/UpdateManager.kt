@@ -41,6 +41,7 @@ import xyz.deathsgun.modmanager.api.provider.IModUpdateProvider
 import xyz.deathsgun.modmanager.api.provider.Sorting
 import xyz.deathsgun.modmanager.models.FabricMetadata
 import xyz.deathsgun.modmanager.state.ModState
+import java.io.File
 import java.math.BigInteger
 import java.net.URI
 import java.net.http.HttpClient
@@ -325,11 +326,7 @@ class UpdateManager {
             FileUtils.listFiles(FabricLoader.getInstance().gameDir.resolve("mods").toFile(), arrayOf("jar"), true)
         return try {
             for (jar in jars) {
-                val jarFile = ZipFile(jar)
-                val fabricEntry = jarFile.getEntry("fabric.mod.json")
-                val data = jarFile.getInputStream(fabricEntry).bufferedReader().use { it.readText() }
-                val meta = json.decodeFromString<FabricMetadata>(data)
-                jarFile.close()
+                val meta = openFabricMeta(jar)
                 if (meta.id == container.id) {
                     return jar.toPath()
                 }
@@ -340,17 +337,12 @@ class UpdateManager {
         }
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
-    fun findJarByMod(mod: Mod): Path? {
+    private fun findJarByMod(mod: Mod): Path? {
         val jars =
             FileUtils.listFiles(FabricLoader.getInstance().gameDir.resolve("mods").toFile(), arrayOf("jar"), true)
         return try {
             for (jar in jars) {
-                val jarFile = ZipFile(jar)
-                val fabricEntry = jarFile.getEntry("fabric.mod.json")
-                val data = jarFile.getInputStream(fabricEntry).bufferedReader().use { it.readText() }
-                val meta = json.decodeFromString<FabricMetadata>(data)
-                jarFile.close()
+                val meta = openFabricMeta(jar)
                 if (meta.id == mod.id || meta.id == mod.slug || meta.id == mod.slug.replace("-", "") ||
                     meta.custom.modmanager[ModManager.modManager.config.defaultProvider] == mod.id ||
                     meta.id.replace("_", "-") == mod.id ||
@@ -363,6 +355,16 @@ class UpdateManager {
         } catch (e: Exception) {
             null
         }
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    private fun openFabricMeta(file: File): FabricMetadata {
+        val jarFile = ZipFile(file)
+        val fabricEntry = jarFile.getEntry("fabric.mod.json")
+        val data = jarFile.getInputStream(fabricEntry).bufferedReader().use { it.readText() }
+        val meta = json.decodeFromString<FabricMetadata>(data)
+        jarFile.close()
+        return meta
     }
 
     private fun getIdBy(metadata: ModMetadata): Map<String, String>? {
@@ -382,7 +384,7 @@ class UpdateManager {
         if (deletableMods.isEmpty()) {
             return
         }
-        logger.info("Deleting {} mods on the next start.", deletableMods.size)
+        logger.info("Deleting {} mods on the next start", deletableMods.size)
         val configFile = FabricLoader.getInstance().configDir.resolve(".modmanager.delete.json")
         val data = json.encodeToString(deletableMods)
         Files.writeString(configFile, data, Charsets.UTF_8)
