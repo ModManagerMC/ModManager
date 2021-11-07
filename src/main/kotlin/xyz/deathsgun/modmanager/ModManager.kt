@@ -22,12 +22,12 @@ import kotlinx.coroutines.launch
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
+import xyz.deathsgun.modmanager.api.mod.State
 import xyz.deathsgun.modmanager.api.provider.IModProvider
 import xyz.deathsgun.modmanager.api.provider.IModUpdateProvider
 import xyz.deathsgun.modmanager.config.Config
 import xyz.deathsgun.modmanager.icon.IconCache
 import xyz.deathsgun.modmanager.providers.modrinth.Modrinth
-import xyz.deathsgun.modmanager.state.ModState
 import xyz.deathsgun.modmanager.state.SavedState
 import xyz.deathsgun.modmanager.update.UpdateManager
 
@@ -73,13 +73,13 @@ class ModManager : ClientModInitializer {
         }
     }
 
-    fun setModState(fabricId: String, modId: String, state: ModState) {
+    fun setModState(fabricId: String, modId: String, state: State) {
         this.states.removeAll { it.modId == modId || it.fabricId == fabricId }
         this.states.add(SavedState(fabricId, modId, state))
     }
 
-    fun getModState(id: String): ModState {
-        return this.states.find { it.modId == id || it.fabricId == id }?.state ?: ModState.DOWNLOADABLE
+    fun getModState(id: String): State {
+        return this.states.find { it.modId == id || it.fabricId == id }?.state ?: State.DOWNLOADABLE
     }
 
     fun getSelectedProvider(): IModProvider? {

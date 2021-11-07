@@ -28,8 +28,8 @@ import xyz.deathsgun.modmanager.api.ModRemoveResult
 import xyz.deathsgun.modmanager.api.gui.list.IListScreen
 import xyz.deathsgun.modmanager.api.http.ModResult
 import xyz.deathsgun.modmanager.api.mod.Mod
+import xyz.deathsgun.modmanager.api.mod.State
 import xyz.deathsgun.modmanager.gui.widget.DescriptionWidget
-import xyz.deathsgun.modmanager.state.ModState
 
 
 class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen(LiteralText(mod.name)), IListScreen {
@@ -82,7 +82,7 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
                 TranslatableText("modmanager.button.install")
             ) {
                 when (ModManager.modManager.getModState(mod.id)) {
-                    ModState.DOWNLOADABLE -> {
+                    State.DOWNLOADABLE -> {
                         client!!.setScreen(
                             ModProgressScreen(
                                 mod,
@@ -92,7 +92,7 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
                             )
                         )
                     }
-                    ModState.OUTDATED -> {
+                    State.OUTDATED -> {
                         client!!.setScreen(
                             ModProgressScreen(
                                 mod,
@@ -102,7 +102,7 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
                             )
                         )
                     }
-                    ModState.INSTALLED -> {
+                    State.INSTALLED -> {
                         removeMod()
                     }
                 }
@@ -118,9 +118,9 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
 
     override fun tick() {
         actionButton.message = when (ModManager.modManager.getModState(mod.id)) {
-            ModState.INSTALLED -> TranslatableText("modmanager.button.remove")
-            ModState.DOWNLOADABLE -> TranslatableText("modmanager.button.install")
-            ModState.OUTDATED -> TranslatableText("modmanager.button.update")
+            State.INSTALLED -> TranslatableText("modmanager.button.remove")
+            State.DOWNLOADABLE -> TranslatableText("modmanager.button.install")
+            State.OUTDATED -> TranslatableText("modmanager.button.update")
         }
     }
 

@@ -16,8 +16,10 @@
 
 package xyz.deathsgun.modmanager.state
 
+import xyz.deathsgun.modmanager.api.mod.State
+
 data class SavedState(
     val fabricId: String,
     val modId: String,
-    val state: ModState
+    val state: State
 )

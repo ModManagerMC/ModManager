@@ -64,14 +64,14 @@ public abstract class ModsScreenMixin extends Screen {
     public void onInit(CallbackInfo ci) {
         int searchBoxWidth = this.paneWidth - 32 - 22;
         this.addDrawableChild(new ModMenuTexturedButtonWidget(this.paneWidth / 2 + searchBoxWidth / 2 + 14,
-                22, 20, 20, 0, 0, MODMANAGER_BUTTON_LOCATION, 32, 64, button -> {
-            MinecraftClient.getInstance().setScreen(new ModsOverviewScreen(this));
-        }, LiteralText.EMPTY, (button, matrices, mouseX, mouseY) -> {
-            if (!button.isHovered()) {
-                return;
-            }
-            this.renderTooltip(matrices, new TranslatableText("modmanager.button.open"), mouseX, mouseY);
-        }));
+                22, 20, 20, 0, 0, MODMANAGER_BUTTON_LOCATION, 32, 64,
+                button -> MinecraftClient.getInstance().setScreen(new ModsOverviewScreen(this)), LiteralText.EMPTY,
+                (button, matrices, mouseX, mouseY) -> {
+                    if (!button.isHovered()) {
+                        return;
+                    }
+                    this.renderTooltip(matrices, new TranslatableText("modmanager.button.open"), mouseX, mouseY);
+                }));
         this.hideButton = this.addDrawableChild(new TexturedButton(width - 24 - 22, paneY, 20, 20, 0,
                 0, MODMANAGER_HIDE_BUTTON, 32, 64, button -> {
             if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {

@@ -31,14 +31,8 @@ enum class State {
     OUTDATED,
 
     /**
-     * Returns this if the mod has been found but been removed by ModManager
-     */
-    REMOVED,
-
-    /**
      * Returns this if the mod was not found
      */
-    DOWNLOADABLE,
-    CHECKING
+    DOWNLOADABLE
 
 }
