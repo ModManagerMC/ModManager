@@ -26,7 +26,7 @@ import net.minecraft.util.Language
 import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.gui.list.ListWidget
 import xyz.deathsgun.modmanager.api.mod.Mod
-import xyz.deathsgun.modmanager.state.ModState
+import xyz.deathsgun.modmanager.api.mod.State
 
 
 class ModListEntry(private val client: MinecraftClient, override val list: ModListWidget, val mod: Mod) :
@@ -51,12 +51,12 @@ class ModListEntry(private val client: MinecraftClient, override val list: ModLi
         var primaryColor = 0xFFFFFF
         var secondaryColor = 0xFFFFFF
         var badgeText: OrderedText? = null
-        if (state == ModState.INSTALLED) {
+        if (state == State.INSTALLED) {
             primaryColor = 0xff0e2a55.toInt()
             secondaryColor = 0xff2b4b7c.toInt()
             badgeText = TranslatableText("modmanager.badge.installed").asOrderedText()
             maxNameWidth -= font.getWidth(badgeText) + 6
-        } else if (state == ModState.OUTDATED) {
+        } else if (state == State.OUTDATED) {
             primaryColor = 0xff530C17.toInt()
             secondaryColor = 0xff841426.toInt()
             badgeText = TranslatableText("modmanager.badge.outdated").asOrderedText()

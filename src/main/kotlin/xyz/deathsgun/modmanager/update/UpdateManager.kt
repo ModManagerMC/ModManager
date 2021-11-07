@@ -36,11 +36,11 @@ import xyz.deathsgun.modmanager.api.http.ModResult
 import xyz.deathsgun.modmanager.api.http.ModsResult
 import xyz.deathsgun.modmanager.api.http.VersionResult
 import xyz.deathsgun.modmanager.api.mod.Mod
+import xyz.deathsgun.modmanager.api.mod.State
 import xyz.deathsgun.modmanager.api.mod.Version
 import xyz.deathsgun.modmanager.api.provider.IModUpdateProvider
 import xyz.deathsgun.modmanager.api.provider.Sorting
 import xyz.deathsgun.modmanager.models.FabricMetadata
-import xyz.deathsgun.modmanager.state.ModState
 import java.io.File
 import java.math.BigInteger
 import java.net.URI
@@ -90,7 +90,7 @@ class UpdateManager {
     }
 
     private fun checkForUpdatesManually(metadata: ModMetadata) {
-        ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)
+        ModManager.modManager.setModState(metadata.id, metadata.id, State.INSTALLED)
         val defaultProvider = ModManager.modManager.config.defaultProvider
         val provider = ModManager.modManager.provider[defaultProvider]
         if (provider == null) {
@@ -113,11 +113,11 @@ class UpdateManager {
             )
             if (version == null) {
                 logger.info("No update for {} found!", metadata.id)
-                ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)
+                ModManager.modManager.setModState(metadata.id, metadata.id, State.INSTALLED)
                 return
             }
             logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
-            ModManager.modManager.setModState(metadata.id, metadata.id, ModState.OUTDATED)
+            ModManager.modManager.setModState(metadata.id, metadata.id, State.OUTDATED)
             when (val modResult = provider.getMod(metadata.id)) {
                 is ModResult.Success -> {
                     this.updates.add(Update(modResult.mod, metadata.id, metadata.version.friendlyString, version))
@@ -134,7 +134,7 @@ class UpdateManager {
                 queryResult.text.key,
                 queryResult.cause
             )
-            ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)
+            ModManager.modManager.setModState(metadata.id, metadata.id, State.INSTALLED)
             return
         }
         val mod =
@@ -146,14 +146,14 @@ class UpdateManager {
             }
         if (mod == null) {
             logger.warn("Error while searching for fallback id for mod {}: No possible match found", metadata.id)
-            ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)
+            ModManager.modManager.setModState(metadata.id, metadata.id, State.INSTALLED)
             return
         }
         result = updateProvider.getVersionsForMod(mod.id)
         val versions = when (result) {
             is VersionResult.Error -> {
                 logger.error("Error while getting versions for mod {}", metadata.id, result.cause)
-                ModManager.modManager.setModState(metadata.id, mod.id, ModState.INSTALLED)
+                ModManager.modManager.setModState(metadata.id, mod.id, State.INSTALLED)
                 return
             }
             is VersionResult.Success -> result.versions
@@ -167,11 +167,11 @@ class UpdateManager {
         )
         if (version == null) {
             logger.info("No update for {} found!", metadata.id)
-            ModManager.modManager.setModState(metadata.id, mod.id, ModState.INSTALLED)
+            ModManager.modManager.setModState(metadata.id, mod.id, State.INSTALLED)
             return
         }
         logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
-        ModManager.modManager.setModState(metadata.id, mod.id, ModState.OUTDATED)
+        ModManager.modManager.setModState(metadata.id, mod.id, State.OUTDATED)
         when (val modResult = provider.getMod(mod.id)) {
             is ModResult.Success -> {
                 this.updates.add(Update(modResult.mod, metadata.id, metadata.version.friendlyString, version))
@@ -180,7 +180,7 @@ class UpdateManager {
     }
 
     private fun checkForUpdates(metadata: ModMetadata, ids: Map<String, String>) {
-        ModManager.modManager.setModState(metadata.id, metadata.id, ModState.INSTALLED)
+        ModManager.modManager.setModState(metadata.id, metadata.id, State.INSTALLED)
         var provider: IModUpdateProvider? = null
         var id: String? = null
         for ((provId, modId) in ids) {
@@ -194,13 +194,13 @@ class UpdateManager {
         }
         if (provider == null || id == null) {
             logger.warn("No valid provider for {} found! Skipping", metadata.id)
-            ModManager.modManager.setModState(metadata.id, id ?: metadata.id, ModState.INSTALLED)
+            ModManager.modManager.setModState(metadata.id, id ?: metadata.id, State.INSTALLED)
             return
         }
         val versions = when (val result = provider.getVersionsForMod(id)) {
             is VersionResult.Error -> {
                 logger.error("Error while getting versions for mod {}", metadata.id, result.cause)
-                ModManager.modManager.setModState(metadata.id, id, ModState.INSTALLED)
+                ModManager.modManager.setModState(metadata.id, id, State.INSTALLED)
                 return
             }
             is VersionResult.Success -> result.versions
@@ -214,11 +214,11 @@ class UpdateManager {
         )
         if (version == null) {
             logger.info("No update for {} found!", metadata.id)
-            ModManager.modManager.setModState(metadata.id, id, ModState.INSTALLED)
+            ModManager.modManager.setModState(metadata.id, id, State.INSTALLED)
             return
         }
         logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
-        ModManager.modManager.setModState(metadata.id, id, ModState.OUTDATED)
+        ModManager.modManager.setModState(metadata.id, id, State.OUTDATED)
         when (val modResult = ModManager.modManager.provider[provider.getName()]?.getMod(id)) {
             is ModResult.Success -> {
                 this.updates.add(Update(modResult.mod, metadata.id, metadata.version.friendlyString, version))
@@ -296,7 +296,7 @@ class UpdateManager {
                     )
                 )
             }
-            ModManager.modManager.setModState(fabricId, mod.id, ModState.INSTALLED)
+            ModManager.modManager.setModState(fabricId, mod.id, State.INSTALLED)
             this.updates.removeIf { it.fabricId == mod.slug || it.mod.id == mod.id }
             ModManager.modManager.changed = true
             ModUpdateResult.Success
@@ -437,7 +437,7 @@ class UpdateManager {
             ?: return ModRemoveResult.Error(TranslatableText("modmanager.error.jar.notFound"))
         return try {
             jar.delete()
-            ModManager.modManager.setModState(mod.slug, mod.id, ModState.DOWNLOADABLE)
+            ModManager.modManager.setModState(mod.slug, mod.id, State.DOWNLOADABLE)
             ModRemoveResult.Success
         } catch (e: Exception) {
             return ModRemoveResult.Error(TranslatableText("modmanager.error.jar.failedDelete", e))
