@@ -39,7 +39,10 @@ class PreLaunchHook : PreLaunchEntrypoint {
         for (file in filesToDelete) {
             logger.info("Deleting {}", file)
             val path = Path(file)
-            Files.delete(path)
+            try {
+                Files.delete(path)
+            } catch (e: Exception) { // Ignore it
+            }
         }
     }
 
