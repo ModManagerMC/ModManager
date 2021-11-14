@@ -72,6 +72,7 @@ internal class VersionFinderTest {
             val latest = VersionFinder.findUpdateFallback(
                 scenario.installedVersion,
                 scenario.mcVersion,
+                scenario.mcVersion,
                 scenario.channel,
                 versions
             )
@@ -131,6 +132,7 @@ internal class VersionFinderTest {
                 VersionFinder.findUpdateByVersion(
                     scenario.installedVersion,
                     scenario.mcVersion,
+                    scenario.mcVersion,
                     scenario.channel,
                     versions
                 )
@@ -168,6 +170,7 @@ internal class VersionFinderTest {
             }
             val latest = VersionFinder.findUpdateByVersion(
                 scenario.installedVersion,
+                scenario.mcVersion,
                 scenario.mcVersion,
                 scenario.channel,
                 versions
