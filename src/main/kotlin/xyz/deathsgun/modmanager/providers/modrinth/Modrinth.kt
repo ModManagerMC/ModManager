@@ -109,7 +109,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
         page: Int,
         limit: Int
     ): ModsResult {
-        val builder = URIBuilder("${baseUri}/api/v2/search")
+        val builder = URIBuilder("${baseUri}/api/v1/mod")
         builder.addParameter("query", query)
         builder.addParameter(
             "filters",

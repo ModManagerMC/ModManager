@@ -11,9 +11,11 @@ Features:
 
 ### Screenshots
 
+![](screenshots/mod-overview.png)
+Select multiple categories:
+![](screenshots/categories.png)
 Search view:
 ![](screenshots/search.png)
-![](screenshots/mod-overview.png)
 Updatable mods list:
 ![](screenshots/updatable-mods.png)
 Mod Update:
