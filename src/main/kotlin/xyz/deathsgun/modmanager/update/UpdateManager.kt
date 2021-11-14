@@ -106,7 +106,8 @@ class UpdateManager {
         if (result is VersionResult.Success) {
             val version = VersionFinder.findUpdate(
                 metadata.version.friendlyString,
-                ModManager.getMinecraftVersion(),
+                ModManager.getMinecraftReleaseTarget(),
+                ModManager.getMinecraftVersionId(),
                 ModManager.modManager.config.updateChannel,
                 result.versions
             )
@@ -159,7 +160,8 @@ class UpdateManager {
         }
         val version = VersionFinder.findUpdate(
             metadata.version.friendlyString,
-            ModManager.getMinecraftVersion(),
+            ModManager.getMinecraftReleaseTarget(),
+            ModManager.getMinecraftVersionId(),
             ModManager.modManager.config.updateChannel,
             versions
         )
@@ -205,7 +207,8 @@ class UpdateManager {
         }
         val version = VersionFinder.findUpdate(
             metadata.version.friendlyString,
-            ModManager.getMinecraftVersion(),
+            ModManager.getMinecraftReleaseTarget(),
+            ModManager.getMinecraftVersionId(),
             ModManager.modManager.config.updateChannel,
             versions
         )
@@ -243,7 +246,8 @@ class UpdateManager {
             }
             val version = VersionFinder.findUpdate(
                 "0.0.0.0",
-                ModManager.getMinecraftVersion(),
+                ModManager.getMinecraftReleaseTarget(),
+                ModManager.getMinecraftVersionId(),
                 ModManager.modManager.config.updateChannel,
                 versions
             )
@@ -269,7 +273,7 @@ class UpdateManager {
             }
             var asset = assets[0]
             if (assets.size > 1) {
-                asset = assets.find { it.filename.contains(ModManager.getMinecraftVersion(), true) }
+                asset = assets.find { it.filename.contains(ModManager.getMinecraftReleaseTarget(), true) }
                     ?: return ModUpdateResult.Error(TranslatableText("modmanager.error.update.noFabricJar"))
             }
             val jar = dir.resolve(asset.filename) // Download into same directory where the old jar was

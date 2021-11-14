@@ -25,13 +25,14 @@ object VersionFinder {
 
     fun findUpdateFallback(
         installedVersion: String,
+        mcReleaseTarget: String,
         mcVersion: String,
         updateChannel: Config.UpdateChannel,
         modVersions: List<Version>
     ): Version? {
         val versions =
             modVersions.filter { updateChannel.isReleaseAllowed(it.type) }
-                .filter { it.gameVersions.any { it1 -> it1.startsWith(mcVersion) } }
+                .filter { it.gameVersions.any { it1 -> it1.startsWith(mcVersion) || it1.startsWith(mcReleaseTarget) } }
                 .sortedByDescending { it.releaseDate }
 
         val version = versions.firstOrNull()
@@ -43,12 +44,13 @@ object VersionFinder {
 
     internal fun findUpdateByVersion(
         installedVersion: String,
+        mcReleaseTarget: String,
         mcVersion: String,
         channel: Config.UpdateChannel,
         modVersions: List<Version>
     ): Version? {
         val versions = modVersions.filter { channel.isReleaseAllowed(it.type) }
-            .filter { it.gameVersions.any { it1 -> it1.startsWith(mcVersion) } }
+            .filter { it.gameVersions.any { it1 -> it1.startsWith(mcVersion) || it1.startsWith(mcReleaseTarget) } }
         var latestVersion: Version? = null
         var latestVer: SemanticVersion? = null
         val installedVer = SemanticVersion.parse(installedVersion)
@@ -72,14 +74,15 @@ object VersionFinder {
 
     fun findUpdate(
         installedVersion: String,
+        mcReleaseTarget: String,
         mcVersion: String,
         channel: Config.UpdateChannel,
         modVersions: List<Version>
     ): Version? {
         return try {
-            findUpdateByVersion(installedVersion, mcVersion, channel, modVersions)
+            findUpdateByVersion(installedVersion, mcReleaseTarget, mcVersion, channel, modVersions)
         } catch (e: VersionParsingException) {
-            findUpdateFallback(installedVersion, mcVersion, channel, modVersions)
+            findUpdateFallback(installedVersion, mcReleaseTarget, mcVersion, channel, modVersions)
         }
     }
 }

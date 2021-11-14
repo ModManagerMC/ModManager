@@ -92,22 +92,21 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
                     val color = if (this.isFocused) 1.0f else 0.5f
                     RenderSystem.setShader { GameRenderer.getPositionShader() }
                     RenderSystem.setShaderColor(color, color, color, 1.0f)
-                    val matrix = matrices!!.peek().model
                     buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
-                    buffer.vertex(matrix, entryLeft.toFloat(), (entryTop + entryHeight + 2).toFloat(), 0.0f).next()
-                    buffer.vertex(matrix, selectionRight.toFloat(), (entryTop + entryHeight + 2).toFloat(), 0.0f).next()
-                    buffer.vertex(matrix, selectionRight.toFloat(), (entryTop - 2).toFloat(), 0.0f).next()
-                    buffer.vertex(matrix, entryLeft.toFloat(), (entryTop - 2).toFloat(), 0.0f).next()
+                    buffer.vertex(entryLeft.toDouble(), (entryTop + entryHeight + 2).toDouble(), 0.0).next()
+                    buffer.vertex(selectionRight.toDouble(), (entryTop + entryHeight + 2).toDouble(), 0.0).next()
+                    buffer.vertex(selectionRight.toDouble(), (entryTop - 2).toDouble(), 0.0).next()
+                    buffer.vertex(entryLeft.toDouble(), (entryTop - 2).toDouble(), 0.0).next()
                     tessellator.draw()
                     RenderSystem.setShader { GameRenderer.getPositionShader() }
                     RenderSystem.setShaderColor(0.0f, 0.0f, 0.0f, 1.0f)
                     buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
-                    buffer.vertex(matrix, (entryLeft + 1).toFloat(), (entryTop + entryHeight + 1).toFloat(), 0.0f)
+                    buffer.vertex((entryLeft + 1).toDouble(), (entryTop + entryHeight + 1).toDouble(), 0.0)
                         .next()
-                    buffer.vertex(matrix, (selectionRight - 1).toFloat(), (entryTop + entryHeight + 1).toFloat(), 0.0f)
+                    buffer.vertex((selectionRight - 1).toDouble(), (entryTop + entryHeight + 1).toDouble(), 0.0)
                         .next()
-                    buffer.vertex(matrix, (selectionRight - 1).toFloat(), (entryTop - 1).toFloat(), 0.0f).next()
-                    buffer.vertex(matrix, (entryLeft + 1).toFloat(), (entryTop - 1).toFloat(), 0.0f).next()
+                    buffer.vertex((selectionRight - 1).toDouble(), (entryTop - 1).toDouble(), 0.0).next()
+                    buffer.vertex((entryLeft + 1).toDouble(), (entryTop - 1).toDouble(), 0.0).next()
                     tessellator.draw()
                     RenderSystem.enableTexture()
                 }

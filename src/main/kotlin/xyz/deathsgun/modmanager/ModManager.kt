@@ -51,12 +51,17 @@ class ModManager : ClientModInitializer {
         @JvmStatic
         fun getVersion(): String {
             return FabricLoader.getInstance().allMods.find { it.metadata.id.equals("modmanager") }
-                ?.metadata?.version?.friendlyString ?: "1.1.0+1.17-alpha"
+                ?.metadata?.version?.friendlyString ?: "2.0.0+1.18"
         }
 
         @JvmStatic
-        fun getMinecraftVersion(): String {
-            return MinecraftClient.getInstance()?.game?.version?.releaseTarget ?: "1.17"
+        fun getMinecraftReleaseTarget(): String {
+            return MinecraftClient.getInstance()?.game?.version?.releaseTarget ?: "1.18"
+        }
+
+        @JvmStatic
+        fun getMinecraftVersionId(): String {
+            return MinecraftClient.getInstance()?.game?.version?.id ?: "1.18-pre1"
         }
     }
 

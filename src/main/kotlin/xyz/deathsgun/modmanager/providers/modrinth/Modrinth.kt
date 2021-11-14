@@ -109,7 +109,7 @@ class Modrinth : IModProvider, IModUpdateProvider {
         page: Int,
         limit: Int
     ): ModsResult {
-        val builder = URIBuilder("${baseUri}/api/v1/mod")
+        val builder = URIBuilder("${baseUri}/api/v2/search")
         builder.addParameter("query", query)
         builder.addParameter(
             "filters",
@@ -137,7 +137,11 @@ class Modrinth : IModProvider, IModUpdateProvider {
     private fun getMods(builder: URIBuilder, sorting: Sorting, page: Int, limit: Int): ModsResult {
         builder.addParameter(
             "version",
-            String.format("versions=%s", ModManager.getMinecraftVersion())
+            String.format(
+                "versions=\"%s\" OR versions=\"%s\"",
+                ModManager.getMinecraftReleaseTarget(),
+                ModManager.getMinecraftVersionId()
+            )
         )
         builder.addParameter("index", sorting.name.lowercase())
         builder.addParameter("offset", (page * limit).toString())
