@@ -23,8 +23,8 @@ plugins {
     id "org.jetbrains.kotlin.plugin.serialization" version "1.5.30"
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -101,10 +101,10 @@ task publishModrinth(type: TaskModrinthUpload) {
     projectId = "6kq7BzRK"
     versionNumber = version
     uploadFile = remapJar
-    versionType = VersionType.ALPHA
-    addGameVersion(project.minecraft_version)
+    versionType = VersionType.RELEASE
+    addGameVersion(project.release_target)
     addLoader("fabric")
-    addDependency("E4QBMVtO", Dependency.DependencyType.REQUIRED)
-    addDependency("1qsZV7U7", Dependency.DependencyType.REQUIRED)
+    addDependency("JPP6w2U1", Dependency.DependencyType.REQUIRED) // Mod Menu
+    addDependency("1qsZV7U7", Dependency.DependencyType.REQUIRED) // fabric-language-kotlin
     changelog = file("CHANGELOG.md").getText("UTF-8")
 }
