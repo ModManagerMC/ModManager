@@ -24,7 +24,6 @@ import net.minecraft.client.gui.screen.ConfirmScreen
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.ScreenTexts
 import net.minecraft.client.gui.widget.ButtonWidget
-import net.minecraft.client.gui.widget.CyclingButtonWidget
 import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.TranslatableText
@@ -35,10 +34,7 @@ import xyz.deathsgun.modmanager.api.http.CategoriesResult
 import xyz.deathsgun.modmanager.api.http.ModsResult
 import xyz.deathsgun.modmanager.api.mod.Category
 import xyz.deathsgun.modmanager.api.provider.Sorting
-import xyz.deathsgun.modmanager.gui.widget.CategoryListEntry
-import xyz.deathsgun.modmanager.gui.widget.CategoryListWidget
-import xyz.deathsgun.modmanager.gui.widget.ModListEntry
-import xyz.deathsgun.modmanager.gui.widget.ModListWidget
+import xyz.deathsgun.modmanager.gui.widget.*
 import kotlin.math.min
 
 class ModsOverviewScreen(private val previousScreen: Screen) : Screen(TranslatableText("modmanager.title.overview")),
@@ -53,7 +49,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     private lateinit var searchField: TextFieldWidget
     private var error: TranslatableText? = null
     private var sorting: Sorting = Sorting.RELEVANCE
-    private lateinit var sortingButtonWidget: CyclingButtonWidget<Sorting>
+    private lateinit var sortingButtonWidget: ButtonWidget
     private lateinit var modList: ModListWidget
     private lateinit var categoryList: CategoryListWidget
     private lateinit var nextPage: ButtonWidget
@@ -62,7 +58,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     @OptIn(DelicateCoroutinesApi::class)
     override fun init() {
         client!!.keyboard.setRepeatEvents(true)
-        searchField = this.addSelectableChild(
+        searchField = this.addChild(
             TextFieldWidget(
                 textRenderer,
                 10,
@@ -74,14 +70,19 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         )
         searchField.setChangedListener { this.query = it }
 
-        sortingButtonWidget = addDrawableChild(
-            CyclingButtonWidget.builder(Sorting::translations)
-                .values(Sorting.RELEVANCE, Sorting.DOWNLOADS, Sorting.NEWEST, Sorting.UPDATED)
-                .build(180, 10, 180, 20, TranslatableText("modmanager.sorting.sort"))
-                { _: CyclingButtonWidget<Any>, sorting: Sorting -> this.sorting = sorting; updateModList() }
-        )
+        sortingButtonWidget = addButton(
+            CyclingButtonWidget(
+                180,
+                10,
+                180,
+                20,
+                "modmanager.sorting.sort",
+                Sorting::translations,
+                Sorting.values(),
+                Sorting.DOWNLOADS
+            ) { sorting: Sorting -> this.sorting = sorting; updateModList() })
 
-        categoryList = addSelectableChild(
+        categoryList = addChild(
             CategoryListWidget(
                 client!!,
                 120,
@@ -94,17 +95,17 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         )
         categoryList.setLeftPos(10)
 
-        modList = addSelectableChild(ModListWidget(client!!, width - 10 - 115, height, 35, height - 30, 36, this))
+        modList = addChild(ModListWidget(client!!, width - 10 - 115, height, 35, height - 30, 36, this))
         modList.setLeftPos(135)
 
-        addDrawableChild(ButtonWidget(10, height - 25, 120, 20, ScreenTexts.BACK) {
+        addButton(ButtonWidget(10, height - 25, 120, 20, ScreenTexts.BACK) {
             onClose()
         })
 
         val middle = (width - 135) / 2
         val buttonWidth = min((width - 135 - 20) / 2, 200)
 
-        previousPage = addDrawableChild(
+        previousPage = addButton(
             ButtonWidget(
                 middle - 5,
                 height - 25,
@@ -112,7 +113,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
                 20,
                 TranslatableText("modmanager.page.previous")
             ) { showPreviousPage() })
-        nextPage = addDrawableChild(
+        nextPage = addButton(
             ButtonWidget(
                 middle + buttonWidth + 5,
                 height - 25,
@@ -239,10 +240,10 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         if (selectedMod == entry) {
             if (selectedCategories.any { it.id == "updatable" } && query.isEmpty()) {
                 val update = ModManager.modManager.update.getUpdateForMod(selectedMod!!.mod) ?: return
-                client?.setScreen(ModUpdateInfoScreen(this, update))
+                client?.openScreen(ModUpdateInfoScreen(this, update))
                 return
             }
-            client?.setScreen(ModDetailScreen(this, selectedMod!!.mod))
+            client?.openScreen(ModDetailScreen(this, selectedMod!!.mod))
             return
         }
         selectedMod = entry as ModListEntry
@@ -273,7 +274,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     override fun tick() {
         super.tick()
         if (error != null) {
-            client!!.setScreen(ErrorScreen(previousScreen, this, error!!))
+            client!!.openScreen(ErrorScreen(previousScreen, this, error!!))
         }
         this.scrollPercentage = modList.scrollAmount
         this.searchField.tick()
@@ -292,17 +293,17 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     override fun onClose() {
         ModManager.modManager.icons.destroyAll()
         if (!ModManager.modManager.changed) {
-            client!!.setScreen(previousScreen)
+            client!!.openScreen(previousScreen)
             return
         }
-        client!!.setScreen(
+        client!!.openScreen(
             ConfirmScreen(
                 {
                     if (it) {
                         client!!.scheduleStop()
                         return@ConfirmScreen
                     }
-                    client!!.setScreen(previousScreen)
+                    client!!.openScreen(previousScreen)
                 },
                 TranslatableText("modmanager.changes.title"),
                 TranslatableText("modmanager.changes.message")

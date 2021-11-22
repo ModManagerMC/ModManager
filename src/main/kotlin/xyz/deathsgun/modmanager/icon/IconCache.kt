@@ -16,7 +16,6 @@
 
 package xyz.deathsgun.modmanager.icon
 
-import com.mojang.blaze3d.systems.RenderSystem
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -67,7 +66,7 @@ class IconCache {
             IconState.DOWNLOADING -> loadingIcon
             IconState.ERRORED -> unknownIcon
         }
-        RenderSystem.setShaderTexture(0, icon)
+        MinecraftClient.getInstance().textureManager.bindTexture(icon)
     }
 
     private fun readIcon(mod: Mod): Identifier {

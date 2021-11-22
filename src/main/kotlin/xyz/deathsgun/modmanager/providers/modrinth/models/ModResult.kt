@@ -23,7 +23,7 @@ import kotlinx.serialization.Serializable
 data class ModResult(
     @SerialName("mod_id")
     val id: String,
-    val slug: String,
+    val slug: String?,
     val author: String,
     val title: String,
     val description: String,

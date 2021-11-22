@@ -18,16 +18,14 @@ package xyz.deathsgun.modmanager.api.gui.list
 
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget
-import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.MathHelper
 import java.util.*
 import kotlin.math.max
+
 
 /**
  * Using ModMenu's implementation because the implementation from
@@ -57,7 +55,7 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
     override fun setSelected(entry: E?) {
         super.setSelected(entry)
         selectedId = entry?.id
-        parent.updateSelectedEntry(this, selectedOrNull)
+        parent.updateSelectedEntry(this, selected)
     }
 
     override fun isSelectedEntry(index: Int): Boolean {
@@ -90,18 +88,16 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
                     val selectionRight = x + rowWidth + 2
                     RenderSystem.disableTexture()
                     val color = if (this.isFocused) 1.0f else 0.5f
-                    RenderSystem.setShader { GameRenderer.getPositionShader() }
-                    RenderSystem.setShaderColor(color, color, color, 1.0f)
+                    RenderSystem.color4f(color, color, color, 1.0f)
                     val matrix = matrices!!.peek().model
-                    buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
+                    buffer.begin(7, VertexFormats.POSITION)
                     buffer.vertex(matrix, entryLeft.toFloat(), (entryTop + entryHeight + 2).toFloat(), 0.0f).next()
                     buffer.vertex(matrix, selectionRight.toFloat(), (entryTop + entryHeight + 2).toFloat(), 0.0f).next()
                     buffer.vertex(matrix, selectionRight.toFloat(), (entryTop - 2).toFloat(), 0.0f).next()
                     buffer.vertex(matrix, entryLeft.toFloat(), (entryTop - 2).toFloat(), 0.0f).next()
                     tessellator.draw()
-                    RenderSystem.setShader { GameRenderer.getPositionShader() }
-                    RenderSystem.setShaderColor(0.0f, 0.0f, 0.0f, 1.0f)
-                    buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
+                    RenderSystem.color4f(0.0f, 0.0f, 0.0f, 1.0f)
+                    buffer.begin(7, VertexFormats.POSITION)
                     buffer.vertex(matrix, (entryLeft + 1).toFloat(), (entryTop + entryHeight + 1).toFloat(), 0.0f)
                         .next()
                     buffer.vertex(matrix, (selectionRight - 1).toFloat(), (entryTop + entryHeight + 1).toFloat(), 0.0f)
@@ -135,10 +131,6 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
 
     override fun getMaxPosition(): Int {
         return super.getMaxPosition() + 4
-    }
-
-    override fun appendNarrations(builder: NarrationMessageBuilder?) {
-        super.appendNarrations(builder)
     }
 
     open fun isSelectedEntry(entry: Entry<E>): Boolean {

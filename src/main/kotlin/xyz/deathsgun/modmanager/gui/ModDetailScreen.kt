@@ -42,7 +42,7 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
         if (provider != null) {
             when (val result = provider.getMod(mod.id)) {
                 is ModResult.Error -> {
-                    client!!.setScreen(ErrorScreen(previousScreen, this, result.text))
+                    client!!.openScreen(ErrorScreen(previousScreen, this, result.text))
                 }
                 is ModResult.Success -> {
                     val tmp = mod
@@ -56,7 +56,7 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
 
     override fun init() {
         val buttonX = width / 8
-        descriptionWidget = addSelectableChild(
+        descriptionWidget = addChild(
             DescriptionWidget(
                 client!!,
                 width - 20,
@@ -70,10 +70,10 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
         )
         descriptionWidget.setLeftPos(10)
         descriptionWidget.init()
-        addDrawableChild(ButtonWidget(buttonX, height - 28, 150, 20, ScreenTexts.BACK) {
-            client!!.setScreen(previousScreen)
+        addButton(ButtonWidget(buttonX, height - 28, 150, 20, ScreenTexts.BACK) {
+            client!!.openScreen(previousScreen)
         })
-        this.actionButton = addDrawableChild(
+        this.actionButton = addButton(
             ButtonWidget(
                 this.width - buttonX - 150,
                 this.height - 28,
@@ -83,7 +83,7 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
             ) {
                 when (ModManager.modManager.getModState(mod.id)) {
                     State.DOWNLOADABLE -> {
-                        client!!.setScreen(
+                        client!!.openScreen(
                             ModProgressScreen(
                                 mod,
                                 ModProgressScreen.Action.INSTALL,
@@ -93,7 +93,7 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
                         )
                     }
                     State.OUTDATED -> {
-                        client!!.setScreen(
+                        client!!.openScreen(
                             ModProgressScreen(
                                 mod,
                                 ModProgressScreen.Action.UPDATE,
@@ -111,8 +111,8 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
 
     private fun removeMod() {
         when (val result = ModManager.modManager.update.removeMod(mod)) {
-            is ModRemoveResult.Success -> client!!.setScreen(previousScreen)
-            is ModRemoveResult.Error -> client!!.setScreen(ErrorScreen(previousScreen, this, result.text))
+            is ModRemoveResult.Success -> client!!.openScreen(previousScreen)
+            is ModRemoveResult.Error -> client!!.openScreen(ErrorScreen(previousScreen, this, result.text))
         }
     }
 
@@ -130,7 +130,7 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
 
         val iconSize = 64
         ModManager.modManager.icons.bindIcon(mod)
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
         ModManager.modManager.icons.bindIcon(mod)
         RenderSystem.enableBlend()
         drawTexture(matrices, 20, 10, 0.0f, 0.0f, iconSize, iconSize, iconSize, iconSize)
@@ -179,7 +179,7 @@ class ModDetailScreen(private val previousScreen: Screen, var mod: Mod) : Screen
     }
 
     override fun onClose() {
-        client!!.setScreen(previousScreen)
+        client!!.openScreen(previousScreen)
     }
 
     override fun <E> updateSelectedEntry(widget: Any, entry: E?) {

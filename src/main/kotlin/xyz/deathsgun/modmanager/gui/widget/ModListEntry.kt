@@ -39,7 +39,7 @@ class ModListEntry(private val client: MinecraftClient, override val list: ModLi
         mouseX: Int, mouseY: Int, hovered: Boolean, tickDelta: Float
     ) {
         val iconSize = 32
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
         ModManager.modManager.icons.bindIcon(mod)
         RenderSystem.enableBlend()
         DrawableHelper.drawTexture(matrices, x, y, 0.0f, 0.0f, iconSize, iconSize, iconSize, iconSize)
@@ -98,10 +98,6 @@ class ModListEntry(private val client: MinecraftClient, override val list: ModLi
             2,
             0x808080
         )
-    }
-
-    override fun getNarration(): Text {
-        return LiteralText(mod.name)
     }
 
 }

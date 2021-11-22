@@ -54,7 +54,7 @@ class ModProgressScreen(
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun init() {
-        backButton = addDrawableChild(
+        backButton = addButton(
             ButtonWidget(
                 width / 2 - 75,
                 (height * 0.6 + 40).roundToInt(),
@@ -62,7 +62,7 @@ class ModProgressScreen(
                 20,
                 ScreenTexts.BACK
             ) {
-                client!!.setScreen(previousScreen)
+                client!!.openScreen(previousScreen)
             })
         backButton.visible = false
         GlobalScope.launch {
@@ -121,7 +121,7 @@ class ModProgressScreen(
             is ModInstallResult.Error -> {
                 LogManager.getLogger().error(result.text.key, result.cause)
                 client!!.send {
-                    MinecraftClient.getInstance().setScreen(ErrorScreen(previousScreen, infoScreen, result.text))
+                    MinecraftClient.getInstance().openScreen(ErrorScreen(previousScreen, infoScreen, result.text))
                 }
             }
             is ModInstallResult.Success -> {
@@ -139,7 +139,7 @@ class ModProgressScreen(
             is ModUpdateResult.Error -> {
                 LogManager.getLogger().error(result.text.key, result.cause)
                 client!!.send {
-                    MinecraftClient.getInstance().setScreen(ErrorScreen(previousScreen, infoScreen, result.text))
+                    MinecraftClient.getInstance().openScreen(ErrorScreen(previousScreen, infoScreen, result.text))
                 }
             }
             is ModUpdateResult.Success -> {
@@ -155,7 +155,7 @@ class ModProgressScreen(
     }
 
     override fun onClose() {
-        client!!.setScreen(previousScreen)
+        client!!.openScreen(previousScreen)
     }
 
     enum class Action {

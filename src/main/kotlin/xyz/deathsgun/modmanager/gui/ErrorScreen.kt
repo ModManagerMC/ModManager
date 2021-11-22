@@ -38,7 +38,7 @@ class ErrorScreen(
         this.text = MultilineText.create(this.textRenderer, this.error, this.width - 50)
         val linesHeight = this.text.count() * 9
         val bottom = MathHelper.clamp(90 + linesHeight + 12, this.height / 6 + 69, this.height - 24)
-        addDrawableChild(
+        addButton(
             ButtonWidget(
                 this.width / 2 - 155,
                 bottom,
@@ -46,10 +46,10 @@ class ErrorScreen(
                 20,
                 ScreenTexts.BACK
             ) {
-                client!!.setScreen(previousScreen)
+                client!!.openScreen(previousScreen)
             }
         )
-        addDrawableChild(
+        addButton(
             ButtonWidget(
                 this.width / 2 + 5,
                 bottom,
@@ -57,7 +57,7 @@ class ErrorScreen(
                 20,
                 TranslatableText("modmanager.button.tryAgain")
             ) {
-                client!!.setScreen(actionScreen)
+                client!!.openScreen(actionScreen)
             }
         )
     }

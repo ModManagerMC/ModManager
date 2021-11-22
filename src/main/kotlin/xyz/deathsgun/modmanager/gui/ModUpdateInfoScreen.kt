@@ -37,7 +37,7 @@ class ModUpdateInfoScreen(private val previousScreen: Screen, private val update
     private lateinit var updateButtonWidget: ButtonWidget
 
     override fun init() {
-        descriptionWidget = addSelectableChild(
+        descriptionWidget = addChild(
             DescriptionWidget(
                 client!!,
                 width - 20,
@@ -52,14 +52,22 @@ class ModUpdateInfoScreen(private val previousScreen: Screen, private val update
         descriptionWidget.init()
         descriptionWidget.setLeftPos(10)
         val buttonX = width / 8
-        addDrawableChild(ButtonWidget(buttonX, height - 25, 150, 20, ScreenTexts.BACK) {
-            client?.setScreen(previousScreen)
+        addButton(ButtonWidget(buttonX, height - 25, 150, 20, ScreenTexts.BACK) {
+            client?.openScreen(previousScreen)
         })
-        updateButtonWidget = addDrawableChild(ButtonWidget(
-            this.width - buttonX - 150, this.height - 25, 150, 20, TranslatableText("modmanager.button.update")
-        ) {
-            client!!.setScreen(ModProgressScreen(update.mod, ModProgressScreen.Action.UPDATE, previousScreen, this))
-        })
+        updateButtonWidget = addButton(
+            ButtonWidget(
+                this.width - buttonX - 150, this.height - 25, 150, 20, TranslatableText("modmanager.button.update")
+            ) {
+                client!!.openScreen(
+                    ModProgressScreen(
+                        update.mod,
+                        ModProgressScreen.Action.UPDATE,
+                        previousScreen,
+                        this
+                    )
+                )
+            })
     }
 
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
@@ -68,7 +76,7 @@ class ModUpdateInfoScreen(private val previousScreen: Screen, private val update
 
         val iconSize = 64
         ModManager.modManager.icons.bindIcon(update.mod)
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F)
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F)
         ModManager.modManager.icons.bindIcon(update.mod)
         RenderSystem.enableBlend()
         DrawableHelper.drawTexture(matrices, 20, 10, 0.0F, 0.0F, iconSize, iconSize, iconSize, iconSize)
@@ -136,7 +144,7 @@ class ModUpdateInfoScreen(private val previousScreen: Screen, private val update
     }
 
     override fun onClose() {
-        client?.setScreen(previousScreen)
+        client?.openScreen(previousScreen)
     }
 
     override fun <E> updateSelectedEntry(widget: Any, entry: E?) {

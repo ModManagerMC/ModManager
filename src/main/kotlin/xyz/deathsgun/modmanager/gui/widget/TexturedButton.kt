@@ -18,6 +18,7 @@ package xyz.deathsgun.modmanager.gui.widget
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.terraformersmc.modmenu.gui.widget.ModMenuTexturedButtonWidget
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.LiteralText
 import net.minecraft.util.Identifier
@@ -52,8 +53,8 @@ class TexturedButton(
     var image: Identifier = texture
 
     override fun renderButton(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-        RenderSystem.setShaderTexture(0, image)
+        RenderSystem.color4f(1f, 1f, 1f, 1f)
+        MinecraftClient.getInstance().textureManager.bindTexture(image)
         RenderSystem.disableDepthTest()
         var adjustedV = v
         if (!active) {
@@ -67,7 +68,7 @@ class TexturedButton(
         )
         RenderSystem.enableDepthTest()
         if (this.isHovered) {
-            renderTooltip(matrices, mouseX, mouseY)
+            renderToolTip(matrices, mouseX, mouseY)
         }
     }
 

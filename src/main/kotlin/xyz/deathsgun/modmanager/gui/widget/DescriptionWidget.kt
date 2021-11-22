@@ -54,10 +54,6 @@ class DescriptionWidget(
         addEntry(Entry(this, LiteralText("")))
     }
 
-    override fun getSelectedOrNull(): Entry? {
-        return null
-    }
-
     override fun getRowWidth(): Int {
         return width - 10
     }
@@ -118,10 +114,6 @@ class DescriptionWidget(
 
         override fun isMouseOver(mouseX: Double, mouseY: Double): Boolean {
             return super.isMouseOver(mouseX, mouseY) && x + textRenderer.getWidth(text) >= mouseX
-        }
-
-        override fun getNarration(): Text {
-            return text
         }
     }
 }

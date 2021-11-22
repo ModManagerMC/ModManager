@@ -18,8 +18,8 @@ package xyz.deathsgun.modmanager.gui.widget
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.MutableText
 import net.minecraft.text.OrderedText
-import net.minecraft.text.Text
 import net.minecraft.util.Language
 import xyz.deathsgun.modmanager.api.gui.list.MultiSelectListWidget
 import xyz.deathsgun.modmanager.api.mod.Category
@@ -41,16 +41,14 @@ class CategoryListEntry(list: MultiSelectListWidget<CategoryListEntry>, val cate
         tickDelta: Float
     ) {
         val font = MinecraftClient.getInstance().textRenderer
-        var text: Text = category.text
-        if (list.isSelectedEntry(this)) {
-            text = text.getWithStyle(text.style.withBold(true))[0]
+        val text: MutableText = category.text
+        text.style = if (list.isSelectedEntry(this)) {
+            text.style.withBold(true)
+        } else {
+            text.style.withBold(false)
         }
         val trimmedText: OrderedText = Language.getInstance().reorder(font.trimToWidth(text, entryWidth - 10))
         font.draw(matrices, trimmedText, (x + 3).toFloat(), (y + 1).toFloat(), 0xFFFFFF)
-    }
-
-    override fun getNarration(): Text {
-        return category.text
     }
 
 }

@@ -20,7 +20,6 @@ import net.minecraft.client.font.MultilineText
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.ScreenTexts
 import net.minecraft.client.gui.widget.ButtonWidget
-import net.minecraft.client.gui.widget.CyclingButtonWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.LiteralText
 import net.minecraft.text.TranslatableText
@@ -29,34 +28,55 @@ import xyz.deathsgun.modmanager.config.Config
 
 class ConfigScreen(private val previousScreen: Screen) : Screen(LiteralText("Config")) {
 
-    private lateinit var defaultProvider: CyclingButtonWidget<String>
-    private lateinit var updateChannel: CyclingButtonWidget<Config.UpdateChannel>
+    private var channel = 0
+    private var provider = 0
+    private lateinit var defaultProvider: ButtonWidget
+    private lateinit var updateChannel: ButtonWidget
     private var config: Config = ModManager.modManager.config.copy()
 
     override fun init() {
-        defaultProvider = addDrawableChild(CyclingButtonWidget.builder<String> { LiteralText(it) }
-            .values(ModManager.modManager.provider.keys.toList())
-            .initially(config.defaultProvider)
-            .build(width - 220, 30, 200, 20, TranslatableText("modmanager.button.defaultProvider"))
-            { _: CyclingButtonWidget<Any>, s: String -> config.defaultProvider = s })
+        defaultProvider = addButton(
+            ButtonWidget(
+                width - 220,
+                30,
+                200,
+                20,
+                TranslatableText("modmanager.button.defaultProvider").append(config.updateChannel.text())
+            ) {
+                provider++
+                if (provider > ModManager.modManager.provider.size) {
+                    provider = 0
+                }
+                config.defaultProvider = ModManager.modManager.provider.keys.toMutableList()[provider]
+                it.message = TranslatableText("modmanager.button.defaultProvider").append(config.updateChannel.text())
+            }
+        )
         defaultProvider.active = ModManager.modManager.provider.size > 1
 
-        updateChannel = addDrawableChild(CyclingButtonWidget.builder<Config.UpdateChannel> { it.text() }
-            .values(listOf(Config.UpdateChannel.ALL, Config.UpdateChannel.STABLE))
-            .initially(config.updateChannel)
-            .build(width - 220, 60, 200, 20, TranslatableText("modmanager.button.updateChannel"))
-            { _: CyclingButtonWidget<Any>, channel: Config.UpdateChannel -> config.updateChannel = channel })
+        updateChannel =
+            addButton(
+                ButtonWidget(
+                    width - 220, 60, 200, 20, TranslatableText("modmanager.button.updateChannel")
+                ) {
+                    channel++
+                    if (channel > Config.UpdateChannel.values().size) {
+                        channel = 0
+                    }
+                    config.updateChannel = Config.UpdateChannel.values()[channel]
+                    it.message = TranslatableText("modmanager.button.updateChannel").append(config.updateChannel.text())
+                }
+            )
 
-        addDrawableChild(ButtonWidget(
+        addButton(ButtonWidget(
             width / 2 - 154, height - 28, 150, 20, ScreenTexts.CANCEL,
         ) {
-            client!!.setScreen(previousScreen)
+            client!!.openScreen(previousScreen)
         })
-        addDrawableChild(ButtonWidget(
+        addButton(ButtonWidget(
             width / 2 + 4, height - 28, 150, 20, TranslatableText("modmanager.button.save")
         ) {
             ModManager.modManager.config = Config.saveConfig(this.config)
-            client!!.setScreen(previousScreen)
+            client!!.openScreen(previousScreen)
         })
 
     }
@@ -72,7 +92,7 @@ class ConfigScreen(private val previousScreen: Screen) : Screen(LiteralText("Con
     }
 
     override fun onClose() {
-        client!!.setScreen(previousScreen)
+        client!!.openScreen(previousScreen)
     }
 
 }

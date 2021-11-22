@@ -37,6 +37,9 @@ data class SearchResult(
                     )
                 )
             }
+            if (mod.slug == null) {
+                continue
+            }
             mods.add(
                 Mod(
                     mod.id.replaceFirst("local-", ""),
