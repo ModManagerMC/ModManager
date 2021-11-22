@@ -322,23 +322,24 @@ class UpdateManager {
 
     private val json = Json {
         ignoreUnknownKeys = true
+        encodeDefaults = true
     }
 
     @OptIn(ExperimentalSerializationApi::class)
     fun findJarByModContainer(container: ModMetadata): Path? {
         val jars =
             FileUtils.listFiles(FabricLoader.getInstance().gameDir.resolve("mods").toFile(), arrayOf("jar"), true)
-        return try {
-            for (jar in jars) {
+        for (jar in jars) {
+            try {
                 val meta = openFabricMeta(jar)
                 if (meta.id == container.id) {
                     return jar.toPath()
                 }
+            } catch (e: Exception) {
+                continue
             }
-            null
-        } catch (e: Exception) {
-            null
         }
+        return null
     }
 
     private fun findJarByMod(mod: Mod): Path? {
