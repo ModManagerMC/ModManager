@@ -151,7 +151,6 @@ internal class ModrinthTest {
             assertTrue(it.gameVersions.isNotEmpty())
             assertTrue(it.version.isNotEmpty())
             assertTrue(it.changelog.isNotEmpty())
-            assertEquals(VersionType.ALPHA, it.type)
             assertTrue(it.assets.isNotEmpty())
             it.assets.forEach { asset ->
                 assertTrue(asset.filename.isNotEmpty())
