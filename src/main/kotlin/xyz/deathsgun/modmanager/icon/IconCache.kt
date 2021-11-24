@@ -25,13 +25,14 @@ import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.util.Identifier
 import org.apache.commons.io.FileUtils
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.impl.client.CloseableHttpClient
+import org.apache.http.impl.client.HttpClients
 import org.apache.logging.log4j.LogManager
 import xyz.deathsgun.modmanager.ModManager
+import xyz.deathsgun.modmanager.api.http.HttpClient
 import xyz.deathsgun.modmanager.api.mod.Mod
 import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 import java.nio.file.Files
 import java.util.stream.Collectors
 
@@ -42,7 +43,6 @@ class IconCache {
     private val loadingIcon = Identifier("modmanager", "textures/gui/loading.png")
     private val iconsDir = FabricLoader.getInstance().gameDir.resolve(".icons")
     private val state = HashMap<String, IconState>()
-    private val http = HttpClient.newHttpClient()
 
     init {
         Files.createDirectories(iconsDir)
@@ -94,16 +94,16 @@ class IconCache {
         }
         state[mod.id] = IconState.DOWNLOADING
         try {
-            val request = HttpRequest.newBuilder(URI.create(mod.iconUrl)).GET()
-                .setHeader("User-Agent", "ModMenu " + ModManager.getVersion()).build()
-            val response = http.send(request, HttpResponse.BodyHandlers.ofByteArray())
-            if (response.statusCode() != 200) {
+            val request = HttpGet(mod.iconUrl)
+            request.setHeader("User-Agent", "ModManager ${ModManager.getVersion()}")
+            Files.copy(HttpClient.getInputStream(mod.iconUrl), iconsDir.resolve(mod.id))
+            state[mod.id] = IconState.DOWNLOADED
+        } catch (e: Exception) {
+            if (e is HttpClient.InvalidStatusCodeException) {
+                logger.error("Received invalid status code")
                 state[mod.id] = IconState.ERRORED
                 return
             }
-            Files.write(iconsDir.resolve(mod.id), response.body())
-            state[mod.id] = IconState.DOWNLOADED
-        } catch (e: Exception) {
             state[mod.id] = IconState.ERRORED
             logger.error("Error while downloading icon for {}: {}", mod.slug, e.message)
         }

@@ -23,10 +23,7 @@ import net.minecraft.text.TranslatableText
 import org.apache.http.client.utils.URIBuilder
 import org.apache.logging.log4j.LogManager
 import xyz.deathsgun.modmanager.ModManager
-import xyz.deathsgun.modmanager.api.http.CategoriesResult
-import xyz.deathsgun.modmanager.api.http.ModResult
-import xyz.deathsgun.modmanager.api.http.ModsResult
-import xyz.deathsgun.modmanager.api.http.VersionResult
+import xyz.deathsgun.modmanager.api.http.*
 import xyz.deathsgun.modmanager.api.mod.*
 import xyz.deathsgun.modmanager.api.provider.IModProvider
 import xyz.deathsgun.modmanager.api.provider.IModUpdateProvider
@@ -35,9 +32,6 @@ import xyz.deathsgun.modmanager.providers.modrinth.models.DetailedMod
 import xyz.deathsgun.modmanager.providers.modrinth.models.ModrinthVersion
 import xyz.deathsgun.modmanager.providers.modrinth.models.SearchResult
 import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneOffset
@@ -48,7 +42,6 @@ class Modrinth : IModProvider, IModUpdateProvider {
     private val logger = LogManager.getLogger("Modrinth")
     private val categories: ArrayList<Category> = ArrayList()
     private val baseUri = "https://api.modrinth.com"
-    private val http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build()
 
 
     override fun getName(): String {
@@ -59,11 +52,9 @@ class Modrinth : IModProvider, IModUpdateProvider {
         if (this.categories.isNotEmpty()) {
             return CategoriesResult.Success(this.categories)
         }
-        val request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
-            .uri(URI.create("${baseUri}/api/v1/tag/category")).build()
         return try {
-            val response = this.http.send(request, HttpResponse.BodyHandlers.ofString())
-            val categories = json.decodeFromString<List<String>>(response.body())
+            val response = HttpClient.get("${baseUri}/api/v1/tag/category")
+            val categories = json.decodeFromString<List<String>>(response.decodeToString())
             for (category in categories) {
                 if (category == "fabric") { // Fabric is not really a category
                     continue
@@ -142,17 +133,15 @@ class Modrinth : IModProvider, IModUpdateProvider {
         builder.addParameter("index", sorting.name.lowercase())
         builder.addParameter("offset", (page * limit).toString())
         builder.addParameter("limit", limit.toString())
-        val request = HttpRequest.newBuilder().GET().setHeader("User-Agent", "ModManager " + ModManager.getVersion())
-            .uri(builder.build()).build()
-        val response = this.http.send(request, HttpResponse.BodyHandlers.ofString())
-        if (response.statusCode() != 200) {
-            return ModsResult.Error(TranslatableText("modmanager.error.invalidStatus", response.statusCode()))
-        }
+        val response = HttpClient.get(builder.build())
         return try {
-            val result = json.decodeFromString<SearchResult>(response.body())
+            val result = json.decodeFromString<SearchResult>(response.decodeToString())
             ModsResult.Success(result.toList())
         } catch (e: Exception) {
             logger.error("Error while requesting mods {}", e.message)
+            if (e is HttpClient.InvalidStatusCodeException) {
+                ModsResult.Error(TranslatableText("modmanager.error.invalidStatus", e.message))
+            }
             ModsResult.Error(TranslatableText("modmanager.error.failedToParse", e.message))
         }
     }
@@ -163,20 +152,17 @@ class Modrinth : IModProvider, IModUpdateProvider {
 
     override fun getMod(id: String): ModResult {
         id.replaceFirst("local-", "")
-        val request = HttpRequest.newBuilder().GET()
-            .setHeader("User-Agent", "ModManager " + ModManager.getVersion())
-            .uri(URI.create("${baseUri}/api/v1/mod/${id}")).build()
         val response = try {
-            this.http.send(request, HttpResponse.BodyHandlers.ofString())
+            HttpClient.get("${baseUri}/api/v1/mod/${id}")
         } catch (e: Exception) {
             logger.error("Error while getting mod {}", e.message)
+            if (e is HttpClient.InvalidStatusCodeException) {
+                return ModResult.Error(TranslatableText("modmanager.error.invalidStatus", e.statusCode))
+            }
             return ModResult.Error(TranslatableText("modmanager.error.network", e.message), e)
         }
-        if (response.statusCode() != 200) {
-            return ModResult.Error(TranslatableText("modmanager.error.invalidStatus", response.statusCode()))
-        }
         return try {
-            val result = json.decodeFromString<DetailedMod>(response.body())
+            val result = json.decodeFromString<DetailedMod>(response.decodeToString())
             val categoriesList = ArrayList<Category>()
             result.categories.forEach { categoryId ->
                 categoriesList.add(
@@ -205,20 +191,17 @@ class Modrinth : IModProvider, IModUpdateProvider {
     }
 
     override fun getVersionsForMod(id: String): VersionResult {
-        val request = HttpRequest.newBuilder().GET()
-            .setHeader("User-Agent", "ModManager " + ModManager.getVersion())
-            .uri(URI.create("${baseUri}/api/v1/mod/${id}/version")).build()
         val response = try {
-            this.http.send(request, HttpResponse.BodyHandlers.ofString())
+            HttpClient.get("${baseUri}/api/v1/mod/${id}/version")
         } catch (e: Exception) {
+            if (e is HttpClient.InvalidStatusCodeException) {
+                return VersionResult.Error(TranslatableText("modmanager.error.invalidStatus", e.statusCode))
+            }
             logger.error("Error while getting mod {}", e.message)
             return VersionResult.Error(TranslatableText("modmanager.error.network", e.message), e)
         }
-        if (response.statusCode() != 200) {
-            return VersionResult.Error(TranslatableText("modmanager.error.invalidStatus", response.statusCode()))
-        }
         return try {
-            val modrinthVersions = json.decodeFromString<List<ModrinthVersion>>(response.body())
+            val modrinthVersions = json.decodeFromString<List<ModrinthVersion>>(response.decodeToString())
             val versions = ArrayList<Version>()
             for (modVersion in modrinthVersions) {
                 if (!modVersion.loaders.contains("fabric")) {
