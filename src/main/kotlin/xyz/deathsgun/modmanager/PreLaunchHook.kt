@@ -52,7 +52,7 @@ class PreLaunchHook : PreLaunchEntrypoint {
         if (Files.notExists(configFile)) {
             return ArrayList()
         }
-        val data = Files.readString(configFile, Charsets.UTF_8)
+        val data = Files.readAllBytes(configFile).decodeToString();
         configFile.deleteIfExists()
         return Json.decodeFromString(data)
     }

@@ -32,6 +32,7 @@ import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.ModInstallResult
 import xyz.deathsgun.modmanager.api.ModRemoveResult
 import xyz.deathsgun.modmanager.api.ModUpdateResult
+import xyz.deathsgun.modmanager.api.http.HttpClient
 import xyz.deathsgun.modmanager.api.http.ModResult
 import xyz.deathsgun.modmanager.api.http.ModsResult
 import xyz.deathsgun.modmanager.api.http.VersionResult
@@ -44,13 +45,9 @@ import xyz.deathsgun.modmanager.models.FabricMetadata
 import java.io.File
 import java.math.BigInteger
 import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 import java.nio.file.Files
 import java.nio.file.Path
 import java.security.MessageDigest
-import java.time.Duration
 import java.util.zip.ZipFile
 import kotlin.io.path.absolutePathString
 
@@ -59,7 +56,6 @@ class UpdateManager {
 
     private val logger = LogManager.getLogger("UpdateCheck")
     private val blockedIds = arrayOf("java", "minecraft", "fabricloader")
-    private val http: HttpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build()
     private val deletableMods = ArrayList<String>()
     val updates = ArrayList<Update>()
 
@@ -273,12 +269,8 @@ class UpdateManager {
                     ?: return ModUpdateResult.Error(TranslatableText("modmanager.error.update.noFabricJar"))
             }
             val jar = dir.resolve(asset.filename) // Download into same directory where the old jar was
-            val request = HttpRequest.newBuilder(URI.create(encodeURI(asset.url))).GET()
-                .setHeader("User-Agent", "ModManager ${ModManager.getVersion()}").build()
-            val response = this.http.send(request, HttpResponse.BodyHandlers.ofFile(jar))
-            if (response.statusCode() != 200) {
-                ModUpdateResult.Error(TranslatableText("modmanager.error.invalidStatus", response.statusCode()))
-            }
+            val response = HttpClient.getInputStream(encodeURI(asset.url))
+            Files.copy(response, jar)
             val expected = asset.hashes["sha512"]
             val calculated = jar.sha512()
             if (calculated != expected) {
@@ -297,7 +289,10 @@ class UpdateManager {
             ModManager.modManager.changed = true
             ModUpdateResult.Success
         } catch (e: Exception) {
-            e.printStackTrace()
+            logger.error("Error while updating: ", e)
+            if (e is HttpClient.InvalidStatusCodeException) {
+                ModUpdateResult.Error(TranslatableText("modmanager.error.invalidStatus", e.statusCode))
+            }
             ModUpdateResult.Error(TranslatableText("modmanager.error.unknown.update", e))
         }
     }
@@ -387,8 +382,8 @@ class UpdateManager {
         }
         logger.info("Deleting {} mods on the next start", deletableMods.size)
         val configFile = FabricLoader.getInstance().configDir.resolve(".modmanager.delete.json")
-        val data = json.encodeToString(deletableMods)
-        Files.writeString(configFile, data, Charsets.UTF_8)
+        val data = json.encodeToString(deletableMods).encodeToByteArray()
+        Files.write(configFile, data)
     }
 
 

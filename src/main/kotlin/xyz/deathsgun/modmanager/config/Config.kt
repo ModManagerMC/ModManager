@@ -47,7 +47,7 @@ data class Config(
             return try {
                 val file = FabricLoader.getInstance().configDir.resolve("modmanager.json")
                 Files.createDirectories(file.parent)
-                val data = Files.readString(file, Charset.forName("UTF-8"))
+                val data = Files.readAllBytes(file).decodeToString()
                 json.decodeFromString(data)
             } catch (e: Exception) {
                 if (e !is NoSuchFileException) {
@@ -62,7 +62,7 @@ data class Config(
             try {
                 val file = FabricLoader.getInstance().configDir.resolve("modmanager.json")
                 val data = json.encodeToString(config)
-                Files.writeString(file, data, Charset.forName("UTF-8"))
+                Files.write(file, data.encodeToByteArray())
             } catch (ignored: Exception) {
             }
             return config

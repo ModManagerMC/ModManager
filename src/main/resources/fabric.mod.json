@@ -45,6 +45,6 @@
 	"modmenu": "~${modmenu_version}",
 	"fabric-language-kotlin": ">=${fabric_kotlin_version}",
 	"minecraft": "1.16.5",
-	"java": ">=16"
+	"java": ">=8"
   }
 }
