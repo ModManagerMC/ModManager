@@ -2,6 +2,8 @@ package xyz.deathsgun.modmanager.gui
 
 import kotlinx.coroutines.DelicateCoroutinesApi
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.gui.screen.ScreenTexts
+import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.TranslatableText
 import xyz.deathsgun.modmanager.ModManager
@@ -14,6 +16,7 @@ class UpdateAllScreen(private val parentScreen: Screen) : Screen(TranslatableTex
     IListScreen {
 
     private lateinit var updateList: UpdateProgressListWidget
+    private lateinit var doneButton: ButtonWidget
     private var updated = ArrayList<String>()
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -28,6 +31,10 @@ class UpdateAllScreen(private val parentScreen: Screen) : Screen(TranslatableTex
             this
         )
         updateList.setLeftPos(25)
+        doneButton = addDrawableChild(ButtonWidget(width / 2 - 100, height - 30, 200, 20, ScreenTexts.DONE) {
+            onClose()
+        })
+        doneButton.active = false
     }
 
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
@@ -40,6 +47,9 @@ class UpdateAllScreen(private val parentScreen: Screen) : Screen(TranslatableTex
     override fun tick() {
         updateList.tick()
         val pendingUpdates = getPendingUpdates()
+        if (pendingUpdates.isEmpty()) {
+            doneButton.active = true
+        }
         if (pendingUpdates.isEmpty() || !updateList.children().all { it.progress == 1.0 }) {
             return
         }

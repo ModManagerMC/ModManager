@@ -5,12 +5,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.gui.hud.BackgroundHelper.ColorMixer
-import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.ScreenTexts
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
+import net.minecraft.util.math.MathHelper
 import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.gui.list.ListWidget
 import xyz.deathsgun.modmanager.update.ProgressListener
@@ -43,13 +44,14 @@ class UpdateProgressListEntry(list: ListWidget<UpdateProgressListEntry>, val upd
         tickDelta: Float
     ) {
         val textRenderer = MinecraftClient.getInstance().textRenderer
-        textRenderer.draw(matrices, update.mod.name, x.toFloat(), y + 1f, 0xFFFFFF)
-        val nameWidth = textRenderer.getWidth(update.mod.name) + 5
+        val infoText = "${update.mod.name} v${update.installedVersion} to ${update.version.version}"
+        textRenderer.draw(matrices, infoText, x.toFloat(), y + 1f, 0xFFFFFF)
+        val infoTextWidth = textRenderer.getWidth(infoText) + 5
         if (progress == 1.0) {
-            textRenderer.draw(matrices, ScreenTexts.DONE, (x + nameWidth).toFloat(), y + 1f, 0xFFFFFF)
+            textRenderer.draw(matrices, ScreenTexts.DONE, (x + entryWidth - textRenderer.getWidth(ScreenTexts.DONE)).toFloat(), y + 1f, 0xFFFFFF)
             return
         }
-        renderProgressBar(matrices, entryWidth - nameWidth, x + nameWidth, y, x + entryWidth, y + entryHeight)
+        renderProgressBar(matrices, entryWidth - infoTextWidth, x + infoTextWidth, y, x + entryWidth, y + entryHeight)
     }
 
     fun tick() {
@@ -70,11 +72,11 @@ class UpdateProgressListEntry(list: ListWidget<UpdateProgressListEntry>, val upd
         if ((minX + pos) - maxX + 2 > 0) {
             pos = 0
         }
-        Screen.fill(matrices, minX + 2 + pos, minY + 2, minX + pos + barWidth, maxY - 2, color)
-        Screen.fill(matrices, minX + 1, minY, maxX - 1, minY + 1, color)
-        Screen.fill(matrices, minX + 1, maxY, maxX - 1, maxY - 1, color)
-        Screen.fill(matrices, minX, minY, minX + 1, maxY, color)
-        Screen.fill(matrices, maxX, minY, maxX - 1, maxY, color)
+        DrawableHelper.fill(matrices, minX + 2 + pos, minY + 2, minX + pos + barWidth, maxY - 2, color)
+        DrawableHelper.fill(matrices, minX + 1, minY, maxX - 1, minY + 1, color)
+        DrawableHelper.fill(matrices, minX + 1, maxY, maxX - 1, maxY - 1, color)
+        DrawableHelper.fill(matrices, minX, minY, minX + 1, maxY, color)
+        DrawableHelper.fill(matrices, maxX, minY, maxX - 1, maxY, color)
     }
 
     override fun getNarration(): Text {
