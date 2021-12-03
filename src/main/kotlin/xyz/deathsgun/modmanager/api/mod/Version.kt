@@ -24,5 +24,6 @@ data class Version(
     val releaseDate: LocalDate,
     val type: VersionType,
     val gameVersions: List<String>,
-    val assets: List<Asset>
+    val assets: List<Asset>,
+    var foundTroughFallback: Boolean = false
 )
