@@ -31,10 +31,6 @@ class CategoryListWidget(
     parent: IListScreen
 ) : MultiSelectListWidget<CategoryListEntry>(client, width, height, top, bottom, itemHeight, parent) {
 
-    override fun init() {
-
-    }
-
     fun addCategories(categories: List<Category>) {
         categories.forEach {
             addEntry(CategoryListEntry(this, it))
