@@ -202,16 +202,21 @@ class UpdateManager {
                 for (asset in version.assets) {
                     if (hash == asset.hashes["sha512"]) {
                         logger.info("No update for {} found!", metadata.id)
+                        ModManager.modManager.setModState(metadata.id, modId, State.INSTALLED)
                         return
                     }
                 }
             }
         }
-        logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
-        ModManager.modManager.setModState(metadata.id, modId, State.OUTDATED)
-        when (val modResult = ModManager.modManager.provider[provider.getName()]?.getMod(modId)) {
+        when (val modResult = ModManager.modManager.provider[provider.getName().lowercase()]?.getMod(modId)) {
             is ModResult.Success -> {
+                ModManager.modManager.setModState(metadata.id, modId, State.OUTDATED)
+                logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
                 this.updates.add(Update(modResult.mod, metadata.id, metadata.version.friendlyString, version))
+            }
+            is ModResult.Error -> {
+                logger.error("Failed to resolve mod {}: {}", modId, modResult.cause)
+                ModManager.modManager.setModState(metadata.id, modId, State.INSTALLED)
             }
         }
     }
