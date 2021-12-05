@@ -26,7 +26,7 @@ class UpdateAllScreen(private val parentScreen: Screen) : Screen(TranslatableTex
             width - 50,
             height - 40,
             25,
-            height - 40,
+            height - 50,
             textRenderer.fontHeight + 4,
             this
         )
@@ -44,6 +44,10 @@ class UpdateAllScreen(private val parentScreen: Screen) : Screen(TranslatableTex
         super.render(matrices, mouseX, mouseY, delta)
     }
 
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, amount: Double): Boolean {
+        return updateList.mouseScrolled(mouseX, mouseY, amount)
+    }
+
     override fun tick() {
         updateList.tick()
         val pendingUpdates = getPendingUpdates()
@@ -57,6 +61,7 @@ class UpdateAllScreen(private val parentScreen: Screen) : Screen(TranslatableTex
             val update = pendingUpdates[i]
             updated.add(update.mod.id)
             updateList.add(update)
+            updateList.scrollAmount = updateList.maxScroll.toDouble()
         }
     }
 
