@@ -17,14 +17,17 @@
 package xyz.deathsgun.modmanager.update
 
 import com.terraformersmc.modmenu.util.mod.fabric.CustomValueUtil
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.ModMetadata
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.toast.SystemToast
 import net.minecraft.text.TranslatableText
 import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.LogManager
@@ -58,6 +61,7 @@ class UpdateManager {
     private val blockedIds = arrayOf("java", "minecraft", "fabricloader")
     private val deletableMods = ArrayList<String>()
     val updates = ArrayList<Update>()
+    var finishedUpdateCheck = false
 
     init {
         Runtime.getRuntime().addShutdownHook(Thread(this::saveDeletableFiles))
@@ -65,24 +69,32 @@ class UpdateManager {
 
     //region Update Checking
 
-    suspend fun checkUpdates() = coroutineScope {
+    suspend fun checkUpdates() = runBlocking {
+        logger.info("Checking for mod updates...")
         val mods = getCheckableMods()
-        mods.forEach { metadata ->
-            launch {
+        mods.map { metadata ->
+            async {
                 if (findJarByModContainer(metadata) == null) {
-                    logger.info("Skipping update for {} because it has no jar in mods", metadata.id)
-                    return@launch
+                    logger.debug("Skipping update for {} because it has no jar in mods", metadata.id)
+                    return@async
                 }
                 val configIds = getIdBy(metadata)
                 if (configIds == null) {
-                    logger.info("Searching for updates for {} using fallback method", metadata.id)
+                    logger.debug("Searching for updates for {} using fallback method", metadata.id)
                     checkForUpdatesManually(metadata)
-                    return@launch
+                    return@async
                 }
-                logger.info("Searching for updates for {} using defined mod id", metadata.id)
+                logger.debug("Searching for updates for {} using defined mod id", metadata.id)
                 checkForUpdates(metadata, configIds)
             }
-        }
+        }.awaitAll()
+        MinecraftClient.getInstance().toastManager.add(
+            SystemToast(
+                SystemToast.Type.TUTORIAL_HINT,
+                TranslatableText("modmanager.toast.update.title"),
+                TranslatableText("modmanager.toast.update.description", getWhitelistedUpdates().size)
+            )
+        )
     }
 
     private fun checkForUpdatesManually(metadata: ModMetadata) {
@@ -126,7 +138,6 @@ class UpdateManager {
             logger.warn(
                 "Error while searching for fallback id for mod {}: {}",
                 metadata.id,
-                queryResult.text.key,
                 queryResult.cause
             )
             ModManager.modManager.setModState(metadata.id, metadata.id, State.INSTALLED)
