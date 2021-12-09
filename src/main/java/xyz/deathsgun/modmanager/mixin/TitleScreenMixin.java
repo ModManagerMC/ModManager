@@ -41,7 +41,7 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(at = @At("TAIL"), method = "render")
     public void onRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (ModManager.shownUpdateNotification) {
+        if (ModManager.shownUpdateNotification && ModManager.modManager.getUpdate().getFinishedUpdateCheck()) {
             return;
         }
         ModManager.shownUpdateNotification = true;

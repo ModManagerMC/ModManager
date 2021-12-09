@@ -34,12 +34,18 @@ import xyz.deathsgun.modmanager.update.UpdateManager
 class ModManager : ClientModInitializer {
 
     private val states = ArrayList<SavedState>()
-    lateinit var config: Config
+    var config: Config = Config.loadConfig()
     var changed: Boolean = false
     val update: UpdateManager = UpdateManager()
     val icons: IconCache = IconCache()
     val provider: HashMap<String, IModProvider> = HashMap()
     val updateProvider: HashMap<String, IModUpdateProvider> = HashMap()
+
+    init {
+        val modrinth = Modrinth()
+        provider[modrinth.getName().lowercase()] = modrinth
+        updateProvider[modrinth.getName().lowercase()] = modrinth
+    }
 
     companion object {
         @JvmField
@@ -62,13 +68,7 @@ class ModManager : ClientModInitializer {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onInitializeClient() {
-        modManager = this
-        config = Config.loadConfig()
-        val modrinth = Modrinth()
-        provider[modrinth.getName().lowercase()] = modrinth
-        updateProvider[modrinth.getName().lowercase()] = modrinth
         GlobalScope.launch {
-            update.checkUpdates()
             icons.cleanupCache()
         }
     }

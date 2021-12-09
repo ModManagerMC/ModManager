@@ -74,18 +74,18 @@ public abstract class ModsScreenMixin extends Screen {
                 }));
         this.hideButton = this.addDrawableChild(new TexturedButton(width - 24 - 22, paneY, 20, 20, 0,
                 0, MODMANAGER_HIDE_BUTTON, 32, 64, button -> {
-            if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {
-                ModManager.modManager.config.getHidden().remove(selected.getMod().getId());
+            if (ModManager.modManager.getConfig().getHidden().contains(selected.getMod().getId())) {
+                ModManager.modManager.getConfig().getHidden().remove(selected.getMod().getId());
             } else {
-                ModManager.modManager.config.getHidden().add(selected.getMod().getId());
+                ModManager.modManager.getConfig().getHidden().add(selected.getMod().getId());
             }
-            Config.Companion.saveConfig(ModManager.modManager.config);
+            Config.Companion.saveConfig(ModManager.modManager.getConfig());
         }, ((button, matrices, mouseX, mouseY) -> {
             if (!hideButton.isJustHovered() || !button.isHovered()) {
                 return;
             }
             TranslatableText text = new TranslatableText("modmanager.button.hide");
-            if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {
+            if (ModManager.modManager.getConfig().getHidden().contains(selected.getMod().getId())) {
                 text = new TranslatableText("modmanager.button.show");
             }
             this.renderTooltip(matrices, text, mouseX, mouseY);
@@ -96,7 +96,7 @@ public abstract class ModsScreenMixin extends Screen {
     public void onTick(CallbackInfo ci) {
         this.hideButton.visible = ModManager.modManager.getUpdate().getUpdates()
                 .stream().anyMatch(it -> it.getFabricId().equalsIgnoreCase(selected.mod.getId()));
-        if (ModManager.modManager.config.getHidden().contains(selected.getMod().getId())) {
+        if (ModManager.modManager.getConfig().getHidden().contains(selected.getMod().getId())) {
             this.hideButton.setImage(MODMANAGER_SHOW_BUTTON);
         } else {
             this.hideButton.setImage(MODMANAGER_HIDE_BUTTON);

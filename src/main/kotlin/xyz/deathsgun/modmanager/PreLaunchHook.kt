@@ -16,6 +16,9 @@
 
 package xyz.deathsgun.modmanager
 
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -30,7 +33,12 @@ class PreLaunchHook : PreLaunchEntrypoint {
 
     private val logger = LogManager.getLogger("ModManager")
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onPreLaunch() {
+        GlobalScope.launch {
+            ModManager.modManager = ModManager()
+            ModManager.modManager.update.checkUpdates()
+        }
         val filesToDelete = try {
             loadFiles()
         } catch (e: Exception) {
