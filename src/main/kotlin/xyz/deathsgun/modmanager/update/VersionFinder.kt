@@ -38,7 +38,6 @@ object VersionFinder {
         if (version?.version == installedVersion) {
             return null
         }
-        version?.foundTroughFallback = true
         return version
     }
 

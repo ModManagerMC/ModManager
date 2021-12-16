@@ -27,6 +27,7 @@ import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.CyclingButtonWidget
 import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.LiteralText
 import net.minecraft.text.TranslatableText
 import org.lwjgl.glfw.GLFW
 import xyz.deathsgun.modmanager.ModManager
@@ -41,8 +42,7 @@ import xyz.deathsgun.modmanager.gui.widget.ModListEntry
 import xyz.deathsgun.modmanager.gui.widget.ModListWidget
 import kotlin.math.min
 
-class ModsOverviewScreen(private val previousScreen: Screen) : Screen(TranslatableText("modmanager.title.overview")),
-    IListScreen {
+class ModsOverviewScreen(private val previousScreen: Screen) : Screen(LiteralText.EMPTY), IListScreen {
 
     private var query: String = ""
     private var selectedMod: ModListEntry? = null
