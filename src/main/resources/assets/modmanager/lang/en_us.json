@@ -63,5 +63,6 @@
   "modmanager.page.previous": "Previous Page",
   "modmanager.provider.info": "Allows you to change the default provider for browsing",
   "modmanager.toast.update.title": "Updates Available!",
-  "modmanager.toast.update.description": "%d mods can be updated"
+  "modmanager.toast.update.description": "%d mods can be updated",
+  "modmanager.title.updating": "Updating all mods..."
 }
