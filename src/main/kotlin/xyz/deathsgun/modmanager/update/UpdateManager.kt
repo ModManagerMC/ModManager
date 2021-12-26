@@ -88,6 +88,10 @@ class UpdateManager {
                 checkForUpdates(metadata, configIds)
             }
         }.awaitAll()
+        finishedUpdateCheck = true
+        if (MinecraftClient.getInstance()?.currentScreen == null) {
+            return@runBlocking
+        }
         MinecraftClient.getInstance().toastManager.add(
             SystemToast(
                 SystemToast.Type.TUTORIAL_HINT,
