@@ -88,6 +88,10 @@ class UpdateManager {
                 checkForUpdates(metadata, configIds)
             }
         }.awaitAll()
+        finishedUpdateCheck = true
+        if (MinecraftClient.getInstance()?.currentScreen == null) {
+            return@runBlocking
+        }
         MinecraftClient.getInstance().toastManager.add(
             SystemToast(
                 SystemToast.Type.TUTORIAL_HINT,
@@ -118,18 +122,7 @@ class UpdateManager {
                 ModManager.modManager.config.updateChannel,
                 result.versions
             )
-            if (version == null) {
-                logger.info("No update for {} found!", metadata.id)
-                ModManager.modManager.setModState(metadata.id, metadata.id, State.INSTALLED)
-                return
-            }
-            logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
-            ModManager.modManager.setModState(metadata.id, metadata.id, State.OUTDATED)
-            when (val modResult = provider.getMod(metadata.id)) {
-                is ModResult.Success -> {
-                    this.updates.add(Update(modResult.mod, metadata.id, metadata.version.friendlyString, version))
-                }
-            }
+            verifyUpdate(provider, version, metadata, metadata.id)
             return
         }
 
@@ -170,18 +163,7 @@ class UpdateManager {
             ModManager.modManager.config.updateChannel,
             versions
         )
-        if (version == null) {
-            logger.info("No update for {} found!", metadata.id)
-            ModManager.modManager.setModState(metadata.id, mod.id, State.INSTALLED)
-            return
-        }
-        logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
-        ModManager.modManager.setModState(metadata.id, mod.id, State.OUTDATED)
-        when (val modResult = provider.getMod(mod.id)) {
-            is ModResult.Success -> {
-                this.updates.add(Update(modResult.mod, metadata.id, metadata.version.friendlyString, version))
-            }
-        }
+        verifyUpdate(provider, version, metadata, mod.id)
     }
 
     private fun checkForUpdates(metadata: ModMetadata, ids: Map<String, String>) {
@@ -216,16 +198,39 @@ class UpdateManager {
             ModManager.modManager.config.updateChannel,
             versions
         )
+        verifyUpdate(provider, version, metadata, id)
+    }
+
+    private fun verifyUpdate(provider: IModUpdateProvider, version: Version?, metadata: ModMetadata, modId: String) {
         if (version == null) {
             logger.info("No update for {} found!", metadata.id)
-            ModManager.modManager.setModState(metadata.id, id, State.INSTALLED)
+            ModManager.modManager.setModState(metadata.id, modId, State.INSTALLED)
             return
         }
-        logger.info("Update for {} found [{} -> {}]", metadata.id, metadata.version.friendlyString, version.version)
-        ModManager.modManager.setModState(metadata.id, id, State.OUTDATED)
-        when (val modResult = ModManager.modManager.provider[provider.getName()]?.getMod(id)) {
+        val hash = findJarByModContainer(metadata)?.sha512()
+        if (hash != null) {
+            for (asset in version.assets) {
+                if (hash == asset.hashes["sha512"]) {
+                    logger.info("No update for {} found!", metadata.id)
+                    ModManager.modManager.setModState(metadata.id, modId, State.INSTALLED)
+                    return
+                }
+            }
+        }
+        when (val modResult = ModManager.modManager.provider[provider.getName().lowercase()]?.getMod(modId)) {
             is ModResult.Success -> {
+                ModManager.modManager.setModState(metadata.id, modId, State.OUTDATED)
+                logger.info(
+                    "Update for {} found [{} -> {}]",
+                    metadata.id,
+                    metadata.version.friendlyString,
+                    version.version
+                )
                 this.updates.add(Update(modResult.mod, metadata.id, metadata.version.friendlyString, version))
+            }
+            is ModResult.Error -> {
+                logger.error("Failed to resolve mod {}: {}", modId, modResult.cause)
+                ModManager.modManager.setModState(metadata.id, modId, State.INSTALLED)
             }
         }
     }
@@ -242,8 +247,12 @@ class UpdateManager {
     fun installMod(mod: Mod): ModInstallResult {
         return try {
             val provider = ModManager.modManager.getSelectedProvider()
-                ?: return ModInstallResult.Error(TranslatableText("modmanager.error.noProviderSelected"))
-            logger.info("Installing {}", mod.name)
+                ?: return ModInstallResult.Error(
+                    TranslatableText(
+                        "modmanager.error.noProviderSelected",
+                        ModManager.modManager.config.defaultProvider
+                    )
+                )
             val versions = when (val result = provider.getVersionsForMod(mod.id)) {
                 is VersionResult.Error -> return ModInstallResult.Error(result.text, result.cause)
                 is VersionResult.Success -> result.versions
@@ -253,16 +262,16 @@ class UpdateManager {
                 ModManager.getMinecraftVersion(),
                 ModManager.modManager.config.updateChannel,
                 versions
-            )
-                ?: return ModInstallResult.Error(TranslatableText("modmanager.error.noCompatibleModVersionFound"))
+            ) ?: return ModInstallResult.Error(TranslatableText("modmanager.error.noCompatibleModVersionFound"))
 
+            logger.info("Installing {} v{}", mod.name, version.version)
             val dir = FabricLoader.getInstance().gameDir.resolve("mods")
             when (val result = installVersion(mod, version, dir)) {
                 is ModUpdateResult.Success -> ModInstallResult.Success
                 is ModUpdateResult.Error -> ModInstallResult.Error(result.text, result.cause)
             }
         } catch (e: Exception) {
-            ModInstallResult.Error(TranslatableText(""))
+            ModInstallResult.Error(TranslatableText("modmanager.error.unknown.update", e))
         }
     }
 
@@ -286,7 +295,7 @@ class UpdateManager {
                     ?: return ModUpdateResult.Error(TranslatableText("modmanager.error.update.noFabricJar"))
             }
             val jar = dir.resolve(asset.filename) // Download into same directory where the old jar was
-            HttpClient.download(asset.url, jar, listener)
+            HttpClient.download(encodeURI(asset.url), jar, listener)
             val expected = asset.hashes["sha512"]
             val calculated = jar.sha512()
             if (calculated != expected) {
