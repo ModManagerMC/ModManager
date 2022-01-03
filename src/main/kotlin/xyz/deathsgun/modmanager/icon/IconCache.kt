@@ -26,14 +26,12 @@ import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.util.Identifier
 import org.apache.commons.io.FileUtils
 import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.CloseableHttpClient
-import org.apache.http.impl.client.HttpClients
 import org.apache.logging.log4j.LogManager
 import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.http.HttpClient
 import xyz.deathsgun.modmanager.api.mod.Mod
-import java.net.URI
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.util.stream.Collectors
 
 class IconCache {
@@ -96,7 +94,11 @@ class IconCache {
         try {
             val request = HttpGet(mod.iconUrl)
             request.setHeader("User-Agent", "ModManager ${ModManager.getVersion()}")
-            Files.copy(HttpClient.getInputStream(mod.iconUrl), iconsDir.resolve(mod.id))
+            Files.copy(
+                HttpClient.getInputStream(mod.iconUrl),
+                iconsDir.resolve(mod.id),
+                StandardCopyOption.REPLACE_EXISTING
+            )
             state[mod.id] = IconState.DOWNLOADED
         } catch (e: Exception) {
             if (e is HttpClient.InvalidStatusCodeException) {

@@ -31,7 +31,7 @@ class UpdateAllScreen(private val parentScreen: Screen) : Screen(TranslatableTex
             this
         )
         updateList.setLeftPos(25)
-        doneButton = addDrawableChild(ButtonWidget(width / 2 - 100, height - 30, 200, 20, ScreenTexts.DONE) {
+        doneButton = addButton(ButtonWidget(width / 2 - 100, height - 30, 200, 20, ScreenTexts.DONE) {
             onClose()
         })
         doneButton.active = false
@@ -72,7 +72,7 @@ class UpdateAllScreen(private val parentScreen: Screen) : Screen(TranslatableTex
     }
 
     override fun onClose() {
-        client?.setScreen(parentScreen)
+        client?.openScreen(parentScreen)
     }
 
     override fun <E> updateSelectedEntry(widget: Any, entry: E?) {

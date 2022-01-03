@@ -85,7 +85,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(LiteralTex
         updateAll = addButton(
             ButtonWidget(width - 100 - 10, 10, 100, 20, TranslatableText("modmanager.button.updateAll")) {
                 ModManager.modManager.icons.destroyAll()
-                client?.setScreen(UpdateAllScreen(this))
+                client?.openScreen(UpdateAllScreen(this))
             }
         )
         updateAll.visible = false

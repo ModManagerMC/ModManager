@@ -8,8 +8,6 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.gui.screen.ScreenTexts
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.LiteralText
-import net.minecraft.text.Text
 import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.gui.list.ListWidget
 import xyz.deathsgun.modmanager.update.ProgressListener
@@ -75,9 +73,5 @@ class UpdateProgressListEntry(list: ListWidget<UpdateProgressListEntry>, val upd
         DrawableHelper.fill(matrices, minX + 1, maxY, maxX - 1, maxY - 1, color)
         DrawableHelper.fill(matrices, minX, minY, minX + 1, maxY, color)
         DrawableHelper.fill(matrices, maxX, minY, maxX - 1, maxY, color)
-    }
-
-    override fun getNarration(): Text {
-        return LiteralText.EMPTY
     }
 }
