@@ -27,6 +27,7 @@ import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.CyclingButtonWidget
 import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.LiteralText
 import net.minecraft.text.TranslatableText
 import org.lwjgl.glfw.GLFW
 import xyz.deathsgun.modmanager.ModManager
@@ -41,8 +42,7 @@ import xyz.deathsgun.modmanager.gui.widget.ModListEntry
 import xyz.deathsgun.modmanager.gui.widget.ModListWidget
 import kotlin.math.min
 
-class ModsOverviewScreen(private val previousScreen: Screen) : Screen(TranslatableText("modmanager.title.overview")),
-    IListScreen {
+class ModsOverviewScreen(private val previousScreen: Screen) : Screen(LiteralText.EMPTY), IListScreen {
 
     private var query: String = ""
     private var selectedMod: ModListEntry? = null
@@ -58,6 +58,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
     private lateinit var categoryList: CategoryListWidget
     private lateinit var nextPage: ButtonWidget
     private lateinit var previousPage: ButtonWidget
+    private lateinit var updateAll: ButtonWidget
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun init() {
@@ -77,9 +78,16 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         sortingButtonWidget = addDrawableChild(
             CyclingButtonWidget.builder(Sorting::translations)
                 .values(Sorting.RELEVANCE, Sorting.DOWNLOADS, Sorting.NEWEST, Sorting.UPDATED)
-                .build(180, 10, 180, 20, TranslatableText("modmanager.sorting.sort"))
+                .build(180, 10, 120, 20, TranslatableText("modmanager.sorting.sort"))
                 { _: CyclingButtonWidget<Any>, sorting: Sorting -> this.sorting = sorting; updateModList() }
         )
+        updateAll = addDrawableChild(
+            ButtonWidget(width - 100 - 10, 10, 100, 20, TranslatableText("modmanager.button.updateAll")) {
+                ModManager.modManager.icons.destroyAll()
+                client?.setScreen(UpdateAllScreen(this))
+            }
+        )
+        updateAll.visible = false
 
         categoryList = addSelectableChild(
             CategoryListWidget(
@@ -150,12 +158,12 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
             }
             if (query.isNotEmpty()) {
                 showModsBySearch()
+                modList.scrollAmount = scrollPercentage
                 return@launch
             }
             showModsByCategory()
+            modList.scrollAmount = scrollPercentage
         }
-        modList.init()
-        categoryList.init()
     }
 
     private fun showNextPage() {
@@ -279,6 +287,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(Translatab
         this.searchField.tick()
         this.previousPage.active = page > 0
         this.nextPage.active = this.modList.getElementCount() >= limit
+        this.updateAll.visible = this.selectedCategories.any { it.id == "updatable" }
     }
 
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
