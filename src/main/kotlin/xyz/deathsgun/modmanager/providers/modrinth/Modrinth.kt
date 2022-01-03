@@ -128,7 +128,11 @@ class Modrinth : IModProvider, IModUpdateProvider {
     private fun getMods(builder: URIBuilder, sorting: Sorting, page: Int, limit: Int): ModsResult {
         builder.addParameter(
             "version",
-            String.format("versions=%s", ModManager.getMinecraftVersion())
+            String.format(
+                "versions=\"%s\" OR versions=\"%s\"",
+                ModManager.getMinecraftReleaseTarget(),
+                ModManager.getMinecraftVersionId()
+            )
         )
         builder.addParameter("index", sorting.name.lowercase())
         builder.addParameter("offset", (page * limit).toString())

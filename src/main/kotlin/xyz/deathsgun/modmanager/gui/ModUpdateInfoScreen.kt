@@ -30,8 +30,8 @@ import xyz.deathsgun.modmanager.gui.widget.DescriptionWidget
 import xyz.deathsgun.modmanager.update.Update
 
 
-class ModUpdateInfoScreen(private val previousScreen: Screen, private val update: Update) :
-    Screen(TranslatableText("modmanager.screen.update")), IListScreen {
+class ModUpdateInfoScreen(private val previousScreen: Screen, private val update: Update) : Screen(LiteralText.EMPTY),
+    IListScreen {
 
     private lateinit var descriptionWidget: DescriptionWidget
     private lateinit var updateButtonWidget: ButtonWidget

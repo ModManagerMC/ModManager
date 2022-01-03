@@ -34,12 +34,18 @@ import xyz.deathsgun.modmanager.update.UpdateManager
 class ModManager : ClientModInitializer {
 
     private val states = ArrayList<SavedState>()
-    lateinit var config: Config
+    var config: Config = Config.loadConfig()
     var changed: Boolean = false
     val update: UpdateManager = UpdateManager()
     val icons: IconCache = IconCache()
     val provider: HashMap<String, IModProvider> = HashMap()
     val updateProvider: HashMap<String, IModUpdateProvider> = HashMap()
+
+    init {
+        val modrinth = Modrinth()
+        provider[modrinth.getName().lowercase()] = modrinth
+        updateProvider[modrinth.getName().lowercase()] = modrinth
+    }
 
     companion object {
         @JvmField
@@ -51,24 +57,23 @@ class ModManager : ClientModInitializer {
         @JvmStatic
         fun getVersion(): String {
             return FabricLoader.getInstance().allMods.find { it.metadata.id.equals("modmanager") }
-                ?.metadata?.version?.friendlyString ?: "1.1.0+1.17-alpha"
+                ?.metadata?.version?.friendlyString ?: "2.0.0+1.18"
         }
 
         @JvmStatic
-        fun getMinecraftVersion(): String {
-            return MinecraftClient.getInstance()?.game?.version?.releaseTarget ?: "1.17"
+        fun getMinecraftReleaseTarget(): String {
+            return MinecraftClient.getInstance()?.game?.version?.releaseTarget ?: "1.18"
+        }
+
+        @JvmStatic
+        fun getMinecraftVersionId(): String {
+            return MinecraftClient.getInstance()?.game?.version?.id ?: "1.18.1"
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onInitializeClient() {
-        modManager = this
-        config = Config.loadConfig()
-        val modrinth = Modrinth()
-        provider[modrinth.getName().lowercase()] = modrinth
-        updateProvider[modrinth.getName().lowercase()] = modrinth
         GlobalScope.launch {
-            update.checkUpdates()
             icons.cleanupCache()
         }
     }

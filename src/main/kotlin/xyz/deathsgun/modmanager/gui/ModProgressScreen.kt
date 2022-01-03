@@ -21,7 +21,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.MultilineText
-import net.minecraft.client.gui.hud.BackgroundHelper.ColorMixer
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.ScreenTexts
 import net.minecraft.client.gui.widget.ButtonWidget
@@ -98,7 +97,7 @@ class ModProgressScreen(
     }
 
     private fun renderProgressBar(matrices: MatrixStack?, minX: Int, minY: Int, maxX: Int, maxY: Int) {
-        val color = ColorMixer.getArgb(255, 255, 255, 255)
+        val color = 0xFFFFFFFF.toInt()
         var barWidth = width / 10
         val overlap = (minX + pos + barWidth) - maxX + 2
         if (overlap > 0) {

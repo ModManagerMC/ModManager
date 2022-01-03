@@ -26,7 +26,6 @@ import net.minecraft.util.math.MathHelper
 import java.util.*
 import kotlin.math.max
 
-
 /**
  * Using ModMenu's implementation because the implementation from
  * Mojang is broken. [com.terraformersmc.modmenu.gui.ModsScreen].
@@ -45,8 +44,6 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
     var renderOutline: Boolean = true
     private var selectedId: String? = null
     private var scrolling = false
-
-    abstract fun init()
 
     override fun isFocused(): Boolean {
         return parent.getFocused() == this
@@ -137,7 +134,7 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
         return selectedId == entry.id
     }
 
-    fun getEntryAtPos(x: Int, y: Int): Entry<E>? {
+    private fun getEntryAtPos(x: Int, y: Int): Entry<E>? {
         val int5 = MathHelper.floor(y - top.toDouble()) - headerHeight + scrollAmount.toInt() - 4
         val index = int5 / itemHeight
         return if (x < this.scrollbarPositionX.toDouble() && x >= rowLeft.toDouble() && x <= (rowLeft + rowWidth).toDouble() && index >= 0

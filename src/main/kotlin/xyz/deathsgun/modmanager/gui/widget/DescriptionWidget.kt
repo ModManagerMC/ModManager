@@ -38,7 +38,7 @@ class DescriptionWidget(
 
     private val textRenderer = MinecraftClient.getInstance().textRenderer
 
-    override fun init() {
+    fun init() {
         renderOutline = false
         val lines = Markdown(text).toText()
         for (line in lines) {

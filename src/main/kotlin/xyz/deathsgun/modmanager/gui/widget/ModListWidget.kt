@@ -31,10 +31,6 @@ class ModListWidget(
     parent: IListScreen
 ) : ListWidget<ModListEntry>(client, width, height, top, bottom, itemHeight, parent) {
 
-    override fun init() {
-
-    }
-
     fun setMods(mods: List<Mod>) {
         this.clearEntries()
         mods.forEach {

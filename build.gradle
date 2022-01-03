@@ -86,9 +86,15 @@ jar {
     }
 }
 
+task zip(type: Zip, dependsOn: remapJar) {
+    from remapJar
+}
+build.finalizedBy(zip)
+
+
 import com.modrinth.minotaur.TaskModrinthUpload
-import com.modrinth.minotaur.request.VersionType
 import com.modrinth.minotaur.request.Dependency
+import com.modrinth.minotaur.request.VersionType
 
 task publishModrinth(type: TaskModrinthUpload) {
     onlyIf {
@@ -99,10 +105,10 @@ task publishModrinth(type: TaskModrinthUpload) {
     projectId = "6kq7BzRK"
     versionNumber = version
     uploadFile = remapJar
-    versionType = VersionType.ALPHA
-    addGameVersion(project.minecraft_version)
+    versionType = VersionType.RELEASE
+    addGameVersion(project.release_target)
     addLoader("fabric")
-    addDependency("E4QBMVtO", Dependency.DependencyType.REQUIRED)
-    addDependency("1qsZV7U7", Dependency.DependencyType.REQUIRED)
+    addDependency("E4QBMVtO", Dependency.DependencyType.REQUIRED) // Mod Menu
+    addDependency("1qsZV7U7", Dependency.DependencyType.REQUIRED) // fabric-language-kotlin
     changelog = file("CHANGELOG.md").getText("UTF-8")
 }
