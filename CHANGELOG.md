@@ -17,7 +17,7 @@
 - Updated to 1.18.1
 - Updated Russian translation (thanks to Felix14-v2) [#97](https://github.com/DeathsGun/ModManager/pull/97)
 
-## [1.2.1] - 22.11.2021
+## [1.2.0+1.18-pre] - 22.11.2021
 
 ### Added
 
