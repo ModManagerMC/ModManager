@@ -88,9 +88,15 @@ jar {
     }
 }
 
+task zip(type: Zip, dependsOn: remapJar) {
+    from remapJar
+}
+build.finalizedBy(zip)
+
+
 import com.modrinth.minotaur.TaskModrinthUpload
-import com.modrinth.minotaur.request.VersionType
 import com.modrinth.minotaur.request.Dependency
+import com.modrinth.minotaur.request.VersionType
 
 task publishModrinth(type: TaskModrinthUpload) {
     onlyIf {
