@@ -75,7 +75,7 @@ class ModsOverviewScreen(private val previousScreen: Screen) : Screen(LiteralTex
             CyclingButtonWidget(
                 180,
                 10,
-                180,
+                120,
                 20,
                 "modmanager.sorting.sort",
                 Sorting::translations,
