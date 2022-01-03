@@ -6,12 +6,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
-import net.minecraft.client.gui.hud.BackgroundHelper.ColorMixer
 import net.minecraft.client.gui.screen.ScreenTexts
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
-import net.minecraft.util.math.MathHelper
 import xyz.deathsgun.modmanager.ModManager
 import xyz.deathsgun.modmanager.api.gui.list.ListWidget
 import xyz.deathsgun.modmanager.update.ProgressListener
@@ -63,7 +61,7 @@ class UpdateProgressListEntry(list: ListWidget<UpdateProgressListEntry>, val upd
     }
 
     private fun renderProgressBar(matrices: MatrixStack, width: Int, minX: Int, minY: Int, maxX: Int, maxY: Int) {
-        val color = ColorMixer.getArgb(255, 255, 255, 255)
+        val color = 0xFFFFFFFF.toInt()
         var barWidth = width / 10
         val overlap = (minX + pos + barWidth) - maxX + 2
         if (overlap > 0) {

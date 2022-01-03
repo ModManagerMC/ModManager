@@ -67,7 +67,7 @@ class ModManager : ClientModInitializer {
 
         @JvmStatic
         fun getMinecraftVersionId(): String {
-            return MinecraftClient.getInstance()?.game?.version?.id ?: "1.18-pre1"
+            return MinecraftClient.getInstance()?.game?.version?.id ?: "1.18.1"
         }
     }
 

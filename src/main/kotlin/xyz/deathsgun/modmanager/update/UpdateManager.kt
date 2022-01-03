@@ -89,7 +89,7 @@ class UpdateManager {
             }
         }.awaitAll()
         finishedUpdateCheck = true
-        if (MinecraftClient.getInstance()?.currentScreen == null) {
+        if (MinecraftClient.getInstance()?.currentScreen == null || updates.isEmpty()) {
             return@runBlocking
         }
         MinecraftClient.getInstance().toastManager.add(

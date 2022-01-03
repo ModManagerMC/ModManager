@@ -35,8 +35,8 @@ class PreLaunchHook : PreLaunchEntrypoint {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onPreLaunch() {
+        ModManager.modManager = ModManager()
         GlobalScope.launch {
-            ModManager.modManager = ModManager()
             ModManager.modManager.update.checkUpdates()
         }
         val filesToDelete = try {
