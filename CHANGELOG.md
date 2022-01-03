@@ -5,6 +5,7 @@
 ### Added
 
 - Update all button. Update all your mods in one go! [#100](https://github.com/DeathsGun/ModManager/issues/100)
+- Support for 1.16
 
 ### Fixed
 
