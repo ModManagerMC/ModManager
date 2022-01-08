@@ -57,7 +57,7 @@ class ModManager : ClientModInitializer {
         @JvmStatic
         fun getVersion(): String {
             return FabricLoader.getInstance().allMods.find { it.metadata.id.equals("modmanager") }
-                ?.metadata?.version?.friendlyString ?: "2.0.0+1.16"
+                ?.metadata?.version?.friendlyString ?: "1.2.1+1.16"
         }
 
         @JvmStatic
