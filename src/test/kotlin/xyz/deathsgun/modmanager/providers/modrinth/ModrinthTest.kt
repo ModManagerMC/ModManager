@@ -127,7 +127,6 @@ internal class ModrinthTest {
         assertTrue(mod.slug.isNotEmpty())
         assertTrue(mod.name.isNotEmpty())
         assertNull(mod.author)
-        assertNotNull(mod.iconUrl)
         assertTrue(mod.shortDescription.isNotEmpty())
         assertTrue(mod.categories.isNotEmpty())
         assertNotNull(mod.description)
