@@ -38,6 +38,7 @@ jobs:
         run: |
           PROPERTIES="$(./gradlew properties --console=plain -q)"
           VERSION="$(echo "$PROPERTIES" | grep "^version:" | cut -f2- -d ' ')"
+          TARGET="$(echo "$PROPERTIES" | grep "^release_target:" | cut -f2- -d ' ')"
           CHANGELOG="$(./gradlew getChangelog --unreleased --no-header --console=plain -q)"
           CHANGELOG="${CHANGELOG//'%'/'%25'}"
           CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
@@ -76,7 +77,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh api repos/{owner}/{repo}/releases \
-            --jq '.[] | select(.draft == true) | .id' \
+            --jq '.[] | select(.draft == true) | select(.target_commitish=="${{ needs.build.outputs.target }}") | .id' \
             | xargs -I '{}' gh api -X DELETE repos/{owner}/{repo}/releases/{}
       # Create new release draft - which is not publicly visible and requires manual acceptance
       - name: Create Release Draft
