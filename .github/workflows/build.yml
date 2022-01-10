@@ -86,7 +86,7 @@ jobs:
         run: |
           gh release create v${{ needs.build.outputs.version }} \
             --draft \
-            --target "${{ needs.build.outputs.target }}"
+            --target "${{ needs.build.outputs.target }}" \
             --title "v${{ needs.build.outputs.version }}" \
             --notes "$(cat << 'EOM'
           ${{ needs.build.outputs.changelog }}
