@@ -30,6 +30,8 @@ jobs:
         id: properties
         shell: bash
         run: |
+          PROPERTIES="$(./gradlew properties --console=plain -q)"
+          TARGET="$(echo "$PROPERTIES" | grep "^release_target:" | cut -f2- -d ' ')"
           CHANGELOG="$(cat << 'EOM' | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d'
           ${{ github.event.release.body }}
           EOM
@@ -74,5 +76,5 @@ jobs:
           gh pr create \
             --title "Changelog update - \`$VERSION\`" \
             --body "Current pull request contains patched \`CHANGELOG.md\` file for the \`$VERSION\` version." \
-            --base main \
+            --base "${{ needs.build.outputs.target }}" \
             --head $BRANCH
