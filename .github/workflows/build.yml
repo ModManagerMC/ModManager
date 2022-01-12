@@ -75,7 +75,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh api repos/{owner}/{repo}/releases \
-            --jq '.[] | select(.draft == true) | select(.target_commitish=="${{ needs.build.outputs.target }}") | .id' \
+            --jq '.[] | select(.draft == true) | select(.target_commitish=="1.16") | .id' \
             | xargs -I '{}' gh api -X DELETE repos/{owner}/{repo}/releases/{}
       # Create new release draft - which is not publicly visible and requires manual acceptance
       - name: Create Release Draft
@@ -84,7 +84,7 @@ jobs:
         run: |
           gh release create v${{ needs.build.outputs.version }} \
             --draft \
-            --target "${{ needs.build.outputs.target }}" \
+            --target 1.16 \
             --title "v${{ needs.build.outputs.version }}" \
             --notes "$(cat << 'EOM'
           ${{ needs.build.outputs.changelog }}
