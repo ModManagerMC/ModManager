@@ -150,7 +150,6 @@ internal class ModrinthTest {
             assertTrue(it.gameVersions.isNotEmpty())
             assertTrue(it.version.isNotEmpty())
             assertTrue(it.changelog.isNotEmpty())
-            assertTrue(it.assets.isNotEmpty())
             it.assets.forEach { asset ->
                 assertTrue(asset.filename.isNotEmpty())
                 assertTrue(asset.filename.endsWith(".jar"))
