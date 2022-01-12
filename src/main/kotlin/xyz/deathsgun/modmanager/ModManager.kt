@@ -20,8 +20,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.fabricmc.api.ClientModInitializer
-import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.MinecraftClient
+import net.minecraft.SharedConstants
 import xyz.deathsgun.modmanager.api.mod.State
 import xyz.deathsgun.modmanager.api.provider.IModProvider
 import xyz.deathsgun.modmanager.api.provider.IModUpdateProvider
@@ -30,6 +29,7 @@ import xyz.deathsgun.modmanager.icon.IconCache
 import xyz.deathsgun.modmanager.providers.modrinth.Modrinth
 import xyz.deathsgun.modmanager.state.SavedState
 import xyz.deathsgun.modmanager.update.UpdateManager
+import java.util.*
 
 class ModManager : ClientModInitializer {
 
@@ -48,6 +48,9 @@ class ModManager : ClientModInitializer {
     }
 
     companion object {
+        private val properties = Properties().apply {
+            load(Companion::class.java.getResourceAsStream("/build.info"))
+        }
         @JvmField
         var shownUpdateNotification: Boolean = false
 
@@ -56,18 +59,17 @@ class ModManager : ClientModInitializer {
 
         @JvmStatic
         fun getVersion(): String {
-            return FabricLoader.getInstance().allMods.find { it.metadata.id.equals("modmanager") }
-                ?.metadata?.version?.friendlyString ?: "1.2.1+1.16"
+            return properties.getProperty("version")
         }
 
         @JvmStatic
         fun getMinecraftReleaseTarget(): String {
-            return MinecraftClient.getInstance()?.game?.version?.releaseTarget ?: "1.16"
+            return properties.getProperty("releaseTarget")
         }
 
         @JvmStatic
         fun getMinecraftVersionId(): String {
-            return MinecraftClient.getInstance()?.game?.version?.id ?: "1.16.5"
+            return SharedConstants.RELEASE_TARGET
         }
     }
 
