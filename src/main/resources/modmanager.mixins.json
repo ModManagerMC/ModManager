@@ -7,7 +7,6 @@
   ],
   "client": [
     "ModsScreenMixin",
-    "TitleScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
