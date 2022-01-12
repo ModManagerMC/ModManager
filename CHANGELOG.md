@@ -1,6 +1,19 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [1.2.2+1.18]
 ### Fixed
 - Screen getting spammed by update notifications
 
