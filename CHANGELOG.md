@@ -1,17 +1,8 @@
 # Changelog
 
 ## [Unreleased]
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
-
 ### Fixed
-
-### Security
+- Screen getting spammed by update notifications
 
 ## [1.2.1+1.16.5]
 ### Added
