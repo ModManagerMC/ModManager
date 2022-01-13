@@ -36,6 +36,7 @@
     "modmanager.details.author": "Автор: %s",
     "modmanager.details.versioning": "С %s до %s",
     "modmanager.error.title": "§b§4Ошибка:§r",
+    "modmanager.error.container.notFound": "Мод, который вы пытаетесь обновить, был удалён.\nОбновление не представляется возможным.",
     "modmanager.error.unknown": "Неизвестная ошибка при получении данных:\n %s",
     "modmanager.error.unknown.install": "Неизвестная ошибка в процессе установки:\n %s",
     "modmanager.error.unknown.update": "Неизвестная ошибка в процессе обновления:\n %s",
@@ -43,7 +44,10 @@
     "modmanager.error.network": "Ошибка подключения при получении данных:\n %s",
     "modmanager.error.failedToParse": "Не удалось обработать запрос:\n %s",
     "modmanager.error.noCompatibleModVersionFound": "Совместимая версия для вашего текущего канала не найдена.\nПопробуйте изменить канал в настройках Mod Manager.",
+    "modmanager.error.noProviderSelected": "Выбранный поставщик %s недоступен.",
+    "modmanager.error.update.noFabricJar": "Автор мода пометил версию совместимой с Fabric,\nно не предоставил её.",
     "modmanager.error.jar.notFound": "Ошибка Файл .jar не найден. Возможно, это часть другого мода?",
+    "modmanager.error.jar.failedDelete": "Не удалось удалить мод:\n %s",
     "modmanager.error.invalidHash": "Ошибка Загруженный файл (вероятно) повреждён, так как хэши %s не совпадают.\nПроверьте ваше соединение или свяжитесь с автором мода.",
     "modmanager.status.installing": "Установка %s...",
     "modmanager.status.install.success": "%s успешно установлен!\nХотите продолжить?",
@@ -59,5 +63,6 @@
     "modmanager.page.previous": "Предыдущая страница",
     "modmanager.provider.info": "Позволяет изменить источник по умолчанию для просмотра",
     "modmanager.toast.update.title": "Доступны обновления!",
-    "modmanager.toast.update.description": "Можно обновить модов: %d"
+    "modmanager.toast.update.description": "Можно обновить модов: %d",
+    "modmanager.title.updating": "Обновление всех модов..."
 }
