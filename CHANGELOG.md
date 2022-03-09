@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 ### Added
-
+- Support for ModMenu 3.1.0
 ### Changed
 
 ### Deprecated
