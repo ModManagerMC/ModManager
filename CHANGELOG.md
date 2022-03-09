@@ -2,7 +2,21 @@
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [1.2.3+1.18]
+### Added
 - Support for ModMenu 3.1.0
+
 ### Changed
 
 ### Deprecated
@@ -22,9 +36,11 @@
 - Update all button. Update all your mods in one go! [#100](https://github.com/DeathsGun/ModManager/issues/100)
 - Support for 1.16
 
+
 ### Fixed
 - Race condition when showing the update notification [#108](https://github.com/DeathsGun/ModManager/issues/108)
 - Mods showing up that are actually up-to-date [#101](https://github.com/DeathsGun/ModManager/issues/101)
+
 
 ### Changed
 - Updated to 1.18.1
@@ -33,6 +49,7 @@
 ## [1.2.0+1.18-pre] - 22.11.2021
 ### Added
 - Compatibility with 1.18-pre releases
+
 
 ### Fixed
 - Essentials compatibility [#84](https://github.com/DeathsGun/ModManager/issues/84)
@@ -44,9 +61,11 @@
 - New browsing experience by allowing more detailed filters [#79](https://github.com/DeathsGun/ModManager/issues/79)
 - Hide mods being shown in the updatable mods section [#77](https://github.com/DeathsGun/ModManager/issues/77)
 
+
 ### Fixed
 - Delete mods on preLaunch which should avoid the update
   problem [#91](https://github.com/DeathsGun/ModManager/issues/91)
+
 
 ### Changed
 - Minimum ```fabric-loader``` version is now 0.12
@@ -56,6 +75,7 @@
 - Old versions not being deleted (Now really) [#51](https://github.com/DeathsGun/ModManager/issues/51)
 - Whitespaces producing errors [#70](https://github.com/DeathsGun/ModManager/issues/70)
 - Tabs producing errors [#67](https://github.com/DeathsGun/ModManager/issues/67)
+
 
 ### Changed
 - Updated turkish translation (thanks to kuzeeeyk) [#75](https://github.com/DeathsGun/ModManager/pull/75)
@@ -72,12 +92,14 @@
 - Sort mods by relevance, downloads, updated and newest [#45](https://github.com/DeathsGun/ModManager/issues/45)
 - Allows mods to disable update checking for their mod [#62](https://github.com/DeathsGun/ModManager/issues/62)
 
+
 ### Fixed
 - NullPointerException when updating mods [#42](https://github.com/DeathsGun/ModManager/issues/42)
 - NullPointerException when mods not follow SemVer [#61](https://github.com/DeathsGun/ModManager/issues/64)
 - Forge versions shown as update [#56](https://github.com/DeathsGun/ModManager/issues/56)
 - Old versions not being deleted [#51](https://github.com/DeathsGun/ModManager/issues/51)
 - Mods shown outdated but there actually up to date [#52](https://github.com/DeathsGun/ModManager/issues/52)
+
 
 ### Changed
 - Rewrite in Kotlin [#44](https://github.com/DeathsGun/ModManager/pull/44)
@@ -89,10 +111,12 @@
 - Korean translation (Special thanks to arlytical#1) [#32](https://github.com/DeathsGun/ModManager/pull/32)
 - Russian translation (Special thanks to Felix14-v2) [#31](https://github.com/DeathsGun/ModManager/pull/31)
 
+
 ### Fixed
 - CPU overload when using ModManager [#48](https://github.com/DeathsGun/ModManager/issues/48)
 - Forge artifacts being downloaded [#37](https://github.com/DeathsGun/ModManager/pull/37)
 - NullPointerException's while updating a mod [#34](https://github.com/DeathsGun/ModManager/issues/34)
+
 
 ### Changed
 - Improved Turkish translation (Special thanks to kuzeeeyk) [#39](https://github.com/DeathsGun/ModManager/pull/39)
@@ -102,6 +126,7 @@
 - Turkish translation (Special thanks to kuzeeeyk) [#21](https://github.com/DeathsGun/ModManager/pull/21)
 - Only show "Updatable mods" category when there are updatable
   mods [#10](https://github.com/DeathsGun/ModManager/issues/10)
+
 
 ### Fixed
 - Crashes when opening ModMenu [#13](https://github.com/DeathsGun/ModManager/issues/13)
