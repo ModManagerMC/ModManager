@@ -42,7 +42,7 @@
   ],
   "depends": {
 	"fabricloader": ">=0.12",
-	"modmenu": "~${modmenu_version}",
+	"modmenu": "^${modmenu_version}",
 	"fabric-language-kotlin": ">=${fabric_kotlin_version}",
 	"minecraft": "1.18.x",
 	"java": ">=16"
