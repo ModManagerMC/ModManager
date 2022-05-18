@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "name": "ModManager",
+  "id": "modmanager",
+  "version": "${version}",
+  "description": "Extends ModMenu with an additional tab where you can install mods from Modrinth",
+  "environment": "client",
+  "icon": "assets/modmanager/icon.png",
+  "entrypoints": {
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "net.modmanagermc.modmanager.ModManagerEntrypoint"
+      }
+    ]
+  },
+  "custom": {
+    "modmanager": {
+      "modrinth": "6kq7BzRK"
+    }
+  },
+  "depends": {
+    "fabricloader": ">=0.12",
+    "fabric-language-kotlin": ">=${fabricKotlinVersion}",
+    "minecraft": "~1.18",
+    "java": ">=17"
+  },
+  "authors": [
+	"DeathsGun"
+  ],
+  "contributors": [
+    "Felix14-v2",
+    "kuzeeeyk",
+    "MineCommanderCN",
+    "buiawpkgew1",
+    "luni3359",
+    "msfjarvis",
+    "AlphaKR93"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/modmanager",
+    "sources": "https://github.com/ModManagerMC/ModManager",
+    "issues": "https://github.com/ModManagerMC/ModManager/issues"
+  }
+}
