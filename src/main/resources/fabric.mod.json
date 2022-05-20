@@ -6,6 +6,23 @@
   "description": "Extends ModMenu with an additional tab where you can install mods from Modrinth",
   "environment": "client",
   "icon": "assets/modmanager/icon.png",
+  "authors": [
+    "DeathsGun"
+  ],
+  "contributors": [
+    "Felix14-v2",
+    "kuzeeeyk",
+    "MineCommanderCN",
+    "buiawpkgew1",
+    "luni3359",
+    "msfjarvis",
+    "AlphaKR93"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/modmanager",
+    "sources": "https://github.com/ModManagerMC/ModManager",
+    "issues": "https://github.com/ModManagerMC/ModManager/issues"
+  },
   "entrypoints": {
     "client": [
       {
@@ -25,21 +42,7 @@
     "minecraft": "~1.18",
     "java": ">=17"
   },
-  "authors": [
-	"DeathsGun"
-  ],
-  "contributors": [
-    "Felix14-v2",
-    "kuzeeeyk",
-    "MineCommanderCN",
-    "buiawpkgew1",
-    "luni3359",
-    "msfjarvis",
-    "AlphaKR93"
-  ],
-  "contact": {
-    "homepage": "https://modrinth.com/mod/modmanager",
-    "sources": "https://github.com/ModManagerMC/ModManager",
-    "issues": "https://github.com/ModManagerMC/ModManager/issues"
-  }
+  "mixins": [
+    "modmanager.mixins.json"
+  ]
 }
