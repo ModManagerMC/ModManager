@@ -1,6 +1,7 @@
 package net.modmanagermc.modmanager
 
 import net.fabricmc.api.ClientModInitializer
+import net.minecraft.util.Language
 import net.modmanagermc.core.Core
 import net.modmanagermc.core.update.IUpdateService
 

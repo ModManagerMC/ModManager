@@ -42,6 +42,9 @@
     "minecraft": "~1.18",
     "java": ">=17"
   },
+  "breaks": {
+    "modget": "*"
+  },
   "mixins": [
     "modmanager.mixins.json"
   ]
