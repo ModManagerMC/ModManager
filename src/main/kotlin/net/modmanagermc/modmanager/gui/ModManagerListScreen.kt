@@ -7,15 +7,19 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.LiteralText
 import net.minecraft.text.TranslatableText
 import net.modmanagermc.core.controller.ModListController
+import net.modmanagermc.core.model.Mod
 import net.modmanagermc.core.screen.IListScreen
 import net.modmanagermc.modmanager.gui.widgets.CategoryListWidget
+import net.modmanagermc.modmanager.gui.widgets.ModListWidget
 import kotlin.math.min
 
-class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralText.EMPTY), IListScreen {
+class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralText.EMPTY), IListScreen,
+    ModListController.View {
 
-    private val controller = ModListController()
-    private lateinit var searchField: TextFieldWidget
+    private val controller = ModListController(this)
+    private lateinit var modList: ModListWidget
     private lateinit var categoryList: CategoryListWidget
+    private lateinit var searchField: TextFieldWidget
     private lateinit var nextPage: ButtonWidget
     private lateinit var previousPage: ButtonWidget
 
@@ -25,7 +29,7 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
         searchField = addSelectableChild(
             TextFieldWidget(
                 textRenderer,
-                5,
+                10,
                 10,
                 160,
                 20,
@@ -45,8 +49,11 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
                 this,
             )
         )
-        categoryList.setLeftPos(5)
+        categoryList.setLeftPos(10)
         categoryList.addAll(controller.categories)
+
+        modList = addSelectableChild(ModListWidget(client!!, width - 10 - 135, height, 35, height - 35, 36, this))
+        modList.setLeftPos(135)
 
         val middle = (width - 135) / 2
         val buttonWidth = min((width - 135 - 20) / 2, 200)
@@ -70,6 +77,7 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
 
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         renderBackgroundTexture(0)
+        modList.render(matrices, mouseX, mouseY, delta)
         categoryList.render(matrices, mouseX, mouseY, delta)
         searchField.render(matrices, mouseX, mouseY, delta)
         super.render(matrices, mouseX, mouseY, delta)
@@ -78,9 +86,11 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
     override fun tick() {
         controller.tick()
         nextPage.active = controller.nextPageAvailable
+        previousPage.active = controller.previousPageAvailable
     }
 
     override fun close() {
+        modList.close()
         controller.close()
         client!!.setScreen(parentScreen)
     }
@@ -100,5 +110,7 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
             }
         }
     }
+
+    override fun setMods(mods: List<Mod>) = modList.setMods(mods)
 
 }

@@ -16,7 +16,6 @@
 
 package net.modmanagermc.modmanager.gui.widgets
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import net.minecraft.client.MinecraftClient
 import net.modmanagermc.core.screen.IListScreen
 
