@@ -1,14 +1,13 @@
 {
   "required": true,
-  "minVersion": "0.8",
-  "package": "xyz.deathsgun.modmanager.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-  ],
+  "minVersion": "0.8",
+  "package": "net.modmanagermc.modmanager.mixin",
   "client": [
-    "ModsScreenMixin",
+	"ModsScreenMixin",
+	"ModMenuTexturedButtonWidgetMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+	"defaultRequire": 1
   }
 }

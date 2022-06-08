@@ -1,50 +1,51 @@
 {
   "schemaVersion": 1,
+  "name": "ModManager",
   "id": "modmanager",
   "version": "${version}",
-  "name": "Mod Manager",
   "description": "Extends ModMenu with an additional tab where you can install mods from Modrinth",
+  "environment": "client",
+  "icon": "assets/modmanager/icon.png",
   "authors": [
-	"DeathsGun"
+    "DeathsGun"
+  ],
+  "contributors": [
+    "Felix14-v2",
+    "kuzeeeyk",
+    "MineCommanderCN",
+    "buiawpkgew1",
+    "luni3359",
+    "msfjarvis",
+    "AlphaKR93"
   ],
   "contact": {
-	"homepage": "https://modrinth.com/mod/modmanager",
-	"sources": "https://github.com/DeathsGun/ModManager",
-	"issues": "https://github.com/DeathsGun/ModManager/issues"
+    "homepage": "https://modrinth.com/mod/modmanager",
+    "sources": "https://github.com/ModManagerMC/ModManager",
+    "issues": "https://github.com/ModManagerMC/ModManager/issues"
   },
-  "icon": "assets/modmanager/icon.png",
-  "license": "Apache-2.0",
-  "environment": "client",
   "entrypoints": {
-	"client": [
-	  {
-		"adapter": "kotlin",
-		"value": "xyz.deathsgun.modmanager.ModManager"
-	  }
-	],
-	"preLaunch": [
-	  {
-		"adapter": "kotlin",
-		"value": "xyz.deathsgun.modmanager.PreLaunchHook"
-	  }
-	],
-	"modmenu": [
-	  "xyz.deathsgun.modmanager.ModMenuEntrypoint"
-	]
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "net.modmanagermc.modmanager.ModManagerEntrypoint"
+      }
+    ]
   },
   "custom": {
     "modmanager": {
       "modrinth": "6kq7BzRK"
     }
   },
+  "depends": {
+    "fabricloader": ">=0.12",
+    "fabric-language-kotlin": ">=${fabricKotlinVersion}",
+    "minecraft": "~1.18",
+    "java": ">=17"
+  },
+  "breaks": {
+    "modget": "*"
+  },
   "mixins": [
     "modmanager.mixins.json"
-  ],
-  "depends": {
-	"fabricloader": ">=0.12",
-	"modmenu": "^${modmenu_version}",
-	"fabric-language-kotlin": ">=${fabric_kotlin_version}",
-	"minecraft": "1.18.x",
-	"java": ">=16"
-  }
+  ]
 }
