@@ -27,7 +27,8 @@ class CategoryListWidget(
     parentScreen
 ) {
 
-    fun addAll(categories: List<Category>) {
+    fun setCategories(categories: List<Category>) {
+        clearEntries()
         for (category in categories) {
             addEntry(CategoryListEntry(this, category))
         }

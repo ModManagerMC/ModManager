@@ -45,7 +45,7 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
     protected val parent: IListScreen
 ) : AlwaysSelectedEntryListWidget<E>(client, width, height, top, bottom, itemHeight) {
 
-    var renderOutline: Boolean = true
+    private var renderOutline: Boolean = true
     private var selectedId: String? = null
     private var scrolling = false
 

@@ -17,6 +17,7 @@ import net.modmanagermc.core.mod.IModService
 import net.modmanagermc.core.mod.State
 import net.modmanagermc.core.model.Mod
 import net.modmanagermc.core.screen.IListScreen
+import net.modmanagermc.modmanager.icon.IconCache
 
 class ModListWidget(
     client: MinecraftClient,
@@ -29,29 +30,13 @@ class ModListWidget(
 ) : ListWidget<ModListWidget.Entry>(client, width, height, top, bottom, itemHeight, parent) {
 
     fun setMods(list: List<Mod>) {
-        for (child in children()) {
-            child.close()
-        }
         replaceEntries(list.map { Entry(this, it) })
-    }
-
-    fun close() {
-        for (child in children()) {
-            child.close()
-        }
     }
 
     class Entry(list: ListWidget<Entry>, private val mod: Mod) : ListWidget.Entry<Entry>(list, mod.id) {
 
-        private val unknownIcon = Identifier("minecraft", "textures/misc/unknown_pack.png")
-        private val loadingIcon = Identifier("modmanager", "textures/gui/loading.png")
-        private var modIcon: Identifier? = null
-        private val imageService: IImageService by Core.di
         private val modService: IModService by Core.di
-
-        init {
-            imageService.downloadImage(mod.iconUrl)
-        }
+        private val iconCache: IconCache by Core.di
 
         override fun render(
             matrices: MatrixStack?,
@@ -68,7 +53,7 @@ class ModListWidget(
             val client = MinecraftClient.getInstance()
             val iconSize = 32
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-            bindIcon(mod)
+            iconCache.bindIcon(mod)
             RenderSystem.enableBlend()
             DrawableHelper.drawTexture(matrices, x, y, 0.0f, 0.0f, iconSize, iconSize, iconSize, iconSize)
             RenderSystem.disableBlend()
@@ -131,39 +116,6 @@ class ModListWidget(
 
         override fun getNarration(): Text {
             return LiteralText(mod.name)
-        }
-
-
-        private fun bindIcon(mod: Mod) {
-            var identifier = when(imageService.getImageState(mod.iconUrl)) {
-                ImageState.ERRORED -> unknownIcon
-                ImageState.DOWNLOADING -> loadingIcon
-                ImageState.DOWNLOADED -> modIcon
-            }
-            if (identifier != null) {
-                RenderSystem.setShaderTexture(0, identifier)
-                return
-            }
-            try {
-                val image = NativeImage.read(imageService.openImage(mod.iconUrl))
-                identifier = Identifier("modmanager", "textures/mod/icons/${mod.id.lowercase()}")
-                MinecraftClient.getInstance().textureManager.registerTexture(identifier, NativeImageBackedTexture(image))
-            } catch (e: Exception) {
-                imageService.setImageState(mod.iconUrl, ImageState.ERRORED)
-                RenderSystem.setShaderTexture(0, unknownIcon)
-                return
-            }
-            modIcon = identifier
-            RenderSystem.setShaderTexture(0, identifier)
-        }
-
-        fun close() {
-            if (modIcon == null || modIcon == unknownIcon || modIcon == loadingIcon) {
-                return
-            }
-            MinecraftClient.getInstance().execute {
-                MinecraftClient.getInstance().textureManager.destroyTexture(modIcon!!)
-            }
         }
 
     }
