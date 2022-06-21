@@ -4,15 +4,10 @@ import com.mojang.blaze3d.systems.RenderSystem
 import com.terraformersmc.modmenu.util.DrawingUtil
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
-import net.minecraft.client.texture.NativeImage
-import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.*
-import net.minecraft.util.Identifier
 import net.minecraft.util.Language
 import net.modmanagermc.core.Core
-import net.modmanagermc.core.image.IImageService
-import net.modmanagermc.core.image.ImageState
 import net.modmanagermc.core.mod.IModService
 import net.modmanagermc.core.mod.State
 import net.modmanagermc.core.model.Mod

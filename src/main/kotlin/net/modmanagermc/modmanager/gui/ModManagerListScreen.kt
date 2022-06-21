@@ -44,14 +44,14 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
                 10,
                 160,
                 20,
-                TranslatableText("modmanager.search")
+                TranslatableText("modmanager.field.search")
             )
         )
         searchField.setChangedListener { controller.query = it }
 
         sortingButtonWidget = addDrawableChild(
             CyclingButtonWidget(
-                180,
+                175,
                 10,
                 120,
                 20,
@@ -67,26 +67,25 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
                 120,
                 height,
                 35,
-                height - 35,
+                height - 30,
                 client!!.textRenderer.fontHeight + 4,
                 this,
             )
         )
         categoryList.setLeftPos(10)
 
-        modList = addSelectableChild(ModListWidget(client!!, width - 10 - 135, height, 35, height - 35, 36, this))
+        modList = addSelectableChild(ModListWidget(client!!, width - 5 - 135, height, 35, height - 30, 36, this))
         modList.setLeftPos(135)
 
         addDrawableChild(ButtonWidget(10, height - 25, 120, 20, ScreenTexts.BACK) {
             close()
         })
 
-        val middle = width / 2 - 135
-        val buttonWidth = min((width - 135 - 20) / 2, 200)
+        val buttonWidth = (width - 135 - 10) / 2
 
         previousPage = addDrawableChild(
             ButtonWidget(
-                middle - 5,
+                135,
                 height - 25,
                 buttonWidth,
                 20,
@@ -97,7 +96,7 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
             })
         nextPage = addDrawableChild(
             ButtonWidget(
-                middle + buttonWidth + 5,
+                135 + buttonWidth + 5,
                 height - 25,
                 buttonWidth,
                 20,
@@ -151,12 +150,9 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
 
     override fun setMods(mods: List<Mod>) = modList.setMods(mods)
     override fun error(e: Exception) {
-        val logger = LogManager.getLogger("ModManager|ModListScreen")
-        if (e !is ModManagerException) {
-            logger.error("Unhandled error", e)
-            return
+        client!!.execute {
+            client!!.setScreen(ErrorScreen(parentScreen, e))
         }
-        logger.error(Language.getInstance()[e.translationId].format(e.args))
     }
 
     override fun setCategories(categories: List<Category>) = categoryList.setCategories(categories)
