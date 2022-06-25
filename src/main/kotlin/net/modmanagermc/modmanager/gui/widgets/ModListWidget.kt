@@ -28,7 +28,7 @@ class ModListWidget(
         replaceEntries(list.map { Entry(this, it) })
     }
 
-    class Entry(list: ListWidget<Entry>, private val mod: Mod) : ListWidget.Entry<Entry>(list, mod.id) {
+    class Entry(list: ListWidget<Entry>, val mod: Mod) : ListWidget.Entry<Entry>(list, mod.id) {
 
         private val modService: IModService by Core.di
         private val iconCache: IconCache by Core.di

@@ -121,6 +121,7 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
         controller.tick()
         nextPage.active = controller.nextPageAvailable
         previousPage.active = controller.previousPageAvailable
+        controller.scrollAmount = modList.scrollAmount
     }
 
     override fun close() {
@@ -130,6 +131,17 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
     }
 
     override fun <E> updateSelectedEntry(widget: Any, entry: E?) {
+        if (widget !is ModListWidget) {
+            return
+        }
+        if (entry == null) {
+            return
+        }
+        if (controller.selectedMod?.id == (entry as ModListWidget.Entry).id) {
+            client!!.setScreen(ModInfoScreen(this, controller.selectedMod!!))
+            return
+        }
+        controller.selectedMod = (entry as ModListWidget.Entry).mod
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -156,5 +168,8 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
     }
 
     override fun setCategories(categories: List<Category>) = categoryList.setCategories(categories)
+    override fun setScrollAmount(scrollAmount: Double) {
+        modList.scrollAmount = scrollAmount
+    }
 
 }
