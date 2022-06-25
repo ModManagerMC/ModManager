@@ -15,6 +15,7 @@ jobs:
       - name: Fetch Sources
         uses: actions/checkout@v2.4.0
         with:
+          submodules: 'true'
           ref: ${{ github.event.release.tag_name }}
 
       # Setup Java 17 environment for the next steps
