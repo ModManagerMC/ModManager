@@ -18,7 +18,10 @@ jobs:
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: test
-        run: ./gradlew test
+        run: |
+          mkdir -p core/run
+          mkdir -p run
+          ./gradlew test
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
