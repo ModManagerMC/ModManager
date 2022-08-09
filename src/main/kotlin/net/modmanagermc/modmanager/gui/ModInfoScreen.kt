@@ -13,17 +13,29 @@ import net.modmanagermc.core.model.Category
 import net.modmanagermc.core.model.Mod
 import net.modmanagermc.core.screen.IListScreen
 import net.modmanagermc.modmanager.gui.widgets.DescriptionWidget
+import net.modmanagermc.modmanager.gui.widgets.ProgressWidget
 import net.modmanagermc.modmanager.icon.IconCache
+import kotlin.math.roundToInt
 
 class ModInfoScreen(private val parentScreen: Screen, mod: Mod) : Screen(LiteralText.EMPTY), ModInfoController.View,
     IListScreen {
 
     private val iconCache: IconCache by Core.di
     private val controller = ModInfoController(mod, this)
+    private lateinit var loadingBar: ProgressWidget
     private lateinit var actionButton: ButtonWidget
     private lateinit var descriptionWidget: DescriptionWidget
 
     override fun init() {
+        loadingBar = ProgressWidget(
+            client!!,
+            width / 8,
+            (height * 0.5).roundToInt(),
+            (width * 0.75).roundToInt(),
+            5,
+            true,
+        )
+        loadingBar.visible = false
         controller.init()
         val buttonX = width / 8
 
@@ -54,8 +66,12 @@ class ModInfoScreen(private val parentScreen: Screen, mod: Mod) : Screen(Literal
         })
     }
 
-    override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         renderBackgroundTexture(0)
+        if (loadingBar.visible) {
+            loadingBar.render(matrices, mouseX, mouseY, delta)
+            return
+        }
         descriptionWidget.render(matrices, mouseX, mouseY, delta)
 
         val iconSize = 64
@@ -108,6 +124,7 @@ class ModInfoScreen(private val parentScreen: Screen, mod: Mod) : Screen(Literal
     }
 
     override fun tick() {
+        loadingBar.tick()
         controller.tick()
     }
 
@@ -123,6 +140,12 @@ class ModInfoScreen(private val parentScreen: Screen, mod: Mod) : Screen(Literal
 
     override fun updateActionText(translationId: String) {
         actionButton.message = TranslatableText(translationId)
+    }
+
+    override fun error(e: Exception) = client!!.setScreen(ErrorScreen(parentScreen, e))
+
+    override fun setLoading(loading: Boolean) {
+        loadingBar.visible = loading
     }
 
     private fun Category.text(): TranslatableText {

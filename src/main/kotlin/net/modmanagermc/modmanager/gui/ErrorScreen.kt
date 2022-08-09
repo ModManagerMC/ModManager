@@ -11,7 +11,6 @@ import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.math.MathHelper
 import net.modmanagermc.core.exceptions.ModManagerException
-import java.lang.Exception
 
 class ErrorScreen(private val parenScreen: Screen, private val exception: Exception) : Screen(TranslatableText("modmanager.error.title")) {
 
@@ -40,6 +39,7 @@ class ErrorScreen(private val parenScreen: Screen, private val exception: Except
                 20,
                 TranslatableText("modmanager.button.tryAgain")
             ) {
+                //TODO: Try again action
                 client!!.setScreen(parenScreen)
             }
         )

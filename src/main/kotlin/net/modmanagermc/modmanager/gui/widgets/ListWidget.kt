@@ -42,7 +42,7 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
     top: Int,
     var bottom: Int,
     itemHeight: Int,
-    protected val parent: IListScreen
+    protected val parent: IListScreen?
 ) : AlwaysSelectedEntryListWidget<E>(client, width, height, top, bottom, itemHeight) {
 
     var renderOutline: Boolean = true
@@ -50,13 +50,13 @@ abstract class ListWidget<E : ListWidget.Entry<E>>(
     private var scrolling = false
 
     override fun isFocused(): Boolean {
-        return parent.getFocused() == this
+        return parent?.getFocused() == this
     }
 
     override fun setSelected(entry: E?) {
         super.setSelected(entry)
         selectedId = entry?.id
-        parent.updateSelectedEntry(this, selectedOrNull)
+        parent?.updateSelectedEntry(this, selectedOrNull)
     }
 
     override fun isSelectedEntry(index: Int): Boolean {

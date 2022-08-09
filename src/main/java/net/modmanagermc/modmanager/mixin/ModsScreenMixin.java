@@ -2,7 +2,6 @@ package net.modmanagermc.modmanager.mixin;
 
 import com.terraformersmc.modmenu.gui.ModsScreen;
 import com.terraformersmc.modmenu.gui.widget.ModMenuTexturedButtonWidget;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -17,12 +16,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Objects;
 
 @Mixin(ModsScreen.class)
-public class ModsScreenMixin extends Screen {
+public abstract class ModsScreenMixin extends Screen {
 
     private static final Identifier MODMANAGER_BUTTON_LOCATION = new Identifier("modmanager", "textures/gui/install_button.png");
     private static final TranslatableText MODMANAGER_BUTTON_OPTIONS = new TranslatableText("modmanager.button.open");
     @Shadow
     private int paneWidth;
+
+    @Shadow
+    protected abstract void setTooltip(Text tooltip);
 
     protected ModsScreenMixin(Text title) {
         super(title);

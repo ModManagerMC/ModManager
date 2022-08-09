@@ -18,9 +18,11 @@ import net.modmanagermc.core.store.Sort
 import net.modmanagermc.modmanager.gui.widgets.CategoryListWidget
 import net.modmanagermc.modmanager.gui.widgets.CyclingButtonWidget
 import net.modmanagermc.modmanager.gui.widgets.ModListWidget
+import net.modmanagermc.modmanager.gui.widgets.ProgressWidget
 import net.modmanagermc.modmanager.icon.IconCache
 import org.apache.logging.log4j.LogManager
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralText.EMPTY), IListScreen,
     ModListController.View {
@@ -33,8 +35,19 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
     private lateinit var nextPage: ButtonWidget
     private lateinit var previousPage: ButtonWidget
     private lateinit var sortingButtonWidget: CyclingButtonWidget<Sort>
+    private lateinit var loadingBar: ProgressWidget
 
     override fun init() {
+        loadingBar = ProgressWidget(
+            client!!,
+            width / 8,
+            (height * 0.5).roundToInt(),
+            (width * 0.75).roundToInt(),
+            5,
+            true,
+        )
+        loadingBar.visible = false
+
         client!!.keyboard.setRepeatEvents(true)
 
         searchField = addSelectableChild(
@@ -109,8 +122,12 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
         controller.init()
     }
 
-    override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         renderBackgroundTexture(0)
+        if (loadingBar.visible) {
+            loadingBar.render(matrices, mouseX, mouseY, delta)
+            return
+        }
         modList.render(matrices, mouseX, mouseY, delta)
         categoryList.render(matrices, mouseX, mouseY, delta)
         searchField.render(matrices, mouseX, mouseY, delta)
@@ -118,6 +135,7 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
     }
 
     override fun tick() {
+        loadingBar.tick()
         controller.tick()
         nextPage.active = controller.nextPageAvailable
         previousPage.active = controller.previousPageAvailable
@@ -170,6 +188,10 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
     override fun setCategories(categories: List<Category>) = categoryList.setCategories(categories)
     override fun setScrollAmount(scrollAmount: Double) {
         modList.scrollAmount = scrollAmount
+    }
+
+    override fun setLoading(loading: Boolean) {
+        loadingBar.visible = loading
     }
 
 }

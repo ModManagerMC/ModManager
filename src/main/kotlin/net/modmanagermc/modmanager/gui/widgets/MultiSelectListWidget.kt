@@ -31,7 +31,7 @@ abstract class MultiSelectListWidget<E : MultiSelectListWidget.Entry<E>>(
     top: Int,
     bottom: Int,
     itemHeight: Int,
-    parent: IListScreen
+    parent: IListScreen?
 ) : ListWidget<E>(client, width, height, top, bottom, itemHeight, parent) {
 
     private var selectedIds = ArrayList<String>()
@@ -46,7 +46,7 @@ abstract class MultiSelectListWidget<E : MultiSelectListWidget.Entry<E>>(
         } else {
             selectedIds.add(entry.id)
         }
-        parent.updateMultipleEntries(
+        parent?.updateMultipleEntries(
             this,
             ArrayList(children().filter { selectedIds.contains(it.id) }.sortedBy { selectedIds.indexOf(it.id) })
         )
