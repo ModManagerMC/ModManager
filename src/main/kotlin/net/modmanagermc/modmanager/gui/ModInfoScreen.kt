@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2021-2022 DeathsGun
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.modmanagermc.modmanager.gui
 
 import com.mojang.blaze3d.systems.RenderSystem
@@ -36,8 +52,18 @@ class ModInfoScreen(private val parentScreen: Screen, mod: Mod) : Screen(Literal
             true,
         )
         loadingBar.visible = false
-        controller.init()
+
         val buttonX = width / 8
+        actionButton = addDrawableChild(ButtonWidget(
+            this.width - buttonX - 150,
+            this.height - 28,
+            150,
+            20,
+            TranslatableText("modmanager.button.install")
+        ) {
+            controller.doAction()
+        })
+        controller.init()
 
         descriptionWidget = addSelectableChild(
             DescriptionWidget(
@@ -54,15 +80,6 @@ class ModInfoScreen(private val parentScreen: Screen, mod: Mod) : Screen(Literal
         descriptionWidget.setLeftPos(10)
         addDrawableChild(ButtonWidget(buttonX, height - 28, 150, 20, ScreenTexts.BACK) {
             client!!.setScreen(parentScreen)
-        })
-        actionButton = addDrawableChild(ButtonWidget(
-            this.width - buttonX - 150,
-            this.height - 28,
-            150,
-            20,
-            TranslatableText("modmanager.button.install")
-        ) {
-            controller.doAction()
         })
     }
 
