@@ -55,6 +55,6 @@
   "modmanager.provider.info": "Arama yapmak için varsayılan sağlayıcını değiştirmeni sağlar",
   "modmanager.toast.update.title": "Güncellemeler Mevcut!",
   "modmanager.toast.update.description": "%d mod güncellenebilir durumda",
-  "modmanager.error.jar.notFound": "Error jar file not found. Is it part of another mod?",
-  "modmanager.error.invalidHash": "Error the downloaded file is probably broken as the %s hashes don't match\nTry checking your network or contact the mod author"
+  "modmanager.error.jar.notFound": "Hata jar dosyası bulunamadı. Başka bir moda mı ait?",
+  "modmanager.error.invalidHash": "Hata %s hashleri eşleşmediğinden indirilen dosya muhtemelen bozuk\nMod yapımcısına ulaşmayı ya da bağlantınızı kontrol etmeyi deneyin"
 }
