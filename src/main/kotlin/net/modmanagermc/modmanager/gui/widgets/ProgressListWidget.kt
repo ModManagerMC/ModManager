@@ -65,6 +65,7 @@ class ProgressListWidget(
             0,
             0,
             0,
+            LiteralText.EMPTY,
             indeterminate,
         )
 

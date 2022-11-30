@@ -33,6 +33,7 @@ class ErrorScreen(private val parenScreen: Screen, private val exception: Except
     private lateinit var text: MultilineText
 
     override fun init() {
+        exception.printStackTrace()
         this.text = MultilineText.create(this.textRenderer, this.exception.toErrorMessage(), this.width - 50)
         val linesHeight = this.text.count() * 9
         val bottom = MathHelper.clamp(90 + linesHeight + 12, this.height / 6 + 69, this.height - 24)

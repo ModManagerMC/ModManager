@@ -38,18 +38,7 @@ class DescriptionWidget(
 
     init {
         renderOutline = false
-        val lines = Markdown(text).toText()
-        for (line in lines) {
-            if (textRenderer.getWidth(line) >= width - 10) {
-                val texts: List<OrderedText> = textRenderer.wrapLines(line, width - 10)
-                for (wrappedLine in texts) {
-                    addEntry(Entry(this, getText(wrappedLine)))
-                }
-                continue
-            }
-            addEntry(Entry(this, line))
-        }
-        addEntry(Entry(this, LiteralText.EMPTY))
+        updateText(text)
     }
 
     override fun getSelectedOrNull(): Entry? {
@@ -78,6 +67,22 @@ class DescriptionWidget(
             }
         }
         return LiteralText(text).apply { this.style = style }
+    }
+
+    fun updateText(text: String) {
+        clearEntries()
+        val lines = Markdown(text).toText()
+        for (line in lines) {
+            if (textRenderer.getWidth(line) >= width - 10) {
+                val texts: List<OrderedText> = textRenderer.wrapLines(line, width - 10)
+                for (wrappedLine in texts) {
+                    addEntry(Entry(this, getText(wrappedLine)))
+                }
+                continue
+            }
+            addEntry(Entry(this, line))
+        }
+        addEntry(Entry(this, LiteralText.EMPTY))
     }
 
     class Entry(list: ListWidget<Entry>, val text: Text) : ListWidget.Entry<Entry>(list, text.string) {

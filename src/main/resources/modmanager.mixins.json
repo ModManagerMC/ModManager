@@ -4,8 +4,9 @@
   "minVersion": "0.8",
   "package": "net.modmanagermc.modmanager.mixin",
   "client": [
+	"ModMenuTexturedButtonWidgetMixin",
 	"ModsScreenMixin",
-	"ModMenuTexturedButtonWidgetMixin"
+	"MinecraftClientMixin"
   ],
   "injectors": {
 	"defaultRequire": 1

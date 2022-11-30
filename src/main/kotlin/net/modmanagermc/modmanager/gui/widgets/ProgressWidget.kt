@@ -20,6 +20,8 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.Drawable
 import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
 import kotlin.math.roundToInt
 
 class ProgressWidget(
@@ -28,6 +30,7 @@ class ProgressWidget(
     var y: Int,
     var width: Int,
     var height: Int = 5,
+    var text: Text = LiteralText.EMPTY,
     private val indeterminate: Boolean = false
 ) : DrawableHelper(), Drawable {
 
@@ -44,6 +47,15 @@ class ProgressWidget(
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         if (!visible) {
             return
+        }
+
+        val textWidth = client.textRenderer.getWidth(text)
+
+        if (textWidth > 0) {
+            client.textRenderer.draw(
+                matrices, text, (x + width / 2f) - textWidth / 2f,
+                y - height - client.textRenderer.fontHeight - 5f, color
+            )
         }
         // Render outline
         fill(matrices, x + 1, y - height, x + width - 1, y - height + 1, color)

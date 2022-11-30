@@ -23,21 +23,18 @@ import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.LiteralText
 import net.minecraft.text.TranslatableText
-import net.minecraft.util.Language
 import net.modmanagermc.core.Core
 import net.modmanagermc.core.controller.ModListController
-import net.modmanagermc.core.exceptions.ModManagerException
 import net.modmanagermc.core.model.Category
 import net.modmanagermc.core.model.Mod
 import net.modmanagermc.core.screen.IListScreen
 import net.modmanagermc.core.store.Sort
+import net.modmanagermc.core.task.TaskManager
 import net.modmanagermc.modmanager.gui.widgets.CategoryListWidget
 import net.modmanagermc.modmanager.gui.widgets.CyclingButtonWidget
 import net.modmanagermc.modmanager.gui.widgets.ModListWidget
 import net.modmanagermc.modmanager.gui.widgets.ProgressWidget
 import net.modmanagermc.modmanager.icon.IconCache
-import org.apache.logging.log4j.LogManager
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralText.EMPTY), IListScreen,
@@ -60,6 +57,7 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
             (height * 0.5).roundToInt(),
             (width * 0.75).roundToInt(),
             5,
+            TranslatableText("modmanager.list.loading"),
             true,
         )
         loadingBar.visible = false
@@ -164,6 +162,13 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
         client!!.setScreen(parentScreen)
     }
 
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (controller.keyPressed(keyCode, scanCode, modifiers)) {
+            return true
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers)
+    }
+
     override fun <E> updateSelectedEntry(widget: Any, entry: E?) {
         if (widget !is ModListWidget) {
             return
@@ -172,6 +177,10 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
             return
         }
         if (controller.selectedMod?.id == (entry as ModListWidget.Entry).id) {
+            if (controller.selectedCategories.any { it.id == "updatable" }) {
+                client!!.setScreen(UpdateInfoScreen(this, controller.selectedMod!!))
+                return
+            }
             client!!.setScreen(ModInfoScreen(this, controller.selectedMod!!))
             return
         }
@@ -194,11 +203,12 @@ class ModManagerListScreen(private val parentScreen: Screen) : Screen(LiteralTex
         }
     }
 
+    override val searchFieldFocused: Boolean
+        get() = searchField.isFocused
+
     override fun setMods(mods: List<Mod>) = modList.setMods(mods)
-    override fun error(e: Exception) {
-        client!!.execute {
-            client!!.setScreen(ErrorScreen(parentScreen, e))
-        }
+    override fun error(e: Exception) = TaskManager.add {
+        client!!.setScreen(ErrorScreen(this, e))
     }
 
     override fun setCategories(categories: List<Category>) = categoryList.setCategories(categories)
